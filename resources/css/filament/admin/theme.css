@@ -1,0 +1,290 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../vendor/filament/filament/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/forms/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/tables/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/infolists/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/notifications/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/widgets/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/schemas/resources/views/**/*.blade.php';
+@source '../../../vendor/filament/actions/resources/views/**/*.blade.php';
+@source '../../../app/Filament/**/*.php';
+@source '../../../resources/views/filament/**/*.blade.php';
+
+/* ============================================================
+ * SIM-LiBas RT 15 — Custom Filament Admin Panel Theme
+ * Adaptasi Desain: Layout Modern IT All Role
+ * ============================================================ */
+
+/* ----------------------------------------------------------------
+ * 1. Global & Page Background
+ * ---------------------------------------------------------------- */
+
+html, body, .fi-body {
+    background-color: #F8FAFC !important;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    color: #0F172A !important;
+}
+
+.fi-main {
+    padding-top: 1.25rem !important;
+    padding-bottom: 2.5rem !important;
+    max-width: 1440px !important;
+}
+
+/* ----------------------------------------------------------------
+ * 2. Topbar: Pure White, Minimalist & Clean (IT All Role)
+ * ---------------------------------------------------------------- */
+
+.fi-topbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    height: 4.25rem !important;
+    --tw-ring-color: transparent !important;
+}
+
+.fi-topbar-ctn {
+    background-color: #ffffff !important;
+}
+
+/* Topbar Buttons & Icons */
+.fi-topbar .fi-icon-btn,
+.fi-topbar button {
+    color: #64748B !important;
+    transition: all 0.15s ease !important;
+}
+
+.fi-topbar .fi-icon-btn:hover,
+.fi-topbar button:hover {
+    color: #0B3A85 !important;
+    background-color: #F1F5F9 !important;
+}
+
+/* Topbar User Avatar Circle (Mirip hijau 'A' di IT All Role, versi SIM-LiBas biru #0B3A85) */
+.fi-user-avatar {
+    background-color: #0B3A85 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-radius: 9999px !important;
+    border: 2px solid #E2E8F0 !important;
+}
+
+/* ----------------------------------------------------------------
+ * 3. Logo SIM-LiBas: Tajam, Alami, Tanpa Filter Rusak
+ * ---------------------------------------------------------------- */
+
+.fi-logo {
+    filter: none !important;
+    -webkit-filter: none !important;
+    object-fit: contain !important;
+    height: 2.75rem !important;
+    max-height: 2.75rem !important;
+    width: auto !important;
+    display: block !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.fi-topbar-start .fi-logo {
+    filter: none !important;
+    -webkit-filter: none !important;
+    height: 2.5rem !important;
+    margin-left: 0.5rem !important;
+}
+
+/* ----------------------------------------------------------------
+ * 4. Sidebar: Solid Pure White & Hidden Scrollbar (IT All Role)
+ * ---------------------------------------------------------------- */
+
+.fi-sidebar,
+.fi-sidebar.fi-sidebar-open {
+    background-color: #ffffff !important;
+    border-right: 1px solid #E2E8F0 !important;
+    box-shadow: none !important;
+    width: var(--sidebar-width, 16.5rem) !important;
+}
+
+/* Mobile sidebar backdrop & solid white */
+@media (max-width: 1024px) {
+    .fi-sidebar.fi-sidebar-open {
+        background-color: #ffffff !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+        --tw-ring-color: transparent !important;
+    }
+}
+
+/* Sidebar Header dengan Logo */
+.fi-sidebar-header {
+    height: 4.25rem !important;
+    padding: 0.75rem 1.25rem !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffffff !important;
+}
+
+/* HILANGKAN SCROLLBAR SIDEBAR 100% (Permintaan Pengguna) */
+.fi-sidebar-nav {
+    overflow-y: auto !important;
+    scrollbar-width: none !important;        /* Firefox */
+    -ms-overflow-style: none !important;     /* IE & Edge */
+    padding: 1.25rem 0.875rem !important;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar {
+    display: none !important;                /* Chrome / Safari / Opera / Brave */
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ----------------------------------------------------------------
+ * 5. Navigation Items & Groups (Pill Style IT All Role)
+ * ---------------------------------------------------------------- */
+
+.fi-sidebar-group-label {
+    color: #94A3B8 !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding: 0.5rem 0.625rem 0.25rem !important;
+}
+
+.fi-sidebar-group-collapse-btn {
+    color: #94A3B8 !important;
+}
+
+.fi-sidebar-item-btn {
+    border-radius: 10px !important;
+    padding: 0.5rem 0.75rem !important;
+    margin-bottom: 2px !important;
+    transition: all 0.15s ease !important;
+}
+
+.fi-sidebar-item-label {
+    font-size: 0.84375rem !important;
+    font-weight: 500 !important;
+    color: #475569 !important;
+}
+
+.fi-sidebar-item-btn > .fi-icon {
+    color: #64748B !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* Hover state: background abu-biru muda halus */
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
+    background-color: #F1F5F9 !important;
+}
+
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover .fi-sidebar-item-label {
+    color: #0B3A85 !important;
+    font-weight: 600 !important;
+}
+
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon {
+    color: #0B3A85 !important;
+}
+
+/* ACTIVE STATE: Solid Blue Pill (Adaptasi tombol hijau Dashboard di IT All Role) */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: #0B3A85 !important;
+    box-shadow: 0 2px 6px rgba(11, 58, 133, 0.22) !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    color: #ffffff !important;
+}
+
+/* ----------------------------------------------------------------
+ * 6. Sidebar User Footer
+ * ---------------------------------------------------------------- */
+
+.fi-sidebar-footer {
+    border-top: 1px solid #E2E8F0 !important;
+    padding: 0.75rem !important;
+    margin: 0 !important;
+    background-color: #ffffff !important;
+}
+
+.fi-sidebar .fi-user-menu-trigger {
+    border-radius: 10px !important;
+    padding: 0.5rem 0.625rem !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.fi-sidebar .fi-user-menu-trigger:hover {
+    background-color: #F1F5F9 !important;
+}
+
+/* ----------------------------------------------------------------
+ * 7. Page Header / Breadcrumbs
+ * ---------------------------------------------------------------- */
+
+.fi-header {
+    margin-bottom: 1.25rem !important;
+}
+
+.fi-header-heading {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* ----------------------------------------------------------------
+ * 8. Tables, Forms & Sections (Clean Modern Styling)
+ * ---------------------------------------------------------------- */
+
+.fi-ta-ctn {
+    border-radius: 16px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #E2E8F0 !important;
+    background-color: #ffffff !important;
+    overflow: hidden !important;
+}
+
+.fi-ta-header-cell {
+    background-color: #F8FAFC !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: #64748B !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+}
+
+.fi-section {
+    border-radius: 16px !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    background: #ffffff !important;
+}
+
+.fi-section-header-ctn {
+    border-bottom: 1px solid #F1F5F9 !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.fi-section-header-heading {
+    font-weight: 700 !important;
+    color: #0F172A !important;
+    font-size: 1rem !important;
+}
+
+.fi-btn.fi-color-primary {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    background-color: #0B3A85 !important;
+}
+
+/* Hapus AI Slop info box */
+.fi-wi-filament-info {
+    display: none !important;
+}
