@@ -15,8 +15,8 @@ class CashTransactionSeeder extends Seeder
      */
     public function run(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first()
-            ?? User::where('email', 'ketua.rt@simlibas.id')->first()
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first()
+            ?? User::where('email', 'rt@simlibas.com')->first()
             ?? User::first();
 
         if (! $bendahara) {

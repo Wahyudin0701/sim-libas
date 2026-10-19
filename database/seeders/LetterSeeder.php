@@ -18,7 +18,7 @@ class LetterSeeder extends Seeder
     public function run(): void
     {
         $admin = User::first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first() ?? $admin;
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first() ?? $admin;
 
         $dedi = Resident::where('nama', 'like', '%Dedi%')->first();
         $siti = Resident::where('nama', 'like', '%Siti%')->first();

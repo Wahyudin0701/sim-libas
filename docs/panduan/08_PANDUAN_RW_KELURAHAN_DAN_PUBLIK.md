@@ -290,7 +290,7 @@ Bagi petugas instansi pemeriksa (Kelurahan Pematang Sulur, Petugas Kantor Camat 
 1. Ambil ponsel pintar atau pemindai kamera (QR Scanner / Google Lens).
 2. Arahkan kamera ponsel tepat ke **QR Code** yang tercetak di sudut bawah lembar surat pengantar warga.
 3. Kamera akan mendeteksi tautan resmi sistem:
-   `http://simlibas.id/verifikasi-surat/TOKEN_UNIK`
+   `http://simlibas.com/verifikasi-surat/TOKEN_UNIK`
 4. Ketuk tautan tersebut. Peramban web akan langsung membuka halaman verifikasi tanpa memerlukan instalasi aplikasi tambahan atau login akun.
 
 ---

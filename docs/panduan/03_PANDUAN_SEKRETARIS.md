@@ -57,13 +57,13 @@ Dalam ekosistem **SIM-LiBas RT 15 Pematang Sulur**, Sekretaris RT bertindak seba
 1. Buka peramban di komputer atau laptop Anda.
 2. Buka alamat: **`http://localhost/admin`**.
 3. Pada formulir login pengurus:
-   - **Email**: `sekretaris@simlibas.id`
+   - **Email**: `sekretaris@simlibas.com`
    - **Kata Sandi**: `password`
 4. Klik **"Masuk ke Panel Pengurus"**.
 
 > 📸 **[SLOT TANGKAPAN LAYAR: SS-SEK-001]**
 > - **Halaman / Tampilan:** Formulir Masuk Panel Pengurus Akun Sekretaris (`/admin/login`)
-> - **Elemen yang Ditampilkan:** Halaman login dengan email `sekretaris@simlibas.id` terisi dan kursor pada kolom kata sandi.
+> - **Elemen yang Ditampilkan:** Halaman login dengan email `sekretaris@simlibas.com` terisi dan kursor pada kolom kata sandi.
 > - **Fokus / Aksi Pengguna:** Sesi login awal Sekretaris RT.
 > - **Rekomendasi Berkas Gambar:** `docs/panduan/assets/screenshots/ss-sek-001-login-sekretaris.png`
 

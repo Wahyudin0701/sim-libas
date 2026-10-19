@@ -42,12 +42,12 @@ class Modul04SuratPengantarScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
+        $this->ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
 
         // Setup KK A (Kepala: Dedi, Istri: Siti, Anak: Rizky)
-        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.com')->first();
         $this->residentKepala = Resident::where('user_id', $this->wargaKepala->id)->first();
         $this->householdA = $this->residentKepala->household;
 
@@ -63,7 +63,7 @@ class Modul04SuratPengantarScenarioTest extends TestCase
         if (!$this->residentAnak->user_id) {
             $userAnak = User::create([
                 'name' => $this->residentAnak->nama,
-                'email' => $this->residentAnak->nik . '@warga.simlibas.id',
+                'email' => $this->residentAnak->nik . '@warga.simlibas.com',
                 'password' => bcrypt('password'),
                 'is_active' => true,
             ]);
@@ -80,7 +80,7 @@ class Modul04SuratPengantarScenarioTest extends TestCase
         if (!$this->residentLain->user_id) {
             $userLain = User::create([
                 'name' => $this->residentLain->nama,
-                'email' => $this->residentLain->nik . '@warga.simlibas.id',
+                'email' => $this->residentLain->nik . '@warga.simlibas.com',
                 'password' => bcrypt('password'),
                 'is_active' => true,
             ]);

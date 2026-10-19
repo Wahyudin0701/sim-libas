@@ -52,13 +52,13 @@ Koordinator Bank Sampah bertindak sebagai pengelola teknis operasional penimbang
 1. Buka peramban di komputer posko penimbangan atau ponsel pintar Anda.
 2. Masukkan alamat: **`http://localhost/admin`**.
 3. Masukkan kredensial login resmi Koordinator Bank Sampah:
-   - **Email**: `banksampah@simlibas.id`
+   - **Email**: `banksampah@simlibas.com`
    - **Kata Sandi**: `password` (atau kata sandi baru Anda)
 4. Klik tombol **"Masuk ke Panel Pengurus"**.
 
 > 📸 **[SLOT TANGKAPAN LAYAR: SS-BS-001]**
 > - **Halaman / Tampilan:** Formulir Masuk Panel Akun Koordinator Bank Sampah (`/admin/login`)
-> - **Elemen yang Ditampilkan:** Halaman login dengan email `banksampah@simlibas.id` dan kursor pada kolom kata sandi.
+> - **Elemen yang Ditampilkan:** Halaman login dengan email `banksampah@simlibas.com` dan kursor pada kolom kata sandi.
 > - **Fokus / Aksi Pengguna:** Sesi login petugas Bank Sampah Pinang Masak Lestari.
 > - **Rekomendasi Berkas Gambar:** `docs/panduan/assets/screenshots/ss-bs-001-login-bank-sampah.png`
 

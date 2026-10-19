@@ -37,15 +37,15 @@ class AdminNotificationTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         // Ambil akun-akun pengurus yang di-seed
-        $this->superAdmin = User::where('email', 'admin@simlibas.id')->firstOrFail();
-        $this->ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->firstOrFail();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->firstOrFail();
-        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.id')->firstOrFail();
-        $this->koorBankSampah = User::where('email', 'banksampah@simlibas.id')->firstOrFail();
+        $this->superAdmin = User::where('email', 'admin@simlibas.com')->firstOrFail();
+        $this->ketuaRt = User::where('email', 'rt@simlibas.com')->firstOrFail();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->firstOrFail();
+        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.com')->firstOrFail();
+        $this->koorBankSampah = User::where('email', 'banksampah@simlibas.com')->firstOrFail();
 
         // Ambil akun warga pemohon
-        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $this->resident = Resident::where('user_id', $this->wargaUser->id)->firstOrFail();
 
         $this->letterType = LetterType::where('is_active', true)->firstOrFail();

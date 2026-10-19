@@ -576,7 +576,7 @@
                                             <input 
                                                 type="email" 
                                                 wire:model="new_user_email" 
-                                                placeholder="Contoh: nama@simlibas.id"
+                                                placeholder="Contoh: nama@simlibas.com"
                                                 class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-800 focus:outline-none focus:border-[#0B3A85]"
                                             >
                                             @error('new_user_email') <span class="text-rose-600 text-[10.5px] font-bold block mt-0.5">{{ $message }}</span> @enderror

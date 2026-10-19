@@ -201,7 +201,7 @@ trait HandlesEditResidentModal
             }
 
             // Update akun user terkait jika ada, atau buatkan baru jika belum memiliki akun
-            $userEmail = !empty($this->edit_email) ? $this->edit_email : $this->edit_nik . '@warga.simlibas.id';
+            $userEmail = !empty($this->edit_email) ? $this->edit_email : $this->edit_nik . '@warga.simlibas.com';
             $resolvedUserId = $resident->user_id;
 
             if ($resident->user) {

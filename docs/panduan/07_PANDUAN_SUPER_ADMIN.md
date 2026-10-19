@@ -44,13 +44,13 @@ Hak istimewa Super Admin mencakup:
 1. Buka peramban di komputer atau laptop Anda.
 2. Buka alamat: **`http://localhost/admin`**.
 3. Masukkan kredensial login Super Admin:
-   - **Email**: `admin@simlibas.id`
+   - **Email**: `admin@simlibas.com`
    - **Kata Sandi**: `password` (atau kata sandi terbaru Anda)
 4. Klik tombol **"Masuk ke Panel Pengurus"**.
 
 > 📸 **[SLOT TANGKAPAN LAYAR: SS-ADM-001]**
 > - **Halaman / Tampilan:** Formulir Masuk Panel Akun Super Admin (`/admin/login`)
-> - **Elemen yang Ditampilkan:** Halaman login dengan email `admin@simlibas.id` dan kursor pada kolom kata sandi.
+> - **Elemen yang Ditampilkan:** Halaman login dengan email `admin@simlibas.com` dan kursor pada kolom kata sandi.
 > - **Fokus / Aksi Pengguna:** Sesi login teknis Administrator SIM-LiBas.
 > - **Rekomendasi Berkas Gambar:** `docs/panduan/assets/screenshots/ss-adm-001-login-super-admin.png`
 
@@ -135,7 +135,7 @@ Jika terjadi pergantian kepengurusan RT:
 2. Periksa daftar 8 role sistem: `super_admin`, `ketua_rt`, `sekretaris`, `bendahara`, `koordinator_bank_sampah`, `koordinator_keamanan`, `warga`, dan `rw_kelurahan`.
 3. Buka menu pendaftaran akun pengguna untuk membuat kredensial pengurus baru dengan mengisi:
    - Nama Lengkap Pengurus.
-   - Alamat Email (contoh: `sekretaris@simlibas.id`).
+   - Alamat Email (contoh: `sekretaris@simlibas.com`).
    - Nomor WhatsApp Aktif.
    - Kata Sandi Akun.
    - Penetapan Role yang sesuai dengan jabatannya.

@@ -109,91 +109,11 @@ class UserAndResidentSeeder extends Seeder
         );
         $rwCom->syncRoles(['rw_kelurahan']);
 
-        // =====================================================================
-        // 2. Akun Kompatibilitas (@simlibas.id) untuk Test Suite Otomatis
-        // =====================================================================
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@simlibas.id'],
-            [
-                'name' => 'Administrator SIM-LiBas (ID)',
-                'phone' => '0811-0000-0002',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $admin->syncRoles(['super_admin']);
-
-        $ketuaRtUser = User::firstOrCreate(
-            ['email' => 'ketua.rt@simlibas.id'],
-            [
-                'name' => 'Bpk. H. Ahmad Sudirman, S.E.',
-                'phone' => '0812-7400-9501',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $ketuaRtUser->syncRoles(['ketua_rt']);
-
-        $sekretarisUser = User::firstOrCreate(
-            ['email' => 'sekretaris@simlibas.id'],
-            [
-                'name' => 'Bpk. Bambang Irawan, S.Kom.',
-                'phone' => '0812-7400-9502',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $sekretarisUser->syncRoles(['sekretaris']);
-
-        $bendaharaUser = User::firstOrCreate(
-            ['email' => 'bendahara@simlibas.id'],
-            [
-                'name' => 'Ibu Hj. Nurhayati, S.E.',
-                'phone' => '0812-7400-9503',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $bendaharaUser->syncRoles(['bendahara']);
-
-        $koorBankSampahUser = User::firstOrCreate(
-            ['email' => 'banksampah@simlibas.id'],
-            [
-                'name' => 'Bpk. Joko Wahyudi',
-                'phone' => '0812-7400-9504',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $koorBankSampahUser->syncRoles(['koordinator_bank_sampah', 'warga']);
-
-        $koorKeamananUser = User::firstOrCreate(
-            ['email' => 'keamanan@simlibas.id'],
-            [
-                'name' => 'Bpk. Hendra Saputra',
-                'phone' => '0812-7400-9505',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $koorKeamananUser->syncRoles(['koordinator_keamanan', 'warga']);
-
-        $rwUser = User::firstOrCreate(
-            ['email' => 'rw@simlibas.id'],
-            [
-                'name' => 'Bpk. H. Suryadi, S.Sos.',
-                'phone' => '0812-7400-9599',
-                'password' => $defaultPassword,
-                'status' => 'aktif',
-            ]
-        );
-        $rwUser->syncRoles(['rw_kelurahan']);
-
         // -------------------------------------------------------------
         // KK 1: Keluarga Bpk. Dedi Kurniawan (Warga Tetap & Pelaku UMKM)
         // -------------------------------------------------------------
         $wargaDedi = User::firstOrCreate(
-            ['email' => 'warga.dedi@simlibas.id'],
+            ['email' => 'warga.dedi@simlibas.com'],
             [
                 'name' => 'Bpk. Dedi Kurniawan',
                 'phone' => '0813-6677-8899',
@@ -229,12 +149,12 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'kepala_keluarga',
             'status_kependudukan' => 'aktif',
             'telepon' => '0813-6677-8899',
-            'email' => 'warga.dedi@simlibas.id',
+            'email' => 'warga.dedi@simlibas.com',
             'is_kepala_keluarga' => true,
         ]);
 
         $userSiti = User::firstOrCreate(
-            ['email' => '1571015206800002@warga.simlibas.id'],
+            ['email' => '1571015206800002@warga.simlibas.com'],
             [
                 'name' => 'Siti Aminah',
                 'phone' => '0813-6677-8898',
@@ -259,12 +179,12 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0813-6677-8898',
-            'email' => '1571015206800002@warga.simlibas.id',
+            'email' => '1571015206800002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
         $userRizky = User::firstOrCreate(
-            ['email' => '1571011005050003@warga.simlibas.id'],
+            ['email' => '1571011005050003@warga.simlibas.com'],
             [
                 'name' => 'Rizky Pratama Kurniawan',
                 'phone' => '0813-6677-8897',
@@ -289,7 +209,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'anak',
             'status_kependudukan' => 'aktif',
             'telepon' => '0813-6677-8897',
-            'email' => '1571011005050003@warga.simlibas.id',
+            'email' => '1571011005050003@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -320,7 +240,7 @@ class UserAndResidentSeeder extends Seeder
         // KK 2: Keluarga Bpk. Agus Setiawan (Karyawan Swasta)
         // -------------------------------------------------------------
         $wargaAgus = User::firstOrCreate(
-            ['email' => 'warga.agus@simlibas.id'],
+            ['email' => 'warga.agus@simlibas.com'],
             [
                 'name' => 'Bpk. Agus Setiawan',
                 'phone' => '0813-7788-9900',
@@ -356,12 +276,12 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'kepala_keluarga',
             'status_kependudukan' => 'aktif',
             'telepon' => '0813-7788-9900',
-            'email' => 'warga.agus@simlibas.id',
+            'email' => 'warga.agus@simlibas.com',
             'is_kepala_keluarga' => true,
         ]);
 
         $userDewi = User::firstOrCreate(
-            ['email' => '1571015509870002@warga.simlibas.id'],
+            ['email' => '1571015509870002@warga.simlibas.com'],
             [
                 'name' => 'Dewi Lestari',
                 'phone' => '0813-7788-9901',
@@ -386,7 +306,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0813-7788-9901',
-            'email' => '1571015509870002@warga.simlibas.id',
+            'email' => '1571015509870002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -405,13 +325,13 @@ class UserAndResidentSeeder extends Seeder
             'kelurahan' => 'Pematang Sulur',
             'kecamatan' => 'Telanaipura',
             'status_hunian' => 'tetap',
-            'user_id' => $koorKeamananUser->id,
+            'user_id' => $keamananCom->id,
             'catatan' => 'Koordinator Keamanan & Ronda',
         ]);
 
         Resident::create([
             'household_id' => $kkHendra->id,
-            'user_id' => $koorKeamananUser->id,
+            'user_id' => $keamananCom->id,
             'nik' => '1571011406820001',
             'nama' => 'Bpk. Hendra Saputra',
             'tempat_lahir' => 'Jambi',
@@ -424,12 +344,12 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'kepala_keluarga',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1505',
-            'email' => 'keamanan@simlibas.id',
+            'email' => 'keamanan@simlibas.com',
             'is_kepala_keluarga' => true,
         ]);
 
         $userRina = User::firstOrCreate(
-            ['email' => '1571015011860002@warga.simlibas.id'],
+            ['email' => '1571015011860002@warga.simlibas.com'],
             [
                 'name' => 'Rina Marlina',
                 'phone' => '0812-7400-1506',
@@ -454,7 +374,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1506',
-            'email' => '1571015011860002@warga.simlibas.id',
+            'email' => '1571015011860002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -473,13 +393,13 @@ class UserAndResidentSeeder extends Seeder
             'kelurahan' => 'Pematang Sulur',
             'kecamatan' => 'Telanaipura',
             'status_hunian' => 'tetap',
-            'user_id' => $koorBankSampahUser->id,
+            'user_id' => $banksampahCom->id,
             'catatan' => 'Koordinator Bank Sampah Lestari',
         ]);
 
         Resident::create([
             'household_id' => $kkJoko->id,
-            'user_id' => $koorBankSampahUser->id,
+            'user_id' => $banksampahCom->id,
             'nik' => '1571011809800001',
             'nama' => 'Bpk. Joko Wahyudi',
             'tempat_lahir' => 'Solo',
@@ -492,12 +412,12 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'kepala_keluarga',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1504',
-            'email' => 'banksampah@simlibas.id',
+            'email' => 'banksampah@simlibas.com',
             'is_kepala_keluarga' => true,
         ]);
 
         $userSri = User::firstOrCreate(
-            ['email' => '1571014502840002@warga.simlibas.id'],
+            ['email' => '1571014502840002@warga.simlibas.com'],
             [
                 'name' => 'Sri Wahyuni',
                 'phone' => '0812-7400-1507',
@@ -522,7 +442,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1507',
-            'email' => '1571014502840002@warga.simlibas.id',
+            'email' => '1571014502840002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -565,7 +485,7 @@ class UserAndResidentSeeder extends Seeder
         ]);
 
         $userLinda = User::firstOrCreate(
-            ['email' => '1571015005850002@warga.simlibas.id'],
+            ['email' => '1571015005850002@warga.simlibas.com'],
             [
                 'name' => 'Linda Marlina, S.Pd.',
                 'phone' => '0812-7400-1508',
@@ -590,7 +510,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1508',
-            'email' => '1571015005850002@warga.simlibas.id',
+            'email' => '1571015005850002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -633,7 +553,7 @@ class UserAndResidentSeeder extends Seeder
         ]);
 
         $userFatimah = User::firstOrCreate(
-            ['email' => '1571014503750002@warga.simlibas.id'],
+            ['email' => '1571014503750002@warga.simlibas.com'],
             [
                 'name' => 'Hj. Fatimah Zahra',
                 'phone' => '0812-7400-1509',
@@ -658,7 +578,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'istri',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1509',
-            'email' => '1571014503750002@warga.simlibas.id',
+            'email' => '1571014503750002@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 
@@ -701,7 +621,7 @@ class UserAndResidentSeeder extends Seeder
         ]);
 
         $userFikri = User::firstOrCreate(
-            ['email' => '1571011204040003@warga.simlibas.id'],
+            ['email' => '1571011204040003@warga.simlibas.com'],
             [
                 'name' => 'Muhammad Fikri',
                 'phone' => '0812-7400-1510',
@@ -726,7 +646,7 @@ class UserAndResidentSeeder extends Seeder
             'hubungan_keluarga' => 'anak',
             'status_kependudukan' => 'aktif',
             'telepon' => '0812-7400-1510',
-            'email' => '1571011204040003@warga.simlibas.id',
+            'email' => '1571011204040003@warga.simlibas.com',
             'is_kepala_keluarga' => false,
         ]);
 

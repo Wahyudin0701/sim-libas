@@ -31,22 +31,22 @@ class Modul07PengaduanScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
-        $this->koorSampah = User::where('email', 'banksampah@simlibas.id')->first();
+        $this->ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
+        $this->koorSampah = User::where('email', 'banksampah@simlibas.com')->first();
 
-        $this->wargaA = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $this->wargaA = User::where('email', 'warga.dedi@simlibas.com')->first();
 
-        $this->wargaB = User::where('email', '!=', 'warga.dedi@simlibas.id')
+        $this->wargaB = User::where('email', '!=', 'warga.dedi@simlibas.com')
             ->role('warga')
             ->first();
 
         if (!$this->wargaB) {
             $this->wargaB = User::create([
                 'name' => 'Warga Tetangga B',
-                'email' => 'warga.b@simlibas.id',
+                'email' => 'warga.b@simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);

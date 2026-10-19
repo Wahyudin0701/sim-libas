@@ -37,7 +37,7 @@ class Login extends BaseLogin
     {
         return TextInput::make('email')
             ->label('Alamat Email Pengurus')
-            ->placeholder('nama.pengurus@simlibas.id')
+            ->placeholder('nama.pengurus@simlibas.com')
             ->email()
             ->required()
             ->autocomplete('username')

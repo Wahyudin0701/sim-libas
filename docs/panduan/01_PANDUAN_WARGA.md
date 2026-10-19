@@ -68,7 +68,7 @@ Portal Layanan Mandiri Warga dirancang khusus agar warga dapat mengurus berbagai
 Portal Warga SIM-LiBas memudahkan warga untuk masuk menggunakan salah satu dari 3 (tiga) identitas yang telah terdaftar di database kependudukan RT 15:
 1. **Nomor Induk Kependudukan (NIK 16 Digit)**: Nomor yang tertera pada KTP-el atau Kartu Keluarga Anda (contoh: `1571011504780001`).
 2. **Nomor Telepon / WhatsApp**: Nomor HP aktif yang telah didaftarkan ke Sekretaris RT (contoh: `0813-6677-8899`).
-3. **Alamat Email Resmi Akun**: Alamat email yang terasosiasi dengan akun Anda (contoh: `warga.dedi@simlibas.id`).
+3. **Alamat Email Resmi Akun**: Alamat email yang terasosiasi dengan akun Anda (contoh: `warga.dedi@simlibas.com`).
 
 ---
 

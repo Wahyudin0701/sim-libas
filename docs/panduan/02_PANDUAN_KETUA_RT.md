@@ -54,7 +54,7 @@ Sebagai pemimpin lingkungan di **RT 15 Pematang Sulur**, Ketua RT memegang peran
 1. Buka peramban (*web browser*) di komputer atau ponsel Anda.
 2. Masukkan alamat: **`http://localhost/admin`** (atau `/admin/login`).
 3. Anda akan melihat halaman masuk **Portal Pengurus RT 15**:
-   - **Alamat Email Pengurus**: Masukkan `ketua.rt@simlibas.id`
+   - **Alamat Email Pengurus**: Masukkan `rt@simlibas.com`
    - **Kata Sandi Akun**: Masukkan kata sandi akun Anda (default: `password`)
 4. Klik tombol **"Masuk ke Panel Pengurus"**.
 

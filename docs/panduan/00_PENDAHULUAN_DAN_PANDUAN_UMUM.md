@@ -161,14 +161,14 @@ Untuk keperluan pelatihan, uji coba fungsi, atau demonstrasi sistem di lingkunga
 
 | Peran (*Role*) | Pintu Masuk URL | Alamat Email Login | Kredensial Alternatif | Nama Pengguna / Pejabat |
 | :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `/admin` | `admin@simlibas.id` | - | Administrator SIM-LiBas |
-| **Ketua RT 15** | `/admin` | `ketua.rt@simlibas.id` | - | Bpk. H. Ahmad Sudirman, S.E. |
-| **Sekretaris RT 15** | `/admin` | `sekretaris@simlibas.id` | - | Bpk. Bambang Irawan, S.Kom. |
-| **Bendahara RT 15** | `/admin` | `bendahara@simlibas.id` | - | Ibu Hj. Nurhayati, S.E. |
-| **Koor. Bank Sampah** | `/admin` | `banksampah@simlibas.id` | - | Bpk. Joko Wahyudi |
-| **Koor. Keamanan** | `/admin` | `keamanan@simlibas.id` | - | Bpk. Hendra Saputra |
-| **Warga 1 (KK Tetap & UMKM)** | `/masuk` | `warga.dedi@simlibas.id` | NIK: `1571011504780001`<br>HP: `0813-6677-8899` | Bpk. Dedi Kurniawan |
-| **Warga 2 (KK Kontrak/Kost)** | `/masuk` | `warga.agus@simlibas.id` | NIK: `1571012008850002`<br>HP: `0813-7788-9900` | Bpk. Agus Setiawan |
+| **Super Admin** | `/admin` | `admin@simlibas.com` | - | Administrator SIM-LiBas |
+| **Ketua RT 15** | `/admin` | `rt@simlibas.com` | - | Bpk. H. Ahmad Sudirman, S.E. |
+| **Sekretaris RT 15** | `/admin` | `sekretaris@simlibas.com` | - | Bpk. Bambang Irawan, S.Kom. |
+| **Bendahara RT 15** | `/admin` | `bendahara@simlibas.com` | - | Ibu Hj. Nurhayati, S.E. |
+| **Koor. Bank Sampah** | `/admin` | `banksampah@simlibas.com` | - | Bpk. Joko Wahyudi |
+| **Koor. Keamanan** | `/admin` | `keamanan@simlibas.com` | - | Bpk. Hendra Saputra |
+| **Warga 1 (KK Tetap & UMKM)** | `/masuk` | `warga.dedi@simlibas.com` | NIK: `1571011504780001`<br>HP: `0813-6677-8899` | Bpk. Dedi Kurniawan |
+| **Warga 2 (KK Kontrak/Kost)** | `/masuk` | `warga.agus@simlibas.com` | NIK: `1571012008850002`<br>HP: `0813-7788-9900` | Bpk. Agus Setiawan |
 | **RW / Kelurahan** | `/admin` | *(Dibuat via Admin User)* | Role: `rw_kelurahan` | Tim Pembina Wilayah |
 
 ---

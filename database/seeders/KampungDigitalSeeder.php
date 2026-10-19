@@ -24,7 +24,6 @@ class KampungDigitalSeeder extends Seeder
         }
 
         $pencatat = User::where('email', 'rt@simlibas.com')->first()
-            ?? User::where('email', 'ketua.rt@simlibas.id')->first()
             ?? User::first();
 
         // 1. Seed UMKM Warga RT 15 (6 usaha warga)

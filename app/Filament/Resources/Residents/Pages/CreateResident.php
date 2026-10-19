@@ -179,7 +179,7 @@ class CreateResident extends Page
 
         DB::transaction(function () use ($fotoPath) {
             // 1. Buat / Hubungkan Akun User Portal Warga
-            $userEmail = !empty($this->email) ? $this->email : $this->nik . '@warga.simlibas.id';
+            $userEmail = !empty($this->email) ? $this->email : $this->nik . '@warga.simlibas.com';
             $user = User::firstOrCreate(
                 ['email' => $userEmail],
                 [

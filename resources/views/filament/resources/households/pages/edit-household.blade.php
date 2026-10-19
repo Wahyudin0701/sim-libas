@@ -785,7 +785,7 @@
                                             @error('anggota_keluarga.' . $index . '.email')
                                                 <p class="text-[11px] text-rose-500 mt-0.5">{{ $message }}</p>
                                             @else
-                                                <p class="text-[10px] text-[#5B6B82] mt-0.5">* Kosongkan untuk akun otomatis NIK (@warga.simlibas.id)</p>
+                                                <p class="text-[10px] text-[#5B6B82] mt-0.5">* Kosongkan untuk akun otomatis NIK (@warga.simlibas.com)</p>
                                             @enderror
                                         </div>
 

@@ -347,7 +347,7 @@ class ViewHousehold extends ViewRecord
             $this->akun_password = '';
         } else {
             $this->akun_name = (string) ($record->kepalaKeluarga?->nama ?? 'Warga ' . $record->id_kk);
-            $this->akun_email = $record->kepalaKeluarga?->nik ? $record->kepalaKeluarga->nik . '@warga.simlibas.id' : '';
+            $this->akun_email = $record->kepalaKeluarga?->nik ? $record->kepalaKeluarga->nik . '@warga.simlibas.com' : '';
             $this->akun_phone = (string) ($record->kepalaKeluarga?->telepon ?? '');
             $this->akun_status = 'aktif';
             $this->akun_password = '';

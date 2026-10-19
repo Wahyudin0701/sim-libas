@@ -142,12 +142,6 @@ class VerifyRwKelurahan extends Command
         $canAccessPanel = $rw->canAccessPanel(filament()->getCurrentPanel() ?? filament()->getPanel('admin'));
         $this->line('6. Akses Panel Admin: ' . ($canAccessPanel ? 'TRUE [PASS]' : 'FALSE [FAIL]'));
 
-        // Akun Alias rw@simlibas.id
-        $rwId = User::where('email', 'rw@simlibas.id')->first();
-        if ($rwId && $rwId->hasRole('rw_kelurahan')) {
-            $this->info('7. Akun Alias Kompatibilitas rw@simlibas.id: Terdaftar [PASS]');
-        }
-
         $allPass = $canViewCash && !$canCreateCash && !$canEditCash && !$canDeleteCash
             && $canViewWaste && !$canCreateWaste && !$canEditWaste && !$canDeleteWaste
             && $canAccessPanel;

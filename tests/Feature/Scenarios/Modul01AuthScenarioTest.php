@@ -23,10 +23,10 @@ class Modul01AuthScenarioTest extends TestCase
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
 
-        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $this->resident = Resident::where('user_id', $this->wargaUser->id)->firstOrFail();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->firstOrFail();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->firstOrFail();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
     }
 
     /**
@@ -163,7 +163,7 @@ class Modul01AuthScenarioTest extends TestCase
      */
     public function test_tc_011_update_email_warga_valid(): void
     {
-        $newEmail = 'dedi.baru@simlibas.id';
+        $newEmail = 'dedi.baru@simlibas.com';
         $response = $this->actingAs($this->wargaUser)->put(route('warga.profile.email'), [
             'email' => $newEmail,
             'current_password' => 'password',
@@ -180,7 +180,7 @@ class Modul01AuthScenarioTest extends TestCase
     public function test_tc_012_update_email_password_salah(): void
     {
         $response = $this->actingAs($this->wargaUser)->put(route('warga.profile.email'), [
-            'email' => 'dedi.gagal@simlibas.id',
+            'email' => 'dedi.gagal@simlibas.com',
             'current_password' => 'wrong-pass',
         ]);
 

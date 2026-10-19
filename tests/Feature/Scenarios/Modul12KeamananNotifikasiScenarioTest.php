@@ -33,7 +33,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_149_pengurus_fetch_notifikasi_in_app_via_topbar(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
 
         Notification::create([
             'user_id' => $sekretaris->id,
@@ -73,7 +73,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_150_pengurus_tandai_1_notifikasi_dibaca(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
 
         $notif = Notification::create([
             'user_id' => $sekretaris->id,
@@ -97,7 +97,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_151_pengurus_tandai_seluruh_notifikasi_dibaca(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
 
         Notification::create([
             'user_id' => $sekretaris->id,
@@ -129,7 +129,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_152_warga_dilarang_akses_api_notifikasi_admin(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
 
         $response = $this->actingAs($warga)->getJson('/admin/api/notifikasi');
 
@@ -141,8 +141,8 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_153_pengurus_dilarang_tandai_notif_pengurus_lain(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->firstOrFail();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->firstOrFail();
 
         $notifKetua = Notification::create([
             'user_id' => $ketuaRt->id,
@@ -163,7 +163,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_154_warga_fetch_notifikasi_in_app_portal_warga(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
 
         Notification::create([
             'user_id' => $warga->id,
@@ -192,7 +192,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_155_warga_tandai_1_notifikasi_telah_dibaca(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
 
         $notif = Notification::create([
             'user_id' => $warga->id,
@@ -215,10 +215,10 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_156_warga_dilarang_baca_notifikasi_warga_lain(): void
     {
-        $wargaA = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $wargaA = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $otherUser = User::create([
             'name' => 'Warga Lain',
-            'email' => 'wargalain@simlibas.id',
+            'email' => 'wargalain@simlibas.com',
             'password' => bcrypt('password'),
         ]);
 
@@ -241,7 +241,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_157_warga_tandai_seluruh_notifikasinya_dibaca(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
 
         Notification::create([
             'user_id' => $warga->id,
@@ -287,7 +287,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_159_uji_xss_pada_form_textarea(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
 
         $xssPayload = "<script>alert('XSS-TEST-ALERT')</script>";
 
@@ -344,7 +344,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_161_uji_upload_berkas_ilegal(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $household = $warga->resident->household;
         $feeType = FeeType::firstOrFail();
 
@@ -373,7 +373,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_162_uji_pembatasan_ukuran_file_maksimal_2mb(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $household = $warga->resident->household;
         $feeType = FeeType::firstOrFail();
 
@@ -403,7 +403,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_163_pengguna_memiliki_multi_role_koor_dan_warga(): void
     {
-        $koorSampah = User::where('email', 'banksampah@simlibas.id')->firstOrFail();
+        $koorSampah = User::where('email', 'banksampah@simlibas.com')->firstOrFail();
 
         $this->assertTrue($koorSampah->hasRole('koordinator_bank_sampah'));
         $this->assertTrue($koorSampah->hasRole('warga'));
@@ -422,7 +422,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_164_isolasi_horizontal_data_kk_antar_warga(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $householdWarga = $warga->resident->household;
 
         // Buat household lain
@@ -464,7 +464,7 @@ class Modul12KeamananNotifikasiScenarioTest extends TestCase
      */
     public function test_tc_165_isolasi_warga_status_pindah_meninggal(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $household = $warga->resident->household;
         $letterType = LetterType::firstOrFail();
 

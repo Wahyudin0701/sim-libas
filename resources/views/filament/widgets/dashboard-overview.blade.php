@@ -68,13 +68,9 @@
                     <span>Jadwal Ronda Baru</span>
                 </a>
             @elseif ($isBendahara)
-                <a href="{{ url('/admin/invoices') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                <a href="{{ url('/admin/invoices') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"/></svg>
                     <span>Tagihan Iuran</span>
-                </a>
-                <a href="{{ url('/admin/cash-transactions/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>Catat Kas RT</span>
                 </a>
             @elseif ($isSekretaris)
                 <a href="{{ url('/admin/announcements/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
@@ -86,13 +82,9 @@
                     <span>Verifikasi Surat</span>
                 </a>
             @else
-                <a href="{{ url('/admin/letters') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                <a href="{{ url('/admin/letters') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Verifikasi Surat</span>
-                </a>
-                <a href="{{ url('/admin/cash-transactions/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>Catat Kas RT</span>
                 </a>
             @endif
         </div>

@@ -33,10 +33,10 @@ class Modul11PengaturanMasterScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->superAdmin = User::where('email', 'admin@simlibas.id')->first();
-        $this->ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
+        $this->superAdmin = User::where('email', 'admin@simlibas.com')->first();
+        $this->ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
 
         $this->setting = RtSetting::first() ?? RtSetting::create([
             'nama_rt' => 'RT 15',

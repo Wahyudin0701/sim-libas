@@ -32,10 +32,10 @@ class Modul03KependudukanScenarioTest extends TestCase
         parent::setUp();
         $this->seed(DatabaseSeeder::class);
 
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->firstOrFail();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->firstOrFail();
-        $this->koorBankSampah = User::where('email', 'banksampah@simlibas.id')->firstOrFail();
-        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.id')->firstOrFail();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->firstOrFail();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->firstOrFail();
+        $this->koorBankSampah = User::where('email', 'banksampah@simlibas.com')->firstOrFail();
+        $this->wargaUser = User::where('email', 'warga.dedi@simlibas.com')->firstOrFail();
         $this->household = Household::firstOrFail();
         $this->kepalaKeluarga = $this->household->kepalaKeluarga;
     }
@@ -89,8 +89,8 @@ class Modul03KependudukanScenarioTest extends TestCase
         $this->assertEquals('1571019909990099', $savedKk->no_kk);
         $this->assertDatabaseHas('residents', ['nama' => 'Bpk. Ridwan Kamil', 'is_kepala_keluarga' => true]);
         $this->assertDatabaseHas('residents', ['nama' => 'Ibu Atalia', 'is_kepala_keluarga' => false]);
-        $this->assertDatabaseHas('users', ['email' => '1571011112220099@warga.simlibas.id']);
-        $this->assertDatabaseHas('users', ['email' => '1571015556660099@warga.simlibas.id']);
+        $this->assertDatabaseHas('users', ['email' => '1571011112220099@warga.simlibas.com']);
+        $this->assertDatabaseHas('users', ['email' => '1571015556660099@warga.simlibas.com']);
     }
 
     /**

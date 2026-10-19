@@ -36,17 +36,17 @@ class Modul09KeamananScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $this->koorSampah = User::where('email', 'banksampah@simlibas.id')->first();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
+        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $this->koorSampah = User::where('email', 'banksampah@simlibas.com')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
 
         // RW / Kelurahan
-        $rw = User::where('email', 'rw@simlibas.id')->first();
+        $rw = User::where('email', 'rw@simlibas.com')->first();
         if (!$rw) {
             $rw = User::create([
                 'name' => 'Bpk. RW 04 Kelurahan',
-                'email' => 'rw@simlibas.id',
+                'email' => 'rw@simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);

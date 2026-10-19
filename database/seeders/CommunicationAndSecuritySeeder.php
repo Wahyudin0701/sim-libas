@@ -24,13 +24,11 @@ class CommunicationAndSecuritySeeder extends Seeder
     public function run(): void
     {
         $ketuaRt = User::where('email', 'rt@simlibas.com')->first()
-            ?? User::where('email', 'ketua.rt@simlibas.id')->first()
             ?? User::first();
         $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first()
-            ?? User::where('email', 'sekretaris@simlibas.id')->first()
             ?? $ketuaRt;
-        $wargaUser = User::where('email', 'like', '%@warga.simlibas.id')->first()
-            ?? User::where('email', 'warga.dedi@simlibas.id')->first()
+        $wargaUser = User::where('email', 'like', '%@warga.simlibas.com')->first()
+            ?? User::where('email', 'warga.dedi@simlibas.com')->first()
             ?? $ketuaRt;
         $wargaUsers = User::where('email', 'like', '%warga%')->take(6)->get();
 

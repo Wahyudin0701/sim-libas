@@ -59,13 +59,13 @@ Di lingkungan **RT 15 Pematang Sulur**, Bendahara RT memegang peranan krusial se
 1. Buka peramban di komputer bendahara atau ponsel.
 2. Buka alamat: **`http://localhost/admin`**.
 3. Masukkan kredensial login resmi Bendahara RT 15:
-   - **Email**: `bendahara@simlibas.id`
+   - **Email**: `bendahara@simlibas.com`
    - **Kata Sandi**: `password` (atau kata sandi terbaru Anda)
 4. Klik tombol **"Masuk ke Panel Pengurus"**.
 
 > 📸 **[SLOT TANGKAPAN LAYAR: SS-BND-001]**
 > - **Halaman / Tampilan:** Formulir Masuk Panel Akun Bendahara RT 15 (`/admin/login`)
-> - **Elemen yang Ditampilkan:** Halaman login dengan email `bendahara@simlibas.id` dan kursor pada kolom kata sandi.
+> - **Elemen yang Ditampilkan:** Halaman login dengan email `bendahara@simlibas.com` dan kursor pada kolom kata sandi.
 > - **Fokus / Aksi Pengguna:** Sesi login resmi Bendahara RT.
 > - **Rekomendasi Berkas Gambar:** `docs/panduan/assets/screenshots/ss-bnd-001-login-bendahara.png`
 

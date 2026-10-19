@@ -32,15 +32,15 @@ class Modul08KomunikasiAgendaScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $this->koorSampah = User::where('email', 'banksampah@simlibas.id')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $this->koorSampah = User::where('email', 'banksampah@simlibas.com')->first();
 
         // RW / Kelurahan
-        $rw = User::where('email', 'rw@simlibas.id')->first();
+        $rw = User::where('email', 'rw@simlibas.com')->first();
         if (!$rw) {
             $rw = User::create([
                 'name' => 'Bpk. RW 04 Kelurahan',
-                'email' => 'rw@simlibas.id',
+                'email' => 'rw@simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);
@@ -48,7 +48,7 @@ class Modul08KomunikasiAgendaScenarioTest extends TestCase
         }
         $this->rwKelurahan = $rw;
 
-        $this->warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $this->warga = User::where('email', 'warga.dedi@simlibas.com')->first();
     }
 
     /**

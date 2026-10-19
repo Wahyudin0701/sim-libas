@@ -368,7 +368,7 @@ class EditHousehold extends Page
             ]);
 
             // 3. Update / Buat User Akun Kepala Keluarga jika ada
-            $userEmail = !empty($this->kepala_email) ? $this->kepala_email : ($this->kepala_nik . '@warga.simlibas.id');
+            $userEmail = !empty($this->kepala_email) ? $this->kepala_email : ($this->kepala_nik . '@warga.simlibas.com');
             $kepalaUserId = $this->household->user_id;
 
             $kepalaUser = $this->household->user;
@@ -447,7 +447,7 @@ class EditHousehold extends Page
 
             // 5. Update / Buat Anggota Keluarga Lainnya
             foreach ($this->anggota_keluarga as $anggota) {
-                $anggotaEmail = !empty($anggota['email']) ? $anggota['email'] : ($anggota['nik'] . '@warga.simlibas.id');
+                $anggotaEmail = !empty($anggota['email']) ? $anggota['email'] : ($anggota['nik'] . '@warga.simlibas.com');
 
                 $targetResident = null;
                 if (!empty($anggota['id'])) {

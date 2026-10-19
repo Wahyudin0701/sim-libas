@@ -221,7 +221,7 @@ class CreateHousehold extends Page
             $defaultRtRw = $rtSetting?->nama_rt ?? 'RT 15 / RW 04';
 
             // 1. Buat / Hubungkan Akun User untuk Kepala Keluarga (Role: Warga)
-            $userEmail = !empty($this->kepala_email) ? $this->kepala_email : $this->kepala_nik . '@warga.simlibas.id';
+            $userEmail = !empty($this->kepala_email) ? $this->kepala_email : $this->kepala_nik . '@warga.simlibas.com';
             $user = User::firstOrCreate(
                 ['email' => $userEmail],
                 [
@@ -277,7 +277,7 @@ class CreateHousehold extends Page
             // 5. Simpan Anggota Keluarga jika ada
             foreach ($this->anggota_keluarga as $anggota) {
                 if (!empty($anggota['nama']) && !empty($anggota['nik'])) {
-                    $anggotaEmail = $anggota['nik'] . '@warga.simlibas.id';
+                    $anggotaEmail = $anggota['nik'] . '@warga.simlibas.com';
                     $anggotaUser = User::firstOrCreate(
                         ['email' => $anggotaEmail],
                         [

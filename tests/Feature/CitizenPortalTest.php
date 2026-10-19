@@ -132,7 +132,7 @@ class CitizenPortalTest extends TestCase
     public function test_citizen_can_login_with_valid_credentials(): void
     {
         $response = $this->post('/masuk', [
-            'login' => 'warga.dedi@simlibas.id',
+            'login' => 'warga.dedi@simlibas.com',
             'password' => 'password',
         ]);
 
@@ -181,7 +181,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_access_dashboard(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/warga/dashboard');
 
@@ -197,7 +197,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_access_kartu_keluarga_page(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/warga/kartu-keluarga');
 
@@ -215,7 +215,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_access_profile_page(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/warga/profil');
 
@@ -224,7 +224,7 @@ class CitizenPortalTest extends TestCase
         $response->assertSee('Kredensial Akun Portal');
         $response->assertSee('Data Kependudukan Resmi');
         $response->assertSee('Dedi Kurniawan');
-        $response->assertSee('warga.dedi@simlibas.id');
+        $response->assertSee('warga.dedi@simlibas.com');
         $response->assertSee('Warga Aktif');
     }
 
@@ -233,7 +233,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_submit_letter_request(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $resident = Resident::where('user_id', $warga->id)->first();
         $type = LetterType::first();
 
@@ -256,7 +256,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_print_approved_letter(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $resident = Resident::where('user_id', $warga->id)->first();
         $type = LetterType::first();
 
@@ -289,7 +289,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_submit_complaint(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->post('/warga/pengaduan', [
             'judul' => 'Lampu jalan padam di blok A',
@@ -313,7 +313,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_access_complaints_page(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/warga/pengaduan');
 
@@ -328,7 +328,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_access_invoices_page(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/warga/iuran');
 
@@ -342,7 +342,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_submit_invoice_payment_confirmation(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
         $feeType = \App\Models\FeeType::first();
 
@@ -373,7 +373,7 @@ class CitizenPortalTest extends TestCase
     public function test_admin_login_on_citizen_portal_redirects_to_admin(): void
     {
         $response = $this->post('/masuk', [
-            'login' => 'admin@simlibas.id',
+            'login' => 'admin@simlibas.com',
             'password' => 'password',
         ]);
 
@@ -386,7 +386,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_update_email_with_valid_password(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->put(route('warga.profile.email'), [
             'email' => 'dedi.kurniawan.baru@gmail.com',
@@ -411,7 +411,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_update_email_with_invalid_password(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->put(route('warga.profile.email'), [
             'email' => 'dedi.kurniawan.gagal@gmail.com',
@@ -429,10 +429,10 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_update_email_with_duplicate_email(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->put(route('warga.profile.email'), [
-            'email' => 'admin@simlibas.id',
+            'email' => 'admin@simlibas.com',
             'current_password' => 'password',
         ]);
 
@@ -444,7 +444,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_update_password_and_login_with_new_password(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->put(route('warga.profile.password'), [
             'current_password' => 'password',
@@ -459,7 +459,7 @@ class CitizenPortalTest extends TestCase
         auth()->logout();
 
         $loginResponse = $this->post('/masuk', [
-            'login' => 'warga.dedi@simlibas.id',
+            'login' => 'warga.dedi@simlibas.com',
             'password' => 'new-secret-password-123',
         ]);
 
@@ -473,7 +473,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_update_password_with_invalid_credentials(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         // 1. Kata sandi lama salah
         $response1 = $this->actingAs($warga)->put(route('warga.profile.password'), [
@@ -497,7 +497,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_update_phone_number(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->put(route('warga.profile.phone'), [
             'phone' => '0812-9988-7766',
@@ -520,7 +520,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_update_phone_with_invalid_format(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         // 1. Karakter alfabet tidak valid
         $response1 = $this->actingAs($warga)->put(route('warga.profile.phone'), [
@@ -540,7 +540,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_fetch_notifications_via_api(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         \App\Models\Notification::create([
             'user_id' => $warga->id,
             'judul' => 'Uji Notifikasi RT',
@@ -565,7 +565,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_can_mark_notification_as_read(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $notif = \App\Models\Notification::create([
             'user_id' => $warga->id,
             'judul' => 'Surat Pengantar Disetujui',
@@ -586,7 +586,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_pay_invoice_if_already_paid(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
         $feeType = \App\Models\FeeType::first();
 
@@ -609,7 +609,7 @@ class CitizenPortalTest extends TestCase
      */
     public function test_citizen_cannot_pay_invoice_if_payment_pending(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
         $feeType = \App\Models\FeeType::first();
 
@@ -649,7 +649,7 @@ class CitizenPortalTest extends TestCase
 
         // Pastikan child resident punya user
         $childUser = $childResident->user ?? User::factory()->create([
-            'email' => 'anak.uji@simlibas.id',
+            'email' => 'anak.uji@simlibas.com',
             'status' => 'aktif',
         ]);
         $childResident->update(['user_id' => $childUser->id, 'is_kepala_keluarga' => false]);

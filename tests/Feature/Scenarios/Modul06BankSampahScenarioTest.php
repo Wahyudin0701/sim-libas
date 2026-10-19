@@ -37,16 +37,16 @@ class Modul06BankSampahScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->koorSampah = User::where('email', 'banksampah@simlibas.id')->first();
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
+        $this->koorSampah = User::where('email', 'banksampah@simlibas.com')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
 
         // RW / Kelurahan
-        $rw = User::where('email', 'rw@simlibas.id')->first();
+        $rw = User::where('email', 'rw@simlibas.com')->first();
         if (!$rw) {
             $rw = User::create([
                 'name' => 'Bpk. RW 04 Kelurahan',
-                'email' => 'rw@simlibas.id',
+                'email' => 'rw@simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);
@@ -55,7 +55,7 @@ class Modul06BankSampahScenarioTest extends TestCase
         $this->rwKelurahan = $rw;
 
         // Warga KK A (Dedi Kurniawan)
-        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.com')->first();
         $resident = Resident::where('user_id', $this->wargaKepala->id)->first();
         $this->householdA = $resident->household;
 

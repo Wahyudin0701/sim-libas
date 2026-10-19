@@ -24,7 +24,7 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_can_access_role_management_page(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $this->actingAs($superAdmin)
             ->get('/admin/roles')
             ->assertStatus(200)
@@ -36,8 +36,8 @@ class RoleManagementTest extends TestCase
 
     public function test_non_super_admin_cannot_access_role_management_page(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $this->actingAs($bendahara)
             ->get('/admin/roles')
@@ -50,7 +50,7 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_can_open_detail_modal_and_view_permissions(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $ketuaRtRole = Role::where('name', 'ketua_rt')->first();
 
         Livewire::actingAs($superAdmin)
@@ -64,7 +64,7 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_can_create_edit_and_delete_custom_role(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
 
         // 1. Tambah Role Kustom Baru
         Livewire::actingAs($superAdmin)
@@ -110,7 +110,7 @@ class RoleManagementTest extends TestCase
 
     public function test_core_roles_cannot_be_deleted(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
         Livewire::actingAs($superAdmin)
@@ -126,9 +126,9 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_can_update_user_name_email_and_password_for_role(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $ketuaRtRole = Role::where('name', 'ketua_rt')->first();
-        $ketuaRtUser = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRtUser = User::where('email', 'rt@simlibas.com')->first();
 
         Livewire::actingAs($superAdmin)
             ->test(ListRoles::class)
@@ -137,7 +137,7 @@ class RoleManagementTest extends TestCase
             ->call('startEditUser', $ketuaRtUser->id)
             ->assertSet('editingUserId', $ketuaRtUser->id)
             ->set('edit_user_name', 'Bpk. Ahmad Sudirman (Diperbarui)')
-            ->set('edit_user_email', 'ketua.baru@simlibas.id')
+            ->set('edit_user_email', 'ketua.baru@simlibas.com')
             ->set('edit_user_password', 'passwordBaru123')
             ->set('edit_user_password_confirmation', 'passwordBaru123')
             ->call('updateUserAccount')
@@ -145,13 +145,13 @@ class RoleManagementTest extends TestCase
 
         $ketuaRtUser->refresh();
         $this->assertEquals('Bpk. Ahmad Sudirman (Diperbarui)', $ketuaRtUser->name);
-        $this->assertEquals('ketua.baru@simlibas.id', $ketuaRtUser->email);
+        $this->assertEquals('ketua.baru@simlibas.com', $ketuaRtUser->email);
         $this->assertTrue(Hash::check('passwordBaru123', $ketuaRtUser->password));
     }
 
     public function test_super_admin_can_create_new_user_and_assign_to_role(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $rwRole = Role::where('name', 'rw_kelurahan')->first();
 
         Livewire::actingAs($superAdmin)
@@ -178,9 +178,9 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_can_remove_role_from_user(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $wargaRole = Role::where('name', 'warga')->first();
-        $wargaUser = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $wargaUser = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $this->assertTrue($wargaUser->hasRole('warga'));
 
@@ -194,7 +194,7 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_role_cannot_be_edited_or_deleted(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
         // 1. openEdit pada super_admin harus ditolak (form modal tidak terbuka)
@@ -226,9 +226,9 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_account_cannot_be_created_assigned_or_removed(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $superAdminRole = Role::where('name', 'super_admin')->first();
-        $otherUser = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $otherUser = User::where('email', 'rt@simlibas.com')->first();
 
         $component = Livewire::actingAs($superAdmin)
             ->test(ListRoles::class)
@@ -240,12 +240,12 @@ class RoleManagementTest extends TestCase
 
         // 2. createUserForRole ditolak
         $component->set('new_user_name', 'Admin Palsu')
-            ->set('new_user_email', 'palsu@simlibas.id')
+            ->set('new_user_email', 'palsu@simlibas.com')
             ->set('new_user_password', 'password123')
             ->set('new_user_password_confirmation', 'password123')
             ->call('createUserForRole');
 
-        $this->assertDatabaseMissing('users', ['email' => 'palsu@simlibas.id']);
+        $this->assertDatabaseMissing('users', ['email' => 'palsu@simlibas.com']);
 
         // 3. toggleAssignUser tidak boleh membuka form assign
         $component->call('toggleAssignUser')
@@ -264,7 +264,7 @@ class RoleManagementTest extends TestCase
 
     public function test_super_admin_account_can_update_name_email_and_password(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $superAdminRole = Role::where('name', 'super_admin')->first();
 
         Livewire::actingAs($superAdmin)
@@ -273,7 +273,7 @@ class RoleManagementTest extends TestCase
             ->call('startEditUser', $superAdmin->id)
             ->assertSet('editingUserId', $superAdmin->id)
             ->set('edit_user_name', 'Super Administrator Utama')
-            ->set('edit_user_email', 'superadmin.baru@simlibas.id')
+            ->set('edit_user_email', 'superadmin.baru@simlibas.com')
             ->set('edit_user_password', 'superRahasia2026')
             ->set('edit_user_password_confirmation', 'superRahasia2026')
             ->call('updateUserAccount')
@@ -281,7 +281,7 @@ class RoleManagementTest extends TestCase
 
         $superAdmin->refresh();
         $this->assertEquals('Super Administrator Utama', $superAdmin->name);
-        $this->assertEquals('superadmin.baru@simlibas.id', $superAdmin->email);
+        $this->assertEquals('superadmin.baru@simlibas.com', $superAdmin->email);
         $this->assertTrue(Hash::check('superRahasia2026', $superAdmin->password));
     }
 }

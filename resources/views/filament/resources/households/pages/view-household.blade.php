@@ -1250,7 +1250,7 @@
                             <input 
                                 type="email" 
                                 wire:model="akun_email" 
-                                placeholder="Contoh: budi@warga.simlibas.id"
+                                placeholder="Contoh: budi@warga.simlibas.com"
                                 class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 font-mono focus:border-[#0B3A85] focus:outline-none focus:ring-1 focus:ring-[#0B3A85] transition-colors"
                             />
                             @error('akun_email')

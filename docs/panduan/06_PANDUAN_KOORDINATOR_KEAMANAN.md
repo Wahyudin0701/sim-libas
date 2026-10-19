@@ -45,13 +45,13 @@ Melalui sistem SIM-LiBas, tugas kepengurusan pos kamling dan siskamling dimodern
 1. Buka peramban di komputer pos kamling atau ponsel pintar Anda.
 2. Masukkan alamat: **`http://localhost/admin`**.
 3. Masukkan kredensial login resmi Koordinator Keamanan RT 15:
-   - **Email**: `keamanan@simlibas.id`
+   - **Email**: `keamanan@simlibas.com`
    - **Kata Sandi**: `password` (atau kata sandi baru Anda)
 4. Klik tombol **"Masuk ke Panel Pengurus"**.
 
 > 📸 **[SLOT TANGKAPAN LAYAR: SS-KMN-001]**
 > - **Halaman / Tampilan:** Formulir Masuk Panel Akun Koordinator Keamanan (`/admin/login`)
-> - **Elemen yang Ditampilkan:** Halaman login panel pengurus dengan email `keamanan@simlibas.id` dan kursor pada kolom kata sandi.
+> - **Elemen yang Ditampilkan:** Halaman login panel pengurus dengan email `keamanan@simlibas.com` dan kursor pada kolom kata sandi.
 > - **Fokus / Aksi Pengguna:** Sesi login petugas seksi keamanan lingkungan RT 15.
 > - **Rekomendasi Berkas Gambar:** `docs/panduan/assets/screenshots/ss-kmn-001-login-keamanan.png`
 

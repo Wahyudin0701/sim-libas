@@ -43,17 +43,17 @@ class Modul05KeuanganKasScenarioTest extends TestCase
         parent::setUp();
         $this->seed();
 
-        $this->bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $this->ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
-        $this->sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
+        $this->bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $this->ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $this->sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $this->koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
 
         // RW / Kelurahan
-        $rw = User::where('email', 'rw@simlibas.id')->first();
+        $rw = User::where('email', 'rw@simlibas.com')->first();
         if (!$rw) {
             $rw = User::create([
                 'name' => 'Bpk. RW 04 Kelurahan',
-                'email' => 'rw@simlibas.id',
+                'email' => 'rw@simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);
@@ -62,7 +62,7 @@ class Modul05KeuanganKasScenarioTest extends TestCase
         $this->rwKelurahan = $rw;
 
         // Warga KK A (Dedi Kurniawan)
-        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $this->wargaKepala = User::where('email', 'warga.dedi@simlibas.com')->first();
         $resident = Resident::where('user_id', $this->wargaKepala->id)->first();
         $this->householdA = $resident->household;
 
@@ -72,7 +72,7 @@ class Modul05KeuanganKasScenarioTest extends TestCase
         if (!$residentLain->user_id) {
             $userLain = User::create([
                 'name' => $residentLain->nama,
-                'email' => $residentLain->nik . '@warga.simlibas.id',
+                'email' => $residentLain->nik . '@warga.simlibas.com',
                 'password' => bcrypt('password'),
                 'status' => 'aktif',
             ]);

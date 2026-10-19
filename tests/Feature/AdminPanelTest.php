@@ -37,7 +37,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_ketua_rt_can_access_admin_dashboard(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin');
 
@@ -50,7 +50,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_kpi_stats_overview_widget_renders_data(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         Livewire::actingAs($ketuaRt)
             ->test(StatsOverview::class)
@@ -64,7 +64,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_regular_citizen_cannot_access_admin_dashboard(): void
     {
-        $warga = User::where('email', 'warga.dedi@simlibas.id')->first();
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
 
         $response = $this->actingAs($warga)->get('/admin');
 
@@ -76,7 +76,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_role_based_access_koordinator_bank_sampah(): void
     {
-        $koorBankSampah = User::where('email', 'banksampah@simlibas.id')->first();
+        $koorBankSampah = User::where('email', 'banksampah@simlibas.com')->first();
 
         // Diizinkan mengakses dashboard & modul Bank Sampah
         $this->actingAs($koorBankSampah)->get('/admin')->assertStatus(200)->assertSee('Koordinator Bank Sampah');
@@ -95,7 +95,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_role_based_access_bendahara(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
 
         // Diizinkan mengakses dashboard & modul keuangan
         $this->actingAs($bendahara)->get('/admin')->assertStatus(200)->assertSee('Bendahara RT 15');
@@ -114,7 +114,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_role_based_access_koordinator_keamanan(): void
     {
-        $koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
+        $koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
 
         // Diizinkan mengakses dashboard & modul keamanan
         $this->actingAs($koorKeamanan)->get('/admin')->assertStatus(200)->assertSee('Koordinator Keamanan');
@@ -133,7 +133,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_role_based_access_ketua_rt_executive(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // 1. Modul Eksekutif yang Diizinkan untuk Ketua RT
         $this->actingAs($ketuaRt)->get('/admin')->assertStatus(200)->assertSee('Ketua RT 15');
@@ -165,7 +165,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_role_based_access_sekretaris(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
 
         // 1. Modul yang Diizinkan untuk Sekretaris
         $this->actingAs($sekretaris)->get('/admin')->assertStatus(200)->assertSee('Sekretaris RT 15');
@@ -196,7 +196,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_household_resource_page_and_stats_widget_render_successfully(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/households');
 
@@ -219,7 +219,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_filter_households_by_member_count(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Resources\Households\Pages\ListHouseholds::class)
@@ -235,7 +235,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_export_households_to_pdf_preview(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $sampleHousehold = Household::first();
 
         $response = $this->actingAs($ketuaRt)->get(route('admin.households.export.pdf'));
@@ -265,7 +265,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_export_households_to_excel_download(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get(route('admin.households.export.excel'));
 
@@ -279,7 +279,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_export_all_resources_to_pdf_and_excel(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $resources = [
             'households',
@@ -319,7 +319,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_regular_citizen_cannot_access_household_exports(): void
     {
-        $wargaUser = User::where('email', 'budi.santoso@warga.simlibas.id')->first()
+        $wargaUser = User::where('email', 'budi.santoso@warga.simlibas.com')->first()
             ?? User::whereDoesntHave('roles')->first()
             ?? User::factory()->create();
 
@@ -332,7 +332,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_resident_resource_page_renders_successfully(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/residents');
 
@@ -355,7 +355,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_access_create_household_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/households/create');
 
@@ -387,7 +387,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_create_household_via_dedicated_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Resources\Households\Pages\CreateHousehold::class)
@@ -449,7 +449,7 @@ class AdminPanelTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'name' => 'Hasan Basri',
-            'email' => '1571011122330001@warga.simlibas.id',
+            'email' => '1571011122330001@warga.simlibas.com',
         ]);
 
         $hasanUser = User::where('name', 'Hasan Basri')->first();
@@ -475,7 +475,7 @@ class AdminPanelTest extends TestCase
     {
         \Illuminate\Support\Facades\Storage::fake('public');
 
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $file = \Illuminate\Http\UploadedFile::fake()->image('kartu_keluarga.jpg', 800, 600);
 
         Livewire::actingAs($ketuaRt)
@@ -504,7 +504,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_anggota_column_links_to_household_detail_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/households');
@@ -521,7 +521,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_view_household_detail_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::with('residents', 'kepalaKeluarga')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/households/' . $household->id);
@@ -565,7 +565,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_access_edit_household_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::with(['residents', 'kepalaKeluarga'])->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/households/' . $household->id . '/edit');
@@ -589,7 +589,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_update_household_data(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::with(['residents', 'kepalaKeluarga'])->first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
@@ -609,7 +609,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_update_household_with_passwords_and_member_emails(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::with(['residents', 'kepalaKeluarga', 'user'])->first();
 
         $test = \Livewire\Livewire::actingAs($ketuaRt)
@@ -617,7 +617,7 @@ class AdminPanelTest extends TestCase
             ->set('kepala_password', 'baru12345');
 
         if (!empty($test->get('anggota_keluarga'))) {
-            $test->set('anggota_keluarga.0.email', 'anggota.custom@simlibas.id')
+            $test->set('anggota_keluarga.0.email', 'anggota.custom@simlibas.com')
                 ->set('anggota_keluarga.0.password', 'anggota123');
         }
 
@@ -630,7 +630,7 @@ class AdminPanelTest extends TestCase
 
         $updatedAnggota = $household->fresh()->residents->where('id', '!=', $household->fresh()->kepalaKeluarga->id)->first();
         if ($updatedAnggota) {
-            $this->assertEquals('anggota.custom@simlibas.id', $updatedAnggota->email);
+            $this->assertEquals('anggota.custom@simlibas.com', $updatedAnggota->email);
             $this->assertNotNull($updatedAnggota->user);
             $this->assertTrue(\Illuminate\Support\Facades\Hash::check('anggota123', $updatedAnggota->user->password));
         }
@@ -641,7 +641,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_update_household_via_modular_card_modals(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = \App\Models\Household::with(['residents', 'kepalaKeluarga', 'user'])->first();
 
         \Illuminate\Support\Facades\Storage::fake('public');
@@ -693,7 +693,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_admin_can_access_letters_resource(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/letters');
 
@@ -706,7 +706,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_admin_can_print_approved_letter(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $resident = \App\Models\Resident::first();
         $type = \App\Models\LetterType::first();
 
@@ -737,7 +737,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_access_create_resident_page(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         $response = $this->actingAs($ketuaRt)->get('/admin/residents/create');
 
@@ -756,7 +756,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_create_resident_connected_to_household(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
@@ -790,7 +790,7 @@ class AdminPanelTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'name' => 'Aditya Pratama',
-            'email' => '1571099887766551@warga.simlibas.id',
+            'email' => '1571099887766551@warga.simlibas.com',
         ]);
     }
 
@@ -799,7 +799,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_can_create_resident_without_household(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Resources\Residents\Pages\CreateResident::class)
@@ -836,7 +836,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_soft_deleted_nik_conflict_prevention(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $resident = Resident::first();
         $nikToTest = $resident->nik;
 
@@ -865,7 +865,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_single_kepala_keluarga_enforcement(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::with('residents')->first();
 
         $oldKepala = $household->kepalaKeluarga;
@@ -903,7 +903,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_delete_resident_guard_for_kepala_keluarga(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::has('residents', '>=', 2)->with('kepalaKeluarga')->first();
         $kepala = $household->kepalaKeluarga;
 
@@ -934,7 +934,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_resident_list_search_and_modals(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $resident = Resident::first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
@@ -962,7 +962,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_letter_list_search_filter_approval_and_modals(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $resident = Resident::first();
         $type = \App\Models\LetterType::first();
 
@@ -1043,8 +1043,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_letter_types_list_and_management(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT tidak mengelola master teknis jenis surat
         $this->actingAs($ketuaRt)->get('/admin/letter-types')->assertStatus(403);
@@ -1108,7 +1108,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_cash_transactions_list_stats_search_and_management(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // 1. Uji HTTP GET Halaman Buku Kas RT (Standar Search Bar & Reset Filter)
         $response = $this->actingAs($ketuaRt)->get('/admin/cash-transactions');
@@ -1130,7 +1130,7 @@ class AdminPanelTest extends TestCase
         $filteredResponse->assertSee('value="fogging"', false);
 
         // 2. Uji Komponen Livewire ListCashTransactions oleh Bendahara
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
         $tx = \App\Models\CashTransaction::first();
 
         \Livewire\Livewire::actingAs($bendahara)
@@ -1218,8 +1218,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_invoices_list_stats_search_pay_and_create(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT tidak mengelola tagihan iuran teknis
         $this->actingAs($ketuaRt)->get('/admin/invoices')->assertStatus(403);
@@ -1279,8 +1279,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_payments_list_stats_search_and_validation(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT tidak mengelola validasi pembayaran teknis
         $this->actingAs($ketuaRt)->get('/admin/payments')->assertStatus(403);
@@ -1328,8 +1328,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_fee_types_list_search_and_management(): void
     {
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT tidak mengelola master teknis jenis iuran
         $this->actingAs($ketuaRt)->get('/admin/fee-types')->assertStatus(403);
@@ -1388,8 +1388,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_announcements_list_stats_search_and_management(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT mendelegasikan pengumuman ke Sekretaris
         $this->actingAs($ketuaRt)->get('/admin/announcements')->assertStatus(403);
@@ -1458,7 +1458,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_announcement_dynamic_real_time_status_lifecycle(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
 
         // 1. Buat Pengumuman yang sudah lewat periode tayang (Expired)
         $expiredAnnouncement = \App\Models\Announcement::create([
@@ -1500,7 +1500,7 @@ class AdminPanelTest extends TestCase
             ->assertSee('SUDAH BERAKHIR');
 
         // 5. Verifikasi di Portal Warga: pengumuman kedaluwarsa tidak ditampilkan ke warga
-        $wargaUser = User::where('email', 'budi.santoso@warga.simlibas.id')->first()
+        $wargaUser = User::where('email', 'budi.santoso@warga.simlibas.com')->first()
             ?? User::whereDoesntHave('roles')->first();
 
         if ($wargaUser) {
@@ -1516,7 +1516,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_complaints_list_stats_search_and_handling(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // 1. Uji HTTP GET Halaman Pengaduan
         $response = $this->actingAs($ketuaRt)->get('/admin/complaints');
@@ -1563,8 +1563,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_events_list_stats_search_and_management(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT mendelegasikan agenda ke Sekretaris
         $this->actingAs($ketuaRt)->get('/admin/events')->assertStatus(403);
@@ -1616,8 +1616,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_guest_reports_list_stats_search_and_management(): void
     {
-        $koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT mendelegasikan keamanan ke Koordinator Keamanan
@@ -1677,8 +1677,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_patrol_schedules_list_stats_search_and_management(): void
     {
-        $koorKeamanan = User::where('email', 'keamanan@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $koorKeamanan = User::where('email', 'keamanan@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $resident = Resident::first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT mendelegasikan jadwal ronda ke Koordinator Keamanan
@@ -1743,8 +1743,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_msme_profiles_list_stats_search_and_moderation(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT mendelegasikan kurasi UMKM ke Sekretaris
@@ -1818,7 +1818,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_msme_review_workflow_and_action_separation(): void
     {
-        $sekretaris = User::where('email', 'sekretaris@simlibas.id')->first();
+        $sekretaris = User::where('email', 'sekretaris@simlibas.com')->first();
         $household = Household::first();
 
         // 1. Buat UMKM dengan status pending (Menunggu Review)
@@ -1927,8 +1927,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_waste_deposits_list_stats_search_and_management(): void
     {
-        $koorBankSampah = User::where('email', 'banksampah@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $koorBankSampah = User::where('email', 'banksampah@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
         $household = Household::first();
         $wasteType = \App\Models\WasteType::first();
 
@@ -2002,8 +2002,8 @@ class AdminPanelTest extends TestCase
      */
     public function test_waste_types_list_stats_search_and_management(): void
     {
-        $koorBankSampah = User::where('email', 'banksampah@simlibas.id')->first();
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $koorBankSampah = User::where('email', 'banksampah@simlibas.com')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         // Validasi pembatasan peran eksekutif: Ketua RT tidak mengelola master teknis harga sampah
         $this->actingAs($ketuaRt)->get('/admin/waste-types')->assertStatus(403);
@@ -2062,7 +2062,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_super_admin_can_access_setting_resource(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
 
         $response = $this->actingAs($superAdmin)->get('/admin/rt-settings');
 
@@ -2076,10 +2076,10 @@ class AdminPanelTest extends TestCase
      */
     public function test_non_super_admin_cannot_access_setting_resource(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
-        $bendahara = User::where('email', 'bendahara@simlibas.id')->first();
-        $keamanan = User::where('email', 'keamanan@simlibas.id')->first();
-        $bankSampah = User::where('email', 'banksampah@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $keamanan = User::where('email', 'keamanan@simlibas.com')->first();
+        $bankSampah = User::where('email', 'banksampah@simlibas.com')->first();
 
         $this->actingAs($ketuaRt)->get('/admin/rt-settings')->assertStatus(403);
         $this->actingAs($bendahara)->get('/admin/rt-settings')->assertStatus(403);
@@ -2092,7 +2092,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_super_admin_can_update_rt_setting_via_custom_page(): void
     {
-        $superAdmin = User::where('email', 'admin@simlibas.id')->first();
+        $superAdmin = User::where('email', 'admin@simlibas.com')->first();
         $setting = \App\Models\RtSetting::instance();
 
         Livewire::actingAs($superAdmin)
@@ -2116,12 +2116,12 @@ class AdminPanelTest extends TestCase
     public function test_all_pengurus_roles_can_access_profile_page(): void
     {
         $rolesToTest = [
-            'admin@simlibas.id',
-            'ketua.rt@simlibas.id',
-            'sekretaris@simlibas.id',
-            'bendahara@simlibas.id',
-            'keamanan@simlibas.id',
-            'banksampah@simlibas.id',
+            'admin@simlibas.com',
+            'rt@simlibas.com',
+            'sekretaris@simlibas.com',
+            'bendahara@simlibas.com',
+            'keamanan@simlibas.com',
+            'banksampah@simlibas.com',
         ];
 
         foreach ($rolesToTest as $email) {
@@ -2140,7 +2140,7 @@ class AdminPanelTest extends TestCase
      */
     public function test_pengurus_can_update_profile_data(): void
     {
-        $ketuaRt = User::where('email', 'ketua.rt@simlibas.id')->first();
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
 
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Pages\Auth\EditProfile::class)
