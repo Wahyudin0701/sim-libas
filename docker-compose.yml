@@ -6,9 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     image: simlibas-app:latest
     container_name: simlibas-app
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     working_dir: /var/www/html
     env_file:
       - .env
@@ -86,9 +90,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     image: simlibas-app:latest
     container_name: simlibas-queue
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     working_dir: /var/www/html
     command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
     env_file:
@@ -121,9 +129,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     image: simlibas-app:latest
     container_name: simlibas-scheduler
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     working_dir: /var/www/html
     command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
     env_file:
