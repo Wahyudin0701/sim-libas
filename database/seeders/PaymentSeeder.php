@@ -26,7 +26,7 @@ class PaymentSeeder extends Seeder
         }
 
         // 1. Pembayaran Valid (Invoice 1 - Lunas)
-        if ($inv1 = $invoices->find(1)) {
+        if ($inv1 = $invoices->values()->get(0)) {
             Payment::firstOrCreate(
                 ['invoice_id' => $inv1->id],
                 [
@@ -43,7 +43,7 @@ class PaymentSeeder extends Seeder
         }
 
         // 2. Pembayaran Pending / Menunggu Verifikasi (Invoice 2)
-        if ($inv2 = $invoices->find(2)) {
+        if ($inv2 = $invoices->values()->get(1)) {
             Payment::firstOrCreate(
                 ['invoice_id' => $inv2->id],
                 [
@@ -56,12 +56,12 @@ class PaymentSeeder extends Seeder
             );
         }
 
-        // 3. Pembayaran Tunai Valid (Invoice 4 - Lunas)
-        if ($inv4 = $invoices->find(4)) {
+        // 3. Pembayaran Tunai Valid (Invoice 3 - Lunas)
+        if ($inv3 = $invoices->values()->get(2)) {
             Payment::firstOrCreate(
-                ['invoice_id' => $inv4->id],
+                ['invoice_id' => $inv3->id],
                 [
-                    'jumlah' => $inv4->jumlah,
+                    'jumlah' => $inv3->jumlah,
                     'metode' => 'tunai',
                     'catatan' => 'Bayar tunai ke bendahara saat ronda malam',
                     'tanggal_bayar' => Carbon::now()->subDays(3)->format('Y-m-d'),
@@ -70,15 +70,15 @@ class PaymentSeeder extends Seeder
                     'status' => 'valid',
                 ]
             );
-            $inv4->update(['status' => 'lunas']);
+            $inv3->update(['status' => 'lunas']);
         }
 
-        // 4. Pembayaran Ditolak (Invoice 5)
-        if ($inv5 = $invoices->find(5)) {
+        // 4. Pembayaran Ditolak (Invoice 4)
+        if ($inv4 = $invoices->values()->get(3)) {
             Payment::firstOrCreate(
-                ['invoice_id' => $inv5->id],
+                ['invoice_id' => $inv4->id],
                 [
-                    'jumlah' => $inv5->jumlah,
+                    'jumlah' => $inv4->jumlah,
                     'metode' => 'transfer',
                     'catatan' => 'Foto bukti transfer buram dan tidak terbaca jelas. Mohon unggah ulang.',
                     'tanggal_bayar' => Carbon::now()->subDays(2)->format('Y-m-d'),
@@ -89,12 +89,12 @@ class PaymentSeeder extends Seeder
             );
         }
 
-        // 5. Pembayaran Transfer Valid (Invoice 6 - Lunas)
-        if ($inv6 = $invoices->find(6)) {
+        // 5. Pembayaran Transfer Valid (Invoice 5 - Lunas)
+        if ($inv5 = $invoices->values()->get(4)) {
             Payment::firstOrCreate(
-                ['invoice_id' => $inv6->id],
+                ['invoice_id' => $inv5->id],
                 [
-                    'jumlah' => $inv6->jumlah,
+                    'jumlah' => $inv5->jumlah,
                     'metode' => 'transfer',
                     'catatan' => 'Pembayaran iuran transfer QRIS Bank 9 Jambi RT 15',
                     'tanggal_bayar' => Carbon::now()->subDays(2)->format('Y-m-d'),
@@ -103,15 +103,15 @@ class PaymentSeeder extends Seeder
                     'status' => 'valid',
                 ]
             );
-            $inv6->update(['status' => 'lunas']);
+            $inv5->update(['status' => 'lunas']);
         }
 
-        // 6. Pembayaran Tunai Menunggu Validasi (Invoice 7)
-        if ($inv7 = $invoices->find(7)) {
+        // 6. Pembayaran Tunai Menunggu Validasi (Invoice 6)
+        if ($inv6 = $invoices->values()->get(5)) {
             Payment::firstOrCreate(
-                ['invoice_id' => $inv7->id],
+                ['invoice_id' => $inv6->id],
                 [
-                    'jumlah' => $inv7->jumlah,
+                    'jumlah' => $inv6->jumlah,
                     'metode' => 'tunai',
                     'catatan' => 'Titip tunai ke koordinator lingkungan Blok B',
                     'tanggal_bayar' => Carbon::now()->format('Y-m-d'),

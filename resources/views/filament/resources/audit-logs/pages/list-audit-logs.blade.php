@@ -149,9 +149,9 @@
         {{-- ====================================================================
              3. SEARCH BAR & MULTI DROPDOWN FILTER & RESET FILTER
              ==================================================================== --}}
-        <div class="flex flex-col 2xl:flex-row items-stretch 2xl:items-center 2xl:justify-between gap-2.5 sm:gap-3">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center lg:justify-between gap-2.5">
             {{-- Search Bar --}}
-            <div class="relative w-full 2xl:max-w-md">
+            <div class="relative w-full sm:max-w-md">
                 <div class="relative flex items-center">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94A3B8]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,13 +183,13 @@
             </div>
 
             {{-- Filter Sisi Kanan (Event, Modul, Periode & Reset) --}}
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 w-full 2xl:w-auto">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 shrink-0">
+                <div class="grid grid-cols-1 sm:grid-cols-3 sm:flex sm:items-center gap-2 sm:gap-2.5">
                     {{-- Filter Event / Tindakan --}}
-                    <div class="w-full 2xl:w-44">
+                    <div class="w-full sm:w-40 lg:w-44">
                         <select 
                             wire:model.live="eventFilter" 
-                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                            class="w-full py-2.5 px-2.5 sm:px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
                         >
                             <option value="semua">Semua Tindakan</option>
                             <option value="created">Data Dibuat (Created)</option>
@@ -200,10 +200,10 @@
                     </div>
 
                     {{-- Filter Modul --}}
-                    <div class="w-full 2xl:w-44">
+                    <div class="w-full sm:w-40 lg:w-44">
                         <select 
                             wire:model.live="moduleFilter" 
-                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                            class="w-full py-2.5 px-2.5 sm:px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
                         >
                             <option value="semua">Semua Modul</option>
                             @foreach($availableModules as $key => $label)
@@ -213,10 +213,10 @@
                     </div>
 
                     {{-- Filter Periode Waktu --}}
-                    <div class="w-full 2xl:w-40">
+                    <div class="w-full sm:w-36 lg:w-40">
                         <select 
                             wire:model.live="periodFilter" 
-                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                            class="w-full py-2.5 px-2.5 sm:px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
                         >
                             <option value="semua">Semua Waktu</option>
                             <option value="hari_ini">Hari Ini</option>
