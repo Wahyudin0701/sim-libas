@@ -1,6 +1,6 @@
 <x-filament-widgets::widget>
     {{-- ====================================================================
-         1. SAMBUTAN PENGURUS (IDENTITAS VISUAL HOMEPAGE SIM-LIBAS - TANPA CARD)
+         1. SAMBUTAN PENGURUS & HEADER SESUAI ROLE (SIM-LIBAS)
          ==================================================================== --}}
     <div class="sim-welcome-header mb-4 lg:mb-5 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 sm:gap-4">
         <div>
@@ -10,12 +10,12 @@
                 <x-page-guide 
                     title="Dashboard Utama SIM-LiBas"
                     category="PANEL PENGURUS RT 15"
-                    description="Pusat kendali dan ringkasan eksekutif operasional RT 15. Menampilkan indikator kinerja utama (KPI), status kependudukan, keuangan kas, laporan keamanan, dan antrean layanan warga terkini."
+                    description="Pusat kendali operasional dan pemantauan data terpadu RT 15. Menampilkan indikator kinerja utama (KPI), status pelayanan warga, keuangan kas, keamanan, dan bank sampah sesuai dengan kewenangan peran Anda."
                     :steps="[
-                        ['title' => 'Pantau Indikator Utama (KPI)', 'desc' => 'Perhatikan ringkasan kartu statistik di bagian atas untuk melihat total warga, saldo kas, tagihan tertunda, dan aduan aktif.'],
+                        ['title' => 'Pantau Indikator Utama (KPI)', 'desc' => 'Perhatikan ringkasan kartu statistik di bagian atas untuk melihat tugas prioritas dan kondisi operasional terkini.'],
                         ['title' => 'Gunakan Tombol Aksi Cepat', 'desc' => 'Manfaatkan tombol shortcut di pojok kanan atas untuk langsung menuju modul operasional harian sesuai peran Anda.'],
-                        ['title' => 'Tindak Lanjuti Antrean Layanan', 'desc' => 'Periksa daftar pengajuan surat, konfirmasi pembayaran, dan laporan tamu yang memerlukan persetujuan segera.'],
-                        ['title' => 'Navigasi Menu Sidebar', 'desc' => 'Gunakan bilah menu di sebelah kiri untuk mengakses modul lengkap sesuai kewenangan dan peran pengurus Anda.']
+                        ['title' => 'Tindak Lanjuti Antrean Layanan', 'desc' => 'Periksa daftar pengajuan surat, konfirmasi pembayaran, dan laporan penting yang memerlukan tindak lanjut segera.'],
+                        ['title' => 'Navigasi Menu Sidebar', 'desc' => 'Gunakan bilah menu di sebelah kiri untuk mengakses modul lengkap sesuai hak akses kewenangan Anda.']
                     ]"
                     role="{{ $roleLabel }}"
                     :tips="[
@@ -34,20 +34,24 @@
             {{-- Deskripsi Singkat Operasional Lingkungan Sesuai Role --}}
             <p class="text-xs sm:text-[13px] text-[#5B6B82] mt-0.5 leading-relaxed">
                 @if ($isKoordinatorBankSampah)
-                    Panel operasional penimbangan, setoran, dan nasabah Bank Sampah Pinang Masak Lestari.
+                    Panel operasional penimbangan, pembukuan setoran sampah nasabah, dan katalog harga Bank Sampah Pinang Masak Lestari.
                 @elseif ($isKoordinatorKeamanan)
-                    Panel pengawasan keamanan lingkungan, poskamling, dan pencatatan tamu RT 15.
+                    Panel pengawasan ketertiban lingkungan, jadwal regu ronda malam poskamling, dan pencatatan tamu 1x24 jam.
                 @elseif ($isBendahara)
-                    Panel pembukuan kas, penerbitan tagihan, dan rekonsiliasi iuran RT 15.
+                    Panel pembukuan kas lingkungan, validasi bukti transfer pembayaran iuran warga, dan monitoring tagihan kas RT 15.
                 @elseif ($isSekretaris)
-                    Panel tata kelola administrasi surat, kependudukan, dan agenda warga RT 15.
+                    Panel tata kelola administrasi surat warga, verifikasi dokumen, pencatatan kependudukan, pengumuman, dan agenda kegiatan RT 15.
+                @elseif ($isKetuaRt)
+                    Panel pimpinan wilayah RT 15, persetujuan surat pengantar warga, tindak lanjut aduan, dan monitoring kas RT.
+                @elseif ($isRwKelurahan)
+                    Panel pengawasan makro pengurus RW 04 dan Kelurahan: transparansi kas RT 15, dampak kelestarian lingkungan, dan agregat kependudukan.
                 @else
-                    Panel kendali pelayanan warga dan tata kelola lingkungan RT 15.
+                    Pusat kendali operasional sistem, pemantauan pengguna, log aktivitas audit, dan integritas master data SIM-LiBas.
                 @endif
             </p>
         </div>
 
-        {{-- Kolom Kanan: Tombol Aksi Cepat Sesuai Hak Akses Role --}}
+        {{-- Kolom Kanan: Tombol Aksi Cepat Sesuai Hak Akses & Tugas Role --}}
         <div class="flex items-center gap-2 shrink-0 pt-1 lg:pt-0">
             @if ($isKoordinatorBankSampah)
                 <a href="{{ url('/admin/waste-types') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
@@ -59,18 +63,22 @@
                     <span>Catat Setoran Sampah</span>
                 </a>
             @elseif ($isKoordinatorKeamanan)
-                <a href="{{ url('/admin/guest-reports') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                <a href="{{ url('/admin/guest-reports/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                    <span>Lapor Tamu</span>
+                    <span>Catat Lapor Tamu</span>
                 </a>
                 <a href="{{ url('/admin/patrol-schedules/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Jadwal Ronda Baru</span>
                 </a>
             @elseif ($isBendahara)
-                <a href="{{ url('/admin/invoices') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"/></svg>
-                    <span>Tagihan Iuran</span>
+                <a href="{{ url('/admin/cash-transactions/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Catat Kas Baru</span>
+                </a>
+                <a href="{{ url('/admin/payments') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Validasi Pembayaran ({{ $pembayaranPendingCount }})</span>
                 </a>
             @elseif ($isSekretaris)
                 <a href="{{ url('/admin/announcements/create') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
@@ -79,12 +87,34 @@
                 </a>
                 <a href="{{ url('/admin/letters') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span>Verifikasi Surat</span>
+                    <span>Periksa Surat Masuk</span>
+                </a>
+            @elseif ($isKetuaRt)
+                <a href="{{ url('/admin/complaints') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Tindak Lanjut Aduan ({{ $pengaduanTerbuka }})</span>
+                </a>
+                <a href="{{ url('/admin/letters') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Persetujuan Surat ({{ $lettersNeedingApproval->count() }})</span>
+                </a>
+            @elseif ($isRwKelurahan)
+                <a href="{{ url('/admin/waste-deposits') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <span>Laporan Bank Sampah</span>
+                </a>
+                <a href="{{ url('/admin/cash-transactions') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Buku Kas RT 15</span>
                 </a>
             @else
-                <a href="{{ url('/admin/letters') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <span>Verifikasi Surat</span>
+                <a href="{{ url('/admin/roles') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#334A6E] border border-[#CBD5E1] hover:bg-[#EBF3FC] hover:text-[#0B3A85] hover:border-[#0B3A85] transition-all duration-150 shadow-2xs hover:shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Pengguna & Peran</span>
+                </a>
+                <a href="{{ url('/admin/audit-logs') }}" class="inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0B3A85] text-white hover:bg-[#07275E] hover:shadow-md hover:-translate-y-0.5 transition-all duration-150 shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    <span>Audit Log Sistem</span>
                 </a>
             @endif
         </div>
@@ -124,21 +154,21 @@
                 </div>
             </a>
 
-            {{-- Card 3: Jenis Sampah Aktif --}}
-            <a href="{{ url('/admin/waste-types') }}" title="Jenis Sampah Diterima: {{ $jenisSampahCount }} Kategori" class="group block">
+            {{-- Card 3: Nasabah / KK Berpartisipasi --}}
+            <a href="{{ url('/admin/waste-deposits') }}" title="Nasabah Berpartisipasi: {{ $nasabahAktifCount }} KK" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
-                        {{ $jenisSampahCount }}
+                        {{ $nasabahAktifCount }} <span class="text-[11px] sm:text-xs font-bold opacity-75">KK</span>
                     </span>
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Kategori Sampah
+                        Nasabah Aktif
                     </span>
                 </div>
             </a>
 
-            {{-- Card 4: Nilai Perputaran Tabungan --}}
+            {{-- Card 4: Nilai Tabungan Sampah Warga --}}
             <a href="{{ url('/admin/waste-deposits') }}" title="Nilai Tabungan Sampah Warga: Rp {{ number_format($totalNilaiSampahRp, 0, ',', '.') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
@@ -155,6 +185,21 @@
     @elseif ($isKoordinatorKeamanan)
         {{-- Tampilan Kartu Khusus Koordinator Keamanan --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Ronda Hari Ini --}}
+            <a href="{{ url('/admin/patrol-schedules') }}" title="Jadwal Ronda: {{ $todayPatrolSchedule ? ($todayPatrolSchedule->regu . ' (' . $todayPatrolSchedule->members->count() . ' Petugas)') : 'Tidak ada jadwal malam ini' }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $todayPatrolSchedule ? 'bg-[#ECFDF5] border border-[#D1FAE5]' : 'bg-[#F8FAFC] border border-[#E2E8F0]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base font-extrabold {{ $todayPatrolSchedule ? 'text-[#059669]' : 'text-[#64748B]' }} tracking-tight truncate">
+                        {{ $todayPatrolSchedule ? ($todayPatrolSchedule->regu) : 'Tidak Ada' }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Ronda Malam Ini
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 2: Total Jadwal Ronda --}}
             <a href="{{ url('/admin/patrol-schedules') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
@@ -163,11 +208,26 @@
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Jadwal Ronda
+                        Agenda Ronda
                     </span>
                 </div>
             </a>
 
+            {{-- Card 3: Tamu Menginap Aktif --}}
+            <a href="{{ url('/admin/guest-reports') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $tamuMenginapAktifCount > 0 ? 'bg-[#FFF9EA] border border-[#FDEBBD]' : 'bg-[#EAF5EE] border border-[#D2EBD9]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold {{ $tamuMenginapAktifCount > 0 ? 'text-[#D97706]' : 'text-[#166534]' }} tracking-tight">
+                        {{ $tamuMenginapAktifCount }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Tamu Menginap
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 4: Total Lapor Tamu --}}
             <a href="{{ url('/admin/guest-reports') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#166534] tracking-tight">
@@ -176,40 +236,15 @@
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Lapor Tamu
-                    </span>
-                </div>
-            </a>
-
-            <a href="{{ url('/admin/patrol-schedules') }}" class="group block">
-                <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
-                    <span class="text-base sm:text-lg font-extrabold text-[#059669] tracking-tight">
-                        Kondusif
-                    </span>
-                </div>
-                <div class="mt-2 text-center">
-                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Status Wilayah
-                    </span>
-                </div>
-            </a>
-
-            <a href="{{ url('/admin/complaints') }}" class="group block">
-                <div class="h-16 sm:h-20 rounded-xl bg-[#FEF2F2] border border-[#FEE2E2] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
-                    <span class="text-2xl sm:text-3xl font-extrabold text-[#DC2626] tracking-tight">
-                        {{ $pengaduanTerbuka }}
-                    </span>
-                </div>
-                <div class="mt-2 text-center">
-                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Pengaduan Aktif
+                        Total Lapor Tamu
                     </span>
                 </div>
             </a>
         </div>
     @elseif ($isBendahara)
         {{-- Tampilan Kartu Khusus Bendahara --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Saldo Kas Bersih RT 15 --}}
             <a href="{{ url('/admin/cash-transactions') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
@@ -218,11 +253,26 @@
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Saldo Kas RT
+                        Saldo Kas Bersih
                     </span>
                 </div>
             </a>
 
+            {{-- Card 2: Pembayaran Perlu Validasi (Actionable) --}}
+            <a href="{{ url('/admin/payments') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $pembayaranPendingCount > 0 ? 'bg-[#FFF9EA] border border-[#FDEBBD]' : 'bg-[#F8FAFC] border border-[#E2E8F0]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold {{ $pembayaranPendingCount > 0 ? 'text-[#D97706]' : 'text-[#64748B]' }} tracking-tight">
+                        {{ $pembayaranPendingCount }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Perlu Validasi
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 3: Total Pemasukan Kas --}}
             <a href="{{ url('/admin/cash-transactions') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#166534] tracking-tight truncate">
@@ -236,6 +286,7 @@
                 </div>
             </a>
 
+            {{-- Card 4: Total Pengeluaran Kas --}}
             <a href="{{ url('/admin/cash-transactions') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#FEF2F2] border border-[#FEE2E2] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#DC2626] tracking-tight truncate">
@@ -249,6 +300,7 @@
                 </div>
             </a>
 
+            {{-- Card 5: Tagihan Iuran Tertunda / Piutang --}}
             <a href="{{ url('/admin/invoices') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#1D4ED8] tracking-tight truncate">
@@ -264,7 +316,36 @@
         </div>
     @elseif ($isSekretaris)
         {{-- Tampilan Kartu Khusus Sekretaris --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Surat Masuk Menunggu Verifikasi (Actionable) --}}
+            <a href="{{ url('/admin/letters') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $suratDiajukan > 0 ? 'bg-[#FFF9EA] border border-[#FDEBBD]' : 'bg-[#F8FAFC] border border-[#E2E8F0]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold {{ $suratDiajukan > 0 ? 'text-[#D97706]' : 'text-[#64748B]' }} tracking-tight">
+                        {{ $suratDiajukan }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Perlu Verifikasi
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 2: Surat Selesai Diterbitkan --}}
+            <a href="{{ url('/admin/letters') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-[#059669] tracking-tight">
+                        {{ $suratSelesai }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Surat Diterbitkan
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 3: Total Warga --}}
             <a href="{{ url('/admin/residents') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#166534] tracking-tight">
@@ -278,6 +359,7 @@
                 </div>
             </a>
 
+            {{-- Card 4: Kartu Keluarga --}}
             <a href="{{ url('/admin/households') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
@@ -291,19 +373,7 @@
                 </div>
             </a>
 
-            <a href="{{ url('/admin/letters') }}" class="group block">
-                <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
-                    <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
-                        {{ $suratBerjalan }}
-                    </span>
-                </div>
-                <div class="mt-2 text-center">
-                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Surat Berjalan
-                    </span>
-                </div>
-            </a>
-
+            {{-- Card 5: Pengaduan Terbuka --}}
             <a href="{{ url('/admin/complaints') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#FEF2F2] border border-[#FEE2E2] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#DC2626] tracking-tight">
@@ -317,10 +387,38 @@
                 </div>
             </a>
         </div>
-    @else
-        {{-- Tampilan Kartu Lengkap 6 Metrik (Ketua RT & Super Admin) --}}
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
-            {{-- Card 1: Total Kependudukan --}}
+    @elseif ($isKetuaRt)
+        {{-- Tampilan Kartu Khusus Ketua RT (Eksekutif & Pimpinan Wilayah) --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Surat Perlu Persetujuan (Actionable Utama Ketua RT) --}}
+            <a href="{{ url('/admin/letters') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $lettersNeedingApproval->count() > 0 ? 'bg-[#FFF9EA] border border-[#FDEBBD]' : 'bg-[#F8FAFC] border border-[#E2E8F0]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold {{ $lettersNeedingApproval->count() > 0 ? 'text-[#D97706]' : 'text-[#64748B]' }} tracking-tight">
+                        {{ $lettersNeedingApproval->count() }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Perlu Persetujuan
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 2: Pengaduan Perlu Ditangani --}}
+            <a href="{{ url('/admin/complaints') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl {{ $pengaduanTerbuka > 0 ? 'bg-[#FEF2F2] border border-[#FEE2E2]' : 'bg-[#F8FAFC] border border-[#E2E8F0]' }} flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold {{ $pengaduanTerbuka > 0 ? 'text-[#DC2626]' : 'text-[#64748B]' }} tracking-tight">
+                        {{ $pengaduanTerbuka }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Pengaduan Aktif
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 3: Total Kependudukan --}}
             <a href="{{ url('/admin/residents') }}" title="Total Kependudukan: {{ $totalWarga }} Jiwa ({{ $totalKk }} KK)" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#166534] tracking-tight">
@@ -334,7 +432,153 @@
                 </div>
             </a>
 
-            {{-- Card 2: Surat Berjalan --}}
+            {{-- Card 4: Saldo Kas RT 15 --}}
+            <a href="{{ url('/admin/cash-transactions') }}" title="Saldo Kas RT 15: Rp {{ number_format($saldoKas, 0, ',', '.') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
+                        Rp {{ number_format($saldoKas, 0, ',', '.') }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Saldo Kas RT 15
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 5: Dampak Lingkungan / Bank Sampah Lestari (Ringkasan Makro RT 15, aman dari 403) --}}
+            <div title="Bank Sampah Lestari: {{ number_format($totalSampahKg, 1, ',', '.') }} Kg sampah terkelola" class="block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#FFF9EA] border border-[#FDEBBD] flex items-center justify-center shadow-2xs">
+                    <span class="text-xl sm:text-2xl font-extrabold text-[#D97706] tracking-tight">
+                        {{ (float)$totalSampahKg == (int)$totalSampahKg ? number_format($totalSampahKg, 0, ',', '.') : number_format($totalSampahKg, 1, ',', '.') }} <span class="text-[11px] sm:text-xs font-bold opacity-75">Kg</span>
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">
+                        Bank Sampah Lestari
+                    </span>
+                </div>
+            </div>
+        </div>
+    @elseif ($isRwKelurahan)
+        {{-- Tampilan Kartu Khusus Pengawas RW 04 / Kelurahan (Transparansi Makro & Bebas Error 403) --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Saldo Kas RT 15 --}}
+            <a href="{{ url('/admin/cash-transactions') }}" title="Saldo Kas RT 15: Rp {{ number_format($saldoKas, 0, ',', '.') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
+                        Rp {{ number_format($saldoKas, 0, ',', '.') }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Saldo Kas RT 15
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 2: Pemasukan Kas RT 15 --}}
+            <a href="{{ url('/admin/cash-transactions') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#166534] tracking-tight truncate">
+                        Rp {{ number_format($pemasukan, 0, ',', '.') }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Pemasukan Kas
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 3: Pengeluaran Kas RT 15 --}}
+            <a href="{{ url('/admin/cash-transactions') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#FEF2F2] border border-[#FEE2E2] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#DC2626] tracking-tight truncate">
+                        Rp {{ number_format($pengeluaran, 0, ',', '.') }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Pengeluaran Kas
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 4: Total Sampah Terkelola --}}
+            <a href="{{ url('/admin/waste-deposits') }}" title="Total Sampah Terkelola di RT 15: {{ number_format($totalSampahKg, 1, ',', '.') }} Kg" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#FFF9EA] border border-[#FDEBBD] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-xl sm:text-2xl font-extrabold text-[#D97706] tracking-tight">
+                        {{ (float)$totalSampahKg == (int)$totalSampahKg ? number_format($totalSampahKg, 0, ',', '.') : number_format($totalSampahKg, 1, ',', '.') }} <span class="text-[11px] sm:text-xs font-bold opacity-75">Kg</span>
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Sampah Terkelola
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 5: Tabungan Sampah Warga RT 15 --}}
+            <a href="{{ url('/admin/waste-deposits') }}" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
+                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
+                        Rp {{ number_format($totalNilaiSampahRp, 0, ',', '.') }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Tabungan Sampah
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 6: Ringkasan Demografi RT 15 (Agregat Makro Pengawasan) --}}
+            <div title="Total Kependudukan RT 15: {{ $totalWarga }} Jiwa ({{ $totalKk }} KK)" class="block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs">
+                    <span class="text-xl sm:text-2xl font-extrabold text-[#2563EB] tracking-tight">
+                        {{ $totalWarga }} <span class="text-[11px] sm:text-xs font-bold opacity-75">Jiwa</span>
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">
+                        Agregat Warga ({{ $totalKk }} KK)
+                    </span>
+                </div>
+            </div>
+        </div>
+    @else
+        {{-- Tampilan Kartu Khusus Super Administrator & Administrator Sistem --}}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-3.5 mb-5 lg:mb-6">
+            {{-- Card 1: Total Pengguna Sistem --}}
+            <a href="{{ url('/admin/roles') }}" title="Pengguna Sistem: {{ $totalUsers }} Terdaftar ({{ $activeUsers }} Aktif)" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
+                        {{ $totalUsers }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Pengguna Sistem
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 2: Total Kependudukan --}}
+            <a href="{{ url('/admin/residents') }}" title="Total Kependudukan: {{ $totalWarga }} Jiwa ({{ $totalKk }} KK)" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#EAF5EE] border border-[#D2EBD9] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-[#166534] tracking-tight">
+                        {{ $totalWarga }}
+                    </span>
+                </div>
+                <div class="mt-2 text-center">
+                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
+                        Total Kependudukan
+                    </span>
+                </div>
+            </a>
+
+            {{-- Card 3: Surat Berjalan --}}
             <a href="{{ url('/admin/letters') }}" title="Surat Berjalan: {{ $suratBerjalan }} Berkas" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#EEF5FF] border border-[#D6E5FF] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
                     <span class="text-2xl sm:text-3xl font-extrabold text-[#2563EB] tracking-tight">
@@ -348,7 +592,7 @@
                 </div>
             </a>
 
-            {{-- Card 3: Saldo Kas RT 15 --}}
+            {{-- Card 4: Saldo Kas RT 15 --}}
             <a href="{{ url('/admin/cash-transactions') }}" title="Saldo Kas RT 15: Rp {{ number_format($saldoKas, 0, ',', '.') }}" class="group block">
                 <div class="h-16 sm:h-20 rounded-xl bg-[#ECFDF5] border border-[#D1FAE5] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
                     <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#059669] tracking-tight truncate">
@@ -357,21 +601,7 @@
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Saldo Kas RT
-                    </span>
-                </div>
-            </a>
-
-            {{-- Card 4: Tagihan Iuran Tertunda --}}
-            <a href="{{ url('/admin/invoices') }}" title="Tagihan Iuran Tertunda: Rp {{ number_format($tagihanTertunda, 0, ',', '.') }}" class="group block">
-                <div class="h-16 sm:h-20 rounded-xl bg-[#EFF6FF] border border-[#DBEAFE] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200 px-2">
-                    <span class="text-sm sm:text-base lg:text-sm xl:text-base font-extrabold text-[#1D4ED8] tracking-tight truncate">
-                        Rp {{ number_format($tagihanTertunda, 0, ',', '.') }}
-                    </span>
-                </div>
-                <div class="mt-2 text-center">
-                    <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Tagihan Iuran
+                        Saldo Kas RT 15
                     </span>
                 </div>
             </a>
@@ -390,16 +620,16 @@
                 </div>
             </a>
 
-            {{-- Card 6: Bank Sampah Lestari --}}
-            <a href="{{ url('/admin/waste-deposits') }}" title="Bank Sampah Lestari: {{ number_format($totalSampahKg, 1, ',', '.') }} Kg" class="group block">
-                <div class="h-16 sm:h-20 rounded-xl bg-[#FFF9EA] border border-[#FDEBBD] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
-                    <span class="text-xl sm:text-2xl font-extrabold text-[#D97706] tracking-tight">
-                        {{ (float)$totalSampahKg == (int)$totalSampahKg ? number_format($totalSampahKg, 0, ',', '.') : number_format($totalSampahKg, 1, ',', '.') }} <span class="text-[11px] sm:text-xs font-bold opacity-75">Kg</span>
+            {{-- Card 6: Log Audit Tercatat --}}
+            <a href="{{ url('/admin/audit-logs') }}" title="Audit Log: {{ $totalAuditLogs }} Rekaman Aktivitas" class="group block">
+                <div class="h-16 sm:h-20 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-center shadow-2xs group-hover:shadow-md group-hover:scale-[1.02] transition-all duration-200">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-[#475569] tracking-tight">
+                        {{ $totalAuditLogs }}
                     </span>
                 </div>
                 <div class="mt-2 text-center">
                     <span class="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82] group-hover:text-[#0F1F3D] transition-colors">
-                        Bank Sampah
+                        Log Aktivitas
                     </span>
                 </div>
             </a>
@@ -507,7 +737,7 @@
                     <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
                         <div>
                             <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Laporan Tamu 1x24 Jam</h2>
-                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Catatan pendatang dan tamu luar menginap di RT 15</p>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Catatan pendatang dan tamu menginap di lingkungan RT 15</p>
                         </div>
                         <a href="{{ url('/admin/guest-reports') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
                             <span>Lihat Semua &gt;</span>
@@ -569,7 +799,7 @@
                                             {{ $patrol->regu }}
                                         </p>
                                         <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
-                                            {{ $patrol->tanggal?->format('d M Y') ?? '-' }} &bull; {{ $patrol->waktu_mulai }} - {{ $patrol->waktu_selesai }}
+                                            {{ $patrol->tanggal?->format('d M Y') ?? '-' }} &bull; {{ $patrol->waktu_mulai }} - {{ $patrol->waktu_selesai }} &bull; {{ $patrol->members->count() }} Anggota
                                         </p>
                                     </div>
                                 </div>
@@ -588,9 +818,53 @@
             </div>
         </div>
     @elseif ($isBendahara)
-        {{-- Aktivitas Keuangan: Buku Kas & Pembayaran Iuran --}}
+        {{-- Aktivitas Keuangan: Buku Kas & Validasi Pembayaran --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5">
-            {{-- Panel Kiri: Buku Kas Terkini --}}
+            {{-- Panel Kiri: Pembayaran Iuran Menunggu Validasi (Prioritas Tindakan) --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Konfirmasi Pembayaran Warga</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Bukti transfer iuran yang memerlukan verifikasi bendahara</p>
+                        </div>
+                        <a href="{{ url('/admin/payments') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Validasi &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @php $paymentsToShow = $pendingPayments->isNotEmpty() ? $pendingPayments : $recentPayments; @endphp
+                        @forelse ($paymentsToShow as $payment)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0B3A85] font-bold flex items-center justify-center shrink-0 text-xs border border-blue-100 group-hover:scale-105 transition-transform">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $payment->invoice?->household?->kepalaKeluarga?->nama_lengkap ?? 'Keluarga RT 15' }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $payment->invoice?->feeType?->nama ?? 'Iuran RT' }} &bull; {{ ucfirst($payment->metode ?? 'transfer') }} &bull; {{ $payment->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ $payment->status === 'valid' ? 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]' : ($payment->status === 'ditolak' ? 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]' : 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]') }}">
+                                    Rp {{ number_format($payment->jumlah, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+                                <span>Seluruh pembayaran iuran telah tervalidasi.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- Panel Kanan: Mutasi Buku Kas Terkini --}}
             <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
@@ -632,63 +906,20 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Panel Kanan: Validasi Pembayaran Terkini --}}
-            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
-                        <div>
-                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Pembayaran Iuran Masuk</h2>
-                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Bukti transfer dan setoran iuran warga RT 15</p>
-                        </div>
-                        <a href="{{ url('/admin/payments') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
-                            <span>Validasi &gt;</span>
-                        </a>
-                    </div>
-
-                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
-                        @forelse ($recentPayments as $payment)
-                            <div class="py-2.5 flex items-center justify-between gap-3 group">
-                                <div class="flex items-center gap-3 min-w-0">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0B3A85] font-bold flex items-center justify-center shrink-0 text-xs border border-blue-100 group-hover:scale-105 transition-transform">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
-                                            {{ $payment->invoice?->household?->kepalaKeluarga?->nama_lengkap ?? 'Keluarga RT 15' }}
-                                        </p>
-                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
-                                            {{ $payment->metode ?? 'Transfer' }} &bull; {{ $payment->created_at?->diffForHumans() }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ $payment->status === 'verified' ? 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]' : 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' }}">
-                                    Rp {{ number_format($payment->jumlah, 0, ',', '.') }}
-                                </span>
-                            </div>
-                        @empty
-                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
-                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
-                                <span>Belum ada pembayaran iuran baru yang menunggu validasi.</span>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
         </div>
-    @else
-        {{-- Aktivitas Standar: Surat Pengantar & Pengaduan Warga (Ketua RT, Sekretaris, Super Admin) --}}
+    @elseif ($isSekretaris)
+        {{-- Aktivitas Sekretaris: Antrean Surat & Pengumuman/Agenda --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5">
-            {{-- Panel Kiri: Surat Pengantar Terkini --}}
+            {{-- Panel Kiri: Antrean Surat Masuk Terkini --}}
             <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
                         <div>
-                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Surat Pengantar Terkini</h2>
-                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Permohonan dokumen administratif terbaru dari warga RT 15</p>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Permohonan Surat Masuk</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Surat pengantar warga yang menunggu verifikasi berkas</p>
                         </div>
                         <a href="{{ url('/admin/letters') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
-                            <span>Lihat Semua &gt;</span>
+                            <span>Periksa &gt;</span>
                         </a>
                     </div>
 
@@ -697,18 +928,18 @@
                             <div class="py-2.5 flex items-center justify-between gap-3 group">
                                 <div class="flex items-center gap-3 min-w-0">
                                     <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0B3A85] font-bold flex items-center justify-center shrink-0 text-xs border border-blue-100 group-hover:scale-105 transition-transform">
-                                        {{ strtoupper(substr($letter->resident?->nama_lengkap ?? 'W', 0, 1)) }}
+                                        {{ strtoupper(substr($letter->resident?->nama ?? 'W', 0, 1)) }}
                                     </div>
                                     <div class="min-w-0">
                                         <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
-                                            {{ $letter->letterType?->nama_surat ?? 'Surat Pengantar' }}
+                                            {{ $letter->letterType?->nama ?? 'Surat Pengantar' }}
                                         </p>
                                         <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
-                                            {{ $letter->resident?->nama_lengkap ?? 'Warga RT 15' }} &bull; {{ $letter->created_at?->diffForHumans() }}
+                                            {{ $letter->resident?->nama ?? 'Warga RT 15' }} &bull; {{ $letter->created_at?->diffForHumans() }}
                                         </p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
                                     {{ ucfirst($letter->status) }}
                                 </span>
                             </div>
@@ -722,21 +953,110 @@
                 </div>
             </div>
 
-            {{-- Panel Kanan: Pengaduan Warga Terkini --}}
+            {{-- Panel Kanan: Pengumuman & Agenda RT 15 Terkini --}}
             <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
                         <div>
-                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Pengaduan Warga Terkini</h2>
-                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Laporan lingkungan dan aspirasi aktif warga RT 15</p>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Pengumuman & Agenda Warga</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Informasi publik dan kegiatan yang dikelola sekretariat</p>
                         </div>
-                        <a href="{{ url('/admin/complaints') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
-                            <span>Lihat Semua &gt;</span>
+                        <a href="{{ url('/admin/announcements') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Kelola &gt;</span>
                         </a>
                     </div>
 
                     <div class="divide-y divide-[#F1F5F9] mt-1.5">
-                        @forelse ($recentComplaints as $complaint)
+                        @forelse ($recentAnnouncements as $announcement)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-[#4338CA] font-bold flex items-center justify-center shrink-0 text-xs border border-indigo-100 group-hover:scale-105 transition-transform">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $announcement->judul }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            Sasaran: {{ ucfirst($announcement->target ?? 'Semua') }} &bull; {{ $announcement->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ $announcement->is_published ? 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]' : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]' }}">
+                                    {{ $announcement->is_published ? 'Tayang' : 'Draft' }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                                <span>Belum ada pengumuman yang diterbitkan.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif ($isKetuaRt)
+        {{-- Aktivitas Ketua RT: Persetujuan Surat & Penanganan Aduan Warga --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5">
+            {{-- Panel Kiri: Antrean Surat Menunggu Persetujuan Ketua RT --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Surat Menunggu Persetujuan</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Permohonan surat warga yang memerlukan tanda tangan / approval Ketua RT</p>
+                        </div>
+                        <a href="{{ url('/admin/letters') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Tinjau &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($lettersNeedingApproval as $letter)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#D97706] font-bold flex items-center justify-center shrink-0 text-xs border border-amber-100 group-hover:scale-105 transition-transform">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $letter->letterType?->nama ?? 'Surat Pengantar' }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $letter->resident?->nama ?? 'Warga RT 15' }} &bull; {{ $letter->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]">
+                                    {{ ucfirst($letter->status) }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Tidak ada permohonan surat yang menunggu persetujuan.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- Panel Kanan: Pengaduan Warga Butuh Tindak Lanjut --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Pengaduan Warga Aktif</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Aspirasi dan laporan masalah lingkungan yang butuh atensi RT</p>
+                        </div>
+                        <a href="{{ url('/admin/complaints') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Tangani &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($complaintsNeedingAction as $complaint)
                             <div class="py-2.5 flex items-center justify-between gap-3 group">
                                 <div class="flex items-center gap-3 min-w-0">
                                     <div class="w-8 h-8 rounded-lg bg-rose-50 text-[#DC2626] font-bold flex items-center justify-center shrink-0 text-xs border border-rose-100 group-hover:scale-105 transition-transform">
@@ -751,14 +1071,192 @@
                                         </p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($complaint->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'diproses' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ $complaint->status === 'diproses' ? 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]' : 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' }}">
                                     {{ ucfirst($complaint->status) }}
                                 </span>
                             </div>
                         @empty
                             <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
                                 <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                <span>Lingkungan aman dan kondusif. Tidak ada pengaduan aktif.</span>
+                                <span>Lingkungan aman dan tertib. Tidak ada pengaduan aktif.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    @elseif ($isRwKelurahan)
+        {{-- Aktivitas Pengawas RW 04 / Kelurahan: Transparansi Mutasi Kas RT & Setoran Bank Sampah --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5">
+            {{-- Panel Kiri: Mutasi Kas RT 15 Terkini --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Transparansi Kas RT 15</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Catatan penerimaan dan pengeluaran kas lingkungan RT 15</p>
+                        </div>
+                        <a href="{{ url('/admin/cash-transactions') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Buku Kas &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($recentCashTransactions as $tx)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg {{ $tx->jenis === 'masuk' ? 'bg-emerald-50 text-[#059669] border-emerald-100' : 'bg-rose-50 text-[#DC2626] border-rose-100' }} font-bold flex items-center justify-center shrink-0 text-xs border group-hover:scale-105 transition-transform">
+                                        {{ $tx->jenis === 'masuk' ? '+' : '-' }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $tx->keterangan }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $tx->kategori ?? 'Umum' }} &bull; {{ $tx->tanggal?->format('d M Y') ?? $tx->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ $tx->jenis === 'masuk' ? 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]' : 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]' }}">
+                                    {{ $tx->jenis === 'masuk' ? '+' : '-' }} Rp {{ number_format($tx->jumlah, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Belum ada transaksi kas tercatat.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- Panel Kanan: Pemantauan Setoran Bank Sampah RT 15 --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Setoran Sampah RT 15</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Pantauan dampak program Bank Sampah Pinang Masak Lestari</p>
+                        </div>
+                        <a href="{{ url('/admin/waste-deposits') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Setoran &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($recentWasteDeposits as $deposit)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#D97706] font-bold flex items-center justify-center shrink-0 text-xs border border-amber-100 group-hover:scale-105 transition-transform">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $deposit->household?->kepalaKeluarga?->nama_lengkap ?? 'Keluarga RT 15' }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $deposit->wasteType?->nama ?? 'Sampah' }} &bull; {{ $deposit->berat_kg }} kg &bull; {{ $deposit->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]">
+                                    Rp {{ number_format($deposit->nilai, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                <span>Belum ada transaksi setoran sampah tercatat.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        {{-- Aktivitas Administrator: Audit Log Sistem & Pelayanan Umum --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-5">
+            {{-- Panel Kiri: Log Aktivitas Sistem Terkini --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Log Audit Sistem Terkini</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Rekam jejak aktivitas pengguna dan integritas data SIM-LiBas</p>
+                        </div>
+                        <a href="{{ url('/admin/audit-logs') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Audit Log &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($recentAuditLogs as $log)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-[#475569] font-bold flex items-center justify-center shrink-0 text-xs border border-slate-200 group-hover:scale-105 transition-transform">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $log->causer_name }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $log->module_name }} &bull; {{ $log->relative_time }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 border {{ $log->action_badge_color }}">
+                                    {{ $log->action_label }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                <span>Belum ada rekaman audit log.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            {{-- Panel Kanan: Status Operasional Layanan Warga --}}
+            <div class="bg-white rounded-xl border border-[#DDE5F0] p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-3 border-b border-[#EEF2F6]">
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D]">Permohonan Surat Terkini</h2>
+                            <p class="text-[11px] sm:text-xs text-[#5B6B82] mt-0.5">Permohonan dokumen administratif terbaru dari warga RT 15</p>
+                        </div>
+                        <a href="{{ url('/admin/letters') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0B3A85] hover:text-[#0B2F6B] hover:underline transition">
+                            <span>Lihat Semua &gt;</span>
+                        </a>
+                    </div>
+
+                    <div class="divide-y divide-[#F1F5F9] mt-1.5">
+                        @forelse ($recentLetters as $letter)
+                            <div class="py-2.5 flex items-center justify-between gap-3 group">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0B3A85] font-bold flex items-center justify-center shrink-0 text-xs border border-blue-100 group-hover:scale-105 transition-transform">
+                                        {{ strtoupper(substr($letter->resident?->nama ?? 'W', 0, 1)) }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs sm:text-sm font-bold text-[#0F1F3D] group-hover:text-[#0B3A85] transition-colors truncate">
+                                            {{ $letter->letterType?->nama ?? 'Surat Pengantar' }}
+                                        </p>
+                                        <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
+                                            {{ $letter->resident?->nama ?? 'Warga RT 15' }} &bull; {{ $letter->created_at?->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
+                                    {{ ucfirst($letter->status) }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="py-6 text-center text-xs text-[#5B6B82] flex flex-col items-center justify-center">
+                                <svg class="w-8 h-8 text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                <span>Belum ada permohonan surat masuk baru.</span>
                             </div>
                         @endforelse
                     </div>
