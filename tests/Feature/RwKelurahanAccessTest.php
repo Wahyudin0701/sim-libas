@@ -7,11 +7,21 @@ use App\Filament\Resources\WasteDeposits\WasteDepositResource;
 use App\Models\CashTransaction;
 use App\Models\User;
 use App\Models\WasteDeposit;
+use Database\Seeders\DatabaseSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class RwKelurahanAccessTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(DatabaseSeeder::class);
+    }
+
     public function test_rw_account_exists_and_can_authenticate(): void
     {
         $rwUser = User::where('email', 'rw@simlibas.com')->first();
