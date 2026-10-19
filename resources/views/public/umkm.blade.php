@@ -66,7 +66,7 @@
     <div class="mb-8 space-y-4">
         <!-- Form Pencarian Real-Time (Tanpa Card Wrapper) -->
         <form action="{{ route('public.umkm') }}" method="GET" id="search-form" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="relative flex-grow">
+            <div class="relative w-full sm:max-w-md">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
                     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -92,8 +92,11 @@
                 </select>
             </div>
 
-            <a href="{{ route('public.umkm') }}" id="search-reset-btn" title="Reset Filter" class="px-3.5 py-2.5 bg-white hover:bg-slate-50 text-text-muted hover:text-primary-900 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition flex items-center justify-center shrink-0 {{ (request('search') || request('q') || request('kategori')) ? '' : 'hidden' }}">
-                Reset
+            <a href="{{ route('public.umkm') }}" id="search-reset-btn" title="Reset Filter" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold transition shadow-2xs shrink-0 {{ (request('search') || request('q') || request('kategori')) ? '' : 'hidden' }}">
+                <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                <span class="text-red-600 font-bold">Reset Filter</span>
             </a>
         </form>
 

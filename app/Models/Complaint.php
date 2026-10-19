@@ -62,6 +62,14 @@ class Complaint extends Model
     }
 
     /**
+     * Alias relasi ke warga pelapor (User).
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
      * Relasi ke pengurus yang menangani pengaduan (User).
      */
     public function penanggungJawab(): BelongsTo

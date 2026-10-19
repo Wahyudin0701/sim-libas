@@ -22,6 +22,8 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
 
+    protected static ?int $navigationSort = 2;
+
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan RT';
 
     protected static ?string $navigationLabel = 'Tagihan Iuran';
@@ -31,6 +33,17 @@ class InvoiceResource extends Resource
     protected static ?string $pluralModelLabel = 'Tagihan Iuran';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-receipt-percent';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'bendahara'])
+            || $user->can('terbitkan_tagihan')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -15,10 +15,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class WasteDepositResource extends Resource
 {
     protected static ?string $model = WasteDeposit::class;
+
+    protected static ?int $navigationSort = 2;
 
     protected static string|UnitEnum|null $navigationGroup = 'Kampung Digital';
 
@@ -29,6 +32,51 @@ class WasteDepositResource extends Resource
     protected static ?string $pluralModelLabel = 'Bank Sampah Pinang Masak';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box-arrow-down';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_bank_sampah', 'rw_kelurahan'])
+            || $user->can('catat_setoran_sampah')
+            || $user->can('lihat_dampak_lingkungan')
+        ));
+    }
+
+    public static function canCreate(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_bank_sampah'])
+            || $user->can('catat_setoran_sampah')
+        ));
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_bank_sampah'])
+            || $user->can('catat_setoran_sampah')
+        ));
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_bank_sampah'])
+            || $user->can('catat_setoran_sampah')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

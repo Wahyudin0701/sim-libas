@@ -95,3 +95,30 @@ body {
     background-color: var(--color-primary-700);
     color: #ffffff;
 }
+
+/* Modal backdrop blur untuk Popup Portal Warga */
+.modal-backdrop-blur,
+#modal-surat,
+#modal-detail-surat,
+#modal-detail-iuran,
+#modal-pengaduan,
+#modal-detail-pengaduan,
+#modal-bayar,
+#modal-email,
+#modal-password,
+#modal-phone {
+    z-index: 100 !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background-color: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Saat modal terbuka (body.overflow-hidden), pastikan header dan bottom navigation ikut ter-blur & berada di latar belakang */
+body.overflow-hidden header,
+body.overflow-hidden nav.fixed {
+    filter: blur(4px);
+    opacity: 0.85;
+    pointer-events: none;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+

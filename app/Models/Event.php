@@ -35,6 +35,7 @@ class Event extends Model
         'tanggal_mulai',
         'tanggal_selesai',
         'kategori', // 'gotong_royong', 'rapat_rt', 'posyandu', 'keagamaan', '17_agustus', 'lainnya'
+        'penyelenggara',
         'is_recurring',
         'dibuat_oleh',
     ];

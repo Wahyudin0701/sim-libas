@@ -20,6 +20,8 @@ class EventsTable
             ->columns([
                 TextColumn::make('judul')
                     ->searchable(),
+                TextColumn::make('penyelenggara')
+                    ->searchable(),
                 TextColumn::make('lokasi')
                     ->searchable(),
                 TextColumn::make('tanggal_mulai')

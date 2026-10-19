@@ -7,6 +7,7 @@ use UnitEnum;
 use App\Filament\Resources\Households\Pages\CreateHousehold;
 use App\Filament\Resources\Households\Pages\EditHousehold;
 use App\Filament\Resources\Households\Pages\ListHouseholds;
+use App\Filament\Resources\Households\Pages\ViewHousehold;
 use App\Filament\Resources\Households\Schemas\HouseholdForm;
 use App\Filament\Resources\Households\Tables\HouseholdsTable;
 use App\Models\Household;
@@ -22,6 +23,8 @@ class HouseholdResource extends Resource
 {
     protected static ?string $model = Household::class;
 
+    protected static ?int $navigationSort = 1;
+
     protected static string|UnitEnum|null $navigationGroup = 'Kependudukan';
 
     protected static ?string $navigationLabel = 'Kartu Keluarga (KK)';
@@ -31,6 +34,17 @@ class HouseholdResource extends Resource
     protected static ?string $pluralModelLabel = 'Kartu Keluarga';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-home';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'ketua_rt', 'sekretaris'])
+            || $user->can('lihat_data_warga')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -45,7 +59,7 @@ class HouseholdResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\Households\RelationManagers\ResidentsRelationManager::class,
         ];
     }
 
@@ -54,8 +68,15 @@ class HouseholdResource extends Resource
         return [
             'index' => ListHouseholds::route('/'),
             'create' => CreateHousehold::route('/create'),
+            'view' => ViewHousehold::route('/{record}'),
             'edit' => EditHousehold::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with(['kepalaKeluarga']);
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

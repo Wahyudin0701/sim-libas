@@ -30,7 +30,11 @@ class Resident extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id_warga',
         'household_id',
+        'kategori_warga',
+        'status_tempat_tinggal',
+        'alamat_domisili',
         'nik',
         'nik_encrypted',
         'nik_hash',
@@ -50,6 +54,36 @@ class Resident extends Model
         'is_kepala_keluarga',
         'user_id',
     ];
+
+    /**
+     * Boot model untuk auto-generate id_warga (W***).
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Resident $resident) {
+            if (empty($resident->id_warga)) {
+                $resident->id_warga = static::generateNextIdWarga();
+            }
+        });
+    }
+
+    /**
+     * Generate ID Warga berikutnya berformat W*** (misal: W001, W002, ...).
+     */
+    public static function generateNextIdWarga(): string
+    {
+        $latest = static::withTrashed()
+            ->where('id_warga', 'LIKE', 'W%')
+            ->orderByRaw('CAST(SUBSTRING(id_warga, 2) AS UNSIGNED) DESC')
+            ->value('id_warga');
+
+        $nextNumber = 1;
+        if ($latest && preg_match('/^W(\d+)$/', $latest, $matches)) {
+            $nextNumber = (int) $matches[1] + 1;
+        }
+
+        return sprintf('W%03d', $nextNumber);
+    }
 
     /**
      * Konfigurasi tipe data atribut.
@@ -112,6 +146,37 @@ class Resident extends Model
         }
 
         return substr($nik, 0, 4) . str_repeat('*', max(0, strlen($nik) - 8)) . substr($nik, -4);
+    }
+
+    /**
+     * Accessor: Tautan WhatsApp langsung (https://wa.me/628xxx).
+     */
+    public function getWaUrlAttribute(): ?string
+    {
+        if (empty($this->telepon)) {
+            return null;
+        }
+
+        $clean = preg_replace('/[^0-9]/', '', $this->telepon);
+        if (empty($clean)) {
+            return null;
+        }
+
+        if (str_starts_with($clean, '0')) {
+            $clean = '62' . substr($clean, 1);
+        } elseif (!str_starts_with($clean, '62')) {
+            $clean = '62' . $clean;
+        }
+
+        return 'https://wa.me/' . $clean;
+    }
+
+    /**
+     * Accessor: Alias nama lengkap warga.
+     */
+    public function getNamaLengkapAttribute(): ?string
+    {
+        return $this->nama;
     }
 
     /**

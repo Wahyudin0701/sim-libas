@@ -22,6 +22,8 @@ class LetterResource extends Resource
 {
     protected static ?string $model = Letter::class;
 
+    protected static ?int $navigationSort = 1;
+
     protected static string|UnitEnum|null $navigationGroup = 'Layanan Administrasi';
 
     protected static ?string $navigationLabel = 'Surat Pengantar';
@@ -31,6 +33,19 @@ class LetterResource extends Resource
     protected static ?string $pluralModelLabel = 'Surat Pengantar';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'ketua_rt', 'sekretaris'])
+            || $user->can('periksa_surat')
+            || $user->can('setujui_surat')
+            || $user->can('arsip_buku_surat')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

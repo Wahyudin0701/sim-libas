@@ -11,6 +11,13 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class Login extends BaseLogin
 {
+    protected static string $layout = 'filament.pages.auth.login-layout';
+
+    public function hasLogo(): bool
+    {
+        return false;
+    }
+
     public function getTitle(): string | Htmlable
     {
         return 'Masuk Portal Pengurus RT 15 | SIM-LiBas';
@@ -23,7 +30,7 @@ class Login extends BaseLogin
 
     public function getSubheading(): string | Htmlable | null
     {
-        return 'Panel kendali administrasi, kependudukan, dan layanan warga';
+        return 'Masuk ke panel kendali administrasi, kependudukan, dan layanan warga RT 15.';
     }
 
     protected function getEmailFormComponent(): Component

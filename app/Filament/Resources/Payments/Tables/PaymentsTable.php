@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Payments\Tables;
 
 use App\Models\CashTransaction;
 use App\Models\Payment;
+use App\Services\NotificationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -121,6 +122,14 @@ class PaymentsTable
                             'dicatat_oleh' => auth()->id(),
                         ]);
 
+                        // Kirim notifikasi sistem ke keluarga bersangkutan
+                        NotificationService::sendToHousehold(
+                            $record->invoice?->household,
+                            'Pembayaran Iuran Divalidasi',
+                            'Pembayaran ' . ($record->invoice?->feeType?->nama ?? 'Iuran RT') . ' sebesar Rp ' . number_format($record->jumlah, 0, ',', '.') . ' telah divalidasi dan lunas oleh Bendahara RT.',
+                            route('warga.iuran')
+                        );
+
                         FilamentToast::make()
                             ->title('Pembayaran Berhasil Divalidasi')
                             ->body('Status tagihan menjadi Lunas dan tercatat di Kas RT.')
@@ -146,6 +155,14 @@ class PaymentsTable
                             'divalidasi_oleh' => auth()->id(),
                             'tanggal_validasi' => now(),
                         ]);
+
+                        // Kirim notifikasi sistem ke keluarga bersangkutan
+                        NotificationService::sendToHousehold(
+                            $record->invoice?->household,
+                            'Bukti Pembayaran Iuran Ditolak',
+                            'Bukti pembayaran ' . ($record->invoice?->feeType?->nama ?? 'Iuran RT') . ' ditolak oleh Bendahara RT. Catatan: ' . $data['catatan'],
+                            route('warga.iuran')
+                        );
 
                         FilamentToast::make()
                             ->title('Bukti Pembayaran Ditolak')

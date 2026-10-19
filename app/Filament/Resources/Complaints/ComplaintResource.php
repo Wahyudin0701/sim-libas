@@ -22,7 +22,9 @@ class ComplaintResource extends Resource
 {
     protected static ?string $model = Complaint::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi & Keamanan';
+    protected static ?int $navigationSort = 3;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi Warga';
 
     protected static ?string $navigationLabel = 'Pengaduan Warga';
 
@@ -31,6 +33,18 @@ class ComplaintResource extends Resource
     protected static ?string $pluralModelLabel = 'Pengaduan Warga';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'ketua_rt', 'sekretaris'])
+            || $user->can('lihat_semua_pengaduan')
+            || $user->can('tangani_pengaduan')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

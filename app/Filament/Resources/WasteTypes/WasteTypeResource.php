@@ -20,6 +20,8 @@ class WasteTypeResource extends Resource
 {
     protected static ?string $model = WasteType::class;
 
+    protected static ?int $navigationSort = 3;
+
     protected static string|UnitEnum|null $navigationGroup = 'Kampung Digital';
 
     protected static ?string $navigationLabel = 'Master Harga Sampah';
@@ -29,6 +31,17 @@ class WasteTypeResource extends Resource
     protected static ?string $pluralModelLabel = 'Master Harga Sampah';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-scale';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_bank_sampah'])
+            || $user->can('kelola_master_sampah')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

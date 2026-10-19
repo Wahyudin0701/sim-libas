@@ -20,7 +20,9 @@ class GuestReportResource extends Resource
 {
     protected static ?string $model = GuestReport::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi & Keamanan';
+    protected static ?int $navigationSort = 2;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Keamanan Lingkungan';
 
     protected static ?string $navigationLabel = 'Lapor Tamu';
 
@@ -29,6 +31,17 @@ class GuestReportResource extends Resource
     protected static ?string $pluralModelLabel = 'Lapor Tamu 1x24 Jam';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-plus';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_keamanan'])
+            || $user->can('lihat_laporan_tamu')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -33,9 +33,18 @@ class GuestReport extends Model
         'tujuan',
         'tanggal_datang',
         'tanggal_pulang',
+        'status',
         'foto_path',
         'dilaporkan_oleh',
     ];
+
+    /**
+     * Memeriksa apakah tamu berstatus aktif menginap di RT 15.
+     */
+    public function isMenginap(): bool
+    {
+        return ($this->status ?? 'menginap') === 'menginap';
+    }
 
     /**
      * Konfigurasi tipe data atribut.

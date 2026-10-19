@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Complaints\Tables;
 
 use App\Models\Complaint;
+use App\Services\NotificationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -100,6 +101,14 @@ class ComplaintsTable
                             'penanggung_jawab_id' => auth()->id(),
                         ]);
 
+                        // Kirim notifikasi sistem ke warga pelapor
+                        NotificationService::sendToUser(
+                            $record->user_id,
+                            'Pengaduan Sedang Diproses',
+                            "Laporan Anda mengenai '{$record->judul}' sedang ditindaklanjuti oleh pengurus RT.",
+                            route('warga.pengaduan')
+                        );
+
                         FilamentToast::make()
                             ->title('Pengaduan Sedang Diproses')
                             ->info()
@@ -122,6 +131,14 @@ class ComplaintsTable
                             'catatan_penanganan' => $data['catatan_penanganan'],
                             'tanggal_selesai' => now(),
                         ]);
+
+                        // Kirim notifikasi sistem ke warga pelapor
+                        NotificationService::sendToUser(
+                            $record->user_id,
+                            'Pengaduan Selesai Ditangani',
+                            "Laporan Anda mengenai '{$record->judul}' telah selesai ditangani. Catatan: " . $data['catatan_penanganan'],
+                            route('warga.pengaduan')
+                        );
 
                         FilamentToast::make()
                             ->title('Pengaduan Berhasil Diselesaikan')

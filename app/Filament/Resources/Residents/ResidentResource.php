@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Residents;
 use UnitEnum;
 
 use App\Filament\Resources\Residents\Pages\CreateResident;
-use App\Filament\Resources\Residents\Pages\EditResident;
 use App\Filament\Resources\Residents\Pages\ListResidents;
 use App\Filament\Resources\Residents\Schemas\ResidentForm;
 use App\Filament\Resources\Residents\Tables\ResidentsTable;
@@ -22,6 +21,8 @@ class ResidentResource extends Resource
 {
     protected static ?string $model = Resident::class;
 
+    protected static ?int $navigationSort = 2;
+
     protected static string|UnitEnum|null $navigationGroup = 'Kependudukan';
 
     protected static ?string $navigationLabel = 'Data Warga';
@@ -31,6 +32,17 @@ class ResidentResource extends Resource
     protected static ?string $pluralModelLabel = 'Data Warga';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'ketua_rt', 'sekretaris'])
+            || $user->can('lihat_data_warga')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -54,7 +66,6 @@ class ResidentResource extends Resource
         return [
             'index' => ListResidents::route('/'),
             'create' => CreateResident::route('/create'),
-            'edit' => EditResident::route('/{record}/edit'),
         ];
     }
 

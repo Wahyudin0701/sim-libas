@@ -273,9 +273,16 @@
                                     <p class="text-xs text-text-muted mt-1 flex items-center gap-1">
                                         📍 {{ $event->lokasi ?? 'Lingkungan RT 15' }}
                                     </p>
-                                    <span class="inline-block mt-2 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-700">
-                                        {{ ucwords(str_replace('_', ' ', $event->kategori)) }}
-                                    </span>
+                                    <div class="flex items-center gap-2 mt-2 flex-wrap">
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-700">
+                                            {{ ucwords(str_replace('_', ' ', $event->kategori)) }}
+                                        </span>
+                                        @if($event->penyelenggara)
+                                            <span class="text-[11px] text-text-muted">
+                                                Oleh: <strong class="text-slate-700">{{ $event->penyelenggara }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         @endforeach

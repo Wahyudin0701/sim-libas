@@ -22,7 +22,9 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi & Keamanan';
+    protected static ?int $navigationSort = 2;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi Warga';
 
     protected static ?string $navigationLabel = 'Agenda Kegiatan';
 
@@ -31,6 +33,17 @@ class EventResource extends Resource
     protected static ?string $pluralModelLabel = 'Agenda Kegiatan';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'sekretaris'])
+            || $user->can('kelola_agenda')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

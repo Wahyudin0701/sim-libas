@@ -31,6 +31,7 @@ class Household extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id_kk',
         'no_kk',
         'no_kk_hash',
         'alamat',
@@ -39,8 +40,39 @@ class Household extends Model
         'kecamatan',
         'status_hunian', // 'tetap', 'kontrak', 'kos'
         'catatan',
+        'foto_kk',
         'user_id',
     ];
+
+    /**
+     * Boot model untuk auto-generate id_kk (KK***).
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Household $household) {
+            if (empty($household->id_kk)) {
+                $household->id_kk = static::generateNextIdKk();
+            }
+        });
+    }
+
+    /**
+     * Generate ID KK berikutnya berformat KK*** (misal: KK001, KK002, ...).
+     */
+    public static function generateNextIdKk(): string
+    {
+        $latest = static::withTrashed()
+            ->where('id_kk', 'LIKE', 'KK%')
+            ->orderByRaw('CAST(SUBSTRING(id_kk, 3) AS UNSIGNED) DESC')
+            ->value('id_kk');
+
+        $nextNumber = 1;
+        if ($latest && preg_match('/^KK(\d+)$/', $latest, $matches)) {
+            $nextNumber = (int) $matches[1] + 1;
+        }
+
+        return sprintf('KK%03d', $nextNumber);
+    }
 
     /**
      * Konfigurasi tipe data atribut.
@@ -106,6 +138,14 @@ class Household extends Model
     }
 
     /**
+     * Accessor: URL foto KK dari public storage.
+     */
+    public function getFotoKkUrlAttribute(): ?string
+    {
+        return $this->foto_kk ? asset('storage/' . $this->foto_kk) : null;
+    }
+
+    /**
      * Relasi ke seluruh anggota keluarga (residents).
      */
     public function residents(): HasMany
@@ -119,6 +159,30 @@ class Household extends Model
     public function kepalaKeluarga(): HasOne
     {
         return $this->hasOne(Resident::class)->where('is_kepala_keluarga', true);
+    }
+
+    /**
+     * Alias relasi Kepala Keluarga.
+     */
+    public function headOfHousehold(): HasOne
+    {
+        return $this->kepalaKeluarga();
+    }
+
+    /**
+     * Accessor alias nomor_kk.
+     */
+    public function getNomorKkAttribute(): ?string
+    {
+        return $this->no_kk;
+    }
+
+    /**
+     * Accessor alias alamat_lengkap.
+     */
+    public function getAlamatLengkapAttribute(): ?string
+    {
+        return $this->alamat;
     }
 
     /**

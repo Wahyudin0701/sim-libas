@@ -35,6 +35,27 @@ class FeeTypeSeeder extends Seeder
                 'periode' => 'bulanan',
                 'is_active' => true,
             ],
+            [
+                'nama' => 'Iuran Pemeliharaan Taman & Lingkungan Asri',
+                'deskripsi' => 'Perawatan taman warga, tanaman peneduh jalan, dan pembersihan drainase berkala.',
+                'nominal' => 15000.00,
+                'periode' => 'bulanan',
+                'is_active' => true,
+            ],
+            [
+                'nama' => 'Iuran Pembangunan Gapura & Pos Kamling RT 15',
+                'deskripsi' => 'Dana swadaya warga untuk pengecatan gapura masuk dan peremajaan pos ronda.',
+                'nominal' => 50000.00,
+                'periode' => 'insidental',
+                'is_active' => true,
+            ],
+            [
+                'nama' => 'Iuran Peringatan PHBI & HUT Kemerdekaan RI',
+                'deskripsi' => 'Penyelenggaraan peringatan hari besar Islam, Maulid, dan lomba peringatan 17 Agustus.',
+                'nominal' => 30000.00,
+                'periode' => 'tahunan',
+                'is_active' => true,
+            ],
         ];
 
         foreach ($fees as $fee) {

@@ -84,11 +84,9 @@ class RoleAndPermissionSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         $superAdmin->givePermissionTo(Permission::all());
 
-        // Ketua RT
+        // Ketua RT (Peran Eksekutif / Pimpinan Wilayah: Kependudukan, Approval Surat, Penanganan Aduan, Monitoring Kas)
         $ketuaRt = Role::firstOrCreate(['name' => 'ketua_rt', 'guard_name' => 'web']);
         $ketuaRt->givePermissionTo([
-            'kelola_pengaturan_rt',
-            'kelola_pengguna',
             'lihat_audit_log',
             'lihat_data_warga',
             'tambah_data_warga',
@@ -99,16 +97,11 @@ class RoleAndPermissionSeeder extends Seeder
             'tolak_surat',
             'arsip_buku_surat',
             'lihat_laporan_keuangan',
-            'kelola_pengumuman',
-            'kelola_agenda',
             'lihat_semua_pengaduan',
             'tangani_pengaduan',
-            'lihat_laporan_tamu',
-            'lihat_dampak_lingkungan',
-            'moderasi_umkm',
         ]);
 
-        // Sekretaris
+        // Sekretaris (Administrasi Umum, Surat Menyurat, Pengumuman, Agenda, Moderasi UMKM)
         $sekretaris = Role::firstOrCreate(['name' => 'sekretaris', 'guard_name' => 'web']);
         $sekretaris->givePermissionTo([
             'lihat_data_warga',
@@ -124,10 +117,10 @@ class RoleAndPermissionSeeder extends Seeder
             'kelola_agenda',
             'lihat_semua_pengaduan',
             'tangani_pengaduan',
-            'lihat_laporan_tamu',
+            'moderasi_umkm',
         ]);
 
-        // Bendahara
+        // Bendahara (Tata Kelola Keuangan, Tagihan, Pembayaran, Kas RT, Jenis Iuran)
         $bendahara = Role::firstOrCreate(['name' => 'bendahara', 'guard_name' => 'web']);
         $bendahara->givePermissionTo([
             'kelola_jenis_iuran',
@@ -135,7 +128,6 @@ class RoleAndPermissionSeeder extends Seeder
             'validasi_pembayaran',
             'kelola_buku_kas',
             'lihat_laporan_keuangan',
-            'kelola_pengumuman',
         ]);
 
         // Koordinator Bank Sampah

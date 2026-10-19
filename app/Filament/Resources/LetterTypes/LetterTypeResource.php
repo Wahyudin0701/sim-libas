@@ -20,6 +20,8 @@ class LetterTypeResource extends Resource
 {
     protected static ?string $model = LetterType::class;
 
+    protected static ?int $navigationSort = 2;
+
     protected static string|UnitEnum|null $navigationGroup = 'Layanan Administrasi';
 
     protected static ?string $navigationLabel = 'Master Jenis Surat';
@@ -29,6 +31,17 @@ class LetterTypeResource extends Resource
     protected static ?string $pluralModelLabel = 'Master Jenis Surat';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-duplicate';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'sekretaris'])
+            || $user->can('kelola_template_surat')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

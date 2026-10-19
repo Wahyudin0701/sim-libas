@@ -22,7 +22,9 @@ class AnnouncementResource extends Resource
 {
     protected static ?string $model = Announcement::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi & Keamanan';
+    protected static ?int $navigationSort = 1;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi Warga';
 
     protected static ?string $navigationLabel = 'Pengumuman';
 
@@ -31,6 +33,17 @@ class AnnouncementResource extends Resource
     protected static ?string $pluralModelLabel = 'Pengumuman';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-megaphone';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'sekretaris'])
+            || $user->can('kelola_pengumuman')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

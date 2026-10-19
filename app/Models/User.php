@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
@@ -19,7 +21,7 @@ use Spatie\Permission\Traits\HasRoles;
  * Model User untuk SIM-LiBas.
  * Mendukung autentikasi, otorisasi berbasis peran (RBAC Spatie), dan pencatatan audit log.
  */
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles, LogsActivity;
@@ -120,6 +122,22 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Relasi ke notifikasi sistem (SIM-LiBas In-App Notifications).
+     */
+    public function appNotifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_id')->latest();
+    }
+
+    /**
+     * Dapatkan jumlah notifikasi yang belum dibaca.
+     */
+    public function unreadNotificationsCount(): int
+    {
+        return $this->appNotifications()->where('is_read', false)->count();
+    }
+
+    /**
      * Helper: Cek apakah user adalah Admin / Super Admin.
      */
     public function isAdmin(): bool
@@ -195,5 +213,14 @@ class User extends Authenticatable implements FilamentUser
             'koordinator_keamanan',
             'rw_kelurahan',
         ]);
+    }
+
+    /**
+     * URL Avatar untuk Filament.
+     * Mengembalikan URL foto jika diunggah, atau null agar fallback ke SimLibasAvatarProvider.
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url ? Storage::disk('public')->url($this->avatar_url) : null;
     }
 }

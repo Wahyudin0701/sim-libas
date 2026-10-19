@@ -20,7 +20,9 @@ class PatrolScheduleResource extends Resource
 {
     protected static ?string $model = PatrolSchedule::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Komunikasi & Keamanan';
+    protected static ?int $navigationSort = 1;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Keamanan Lingkungan';
 
     protected static ?string $navigationLabel = 'Jadwal Ronda';
 
@@ -29,6 +31,17 @@ class PatrolScheduleResource extends Resource
     protected static ?string $pluralModelLabel = 'Jadwal Ronda';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'koordinator_keamanan'])
+            || $user->can('kelola_jadwal_ronda')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

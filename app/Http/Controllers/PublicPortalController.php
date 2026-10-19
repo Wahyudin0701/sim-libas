@@ -30,8 +30,9 @@ class PublicPortalController extends Controller
             'total_umkm' => MsmeProfile::where('status_moderasi', 'disetujui')->where('is_active', true)->count(),
         ];
 
-        $pengumuman = Announcement::where('is_published', true)
+        $pengumuman = Announcement::active()
             ->whereIn('target', ['semua', 'warga'])
+            ->orderByDesc('is_pinned')
             ->latest('created_at')
             ->take(3)
             ->get();

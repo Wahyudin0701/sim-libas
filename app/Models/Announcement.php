@@ -79,6 +79,63 @@ class Announcement extends Model
     }
 
     /**
+     * Scope: Pengumuman yang sudah berakhir (lewat periode tayang).
+     */
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('is_published', true)
+            ->whereNotNull('tanggal_berakhir')
+            ->where('tanggal_berakhir', '<', now());
+    }
+
+    /**
+     * Scope: Pengumuman yang terjadwal tayang di masa depan.
+     */
+    public function scopeScheduled(Builder $query): Builder
+    {
+        return $query->where('is_published', true)
+            ->whereNotNull('tanggal_tayang')
+            ->where('tanggal_tayang', '>', now());
+    }
+
+    /**
+     * Hitung status dinamis pengumuman secara real-time berdasarkan waktu sekarang.
+     * Mengembalikan: 'draft', 'terjadwal', 'tayang', atau 'berakhir'.
+     */
+    public function getStatusAttribute(): string
+    {
+        if (! $this->is_published) {
+            return 'draft';
+        }
+
+        $now = now();
+
+        if ($this->tanggal_tayang && $this->tanggal_tayang->isAfter($now)) {
+            return 'terjadwal';
+        }
+
+        if ($this->tanggal_berakhir && $this->tanggal_berakhir->isBefore($now)) {
+            return 'berakhir';
+        }
+
+        return 'tayang';
+    }
+
+    /**
+     * Label teks status yang mudah dibaca untuk antarmuka pengguna.
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'draft' => 'Draft',
+            'terjadwal' => 'Terjadwal',
+            'tayang' => 'Sedang Tayang',
+            'berakhir' => 'Sudah Berakhir',
+            default => 'Draft',
+        };
+    }
+
+    /**
      * Relasi ke pengurus/user yang membuat pengumuman.
      */
     public function pembuat(): BelongsTo

@@ -1,0 +1,167 @@
+services:
+  # ---------------------------------------------------------------------------
+  # 1. Aplikasi Laravel 12 & Filament v5 (PHP 8.2-FPM)
+  # ---------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: simlibas-app:latest
+    container_name: simlibas-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-sim_libas}
+      DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
+    volumes:
+      - ./app:/var/www/html/app
+      - ./database:/var/www/html/database
+      - ./routes:/var/www/html/routes
+      - ./resources:/var/www/html/resources
+      - ./config:/var/www/html/config
+      - ./public:/var/www/html/public
+      - simlibas_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - simlibas-net
+
+  # ---------------------------------------------------------------------------
+  # 2. Web Server (Nginx)
+  # ---------------------------------------------------------------------------
+  web:
+    image: nginx:alpine
+    container_name: simlibas-web
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      - ./public:/var/www/html/public:ro
+      - simlibas_storage:/var/www/html/storage:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - simlibas-net
+
+  # ---------------------------------------------------------------------------
+  # 3. Database Server (MySQL 8.0)
+  # ---------------------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: simlibas-db
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --sql-mode=STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
+    environment:
+      MYSQL_DATABASE: ${DOCKER_DB_DATABASE:-sim_libas}
+      MYSQL_USER: ${DOCKER_DB_USER:-sim_libas_user}
+      MYSQL_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
+      MYSQL_ROOT_PASSWORD: ${DOCKER_DB_ROOT_PASSWORD:-root_rahasia_rt15}
+    volumes:
+      - simlibas_db_data:/var/lib/mysql
+    ports:
+      - "${DB_FORWARD_PORT:-33066}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DOCKER_DB_ROOT_PASSWORD:-root_rahasia_rt15}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - simlibas-net
+
+  # ---------------------------------------------------------------------------
+  # 4. Background Queue Worker (Notifikasi, Iuran, dll)
+  # ---------------------------------------------------------------------------
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: simlibas-app:latest
+    container_name: simlibas-queue
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-sim_libas}
+      DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
+    volumes:
+      - ./app:/var/www/html/app
+      - ./database:/var/www/html/database
+      - ./routes:/var/www/html/routes
+      - ./resources:/var/www/html/resources
+      - ./config:/var/www/html/config
+      - simlibas_storage:/var/www/html/storage
+    depends_on:
+      app:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - simlibas-net
+
+  # ---------------------------------------------------------------------------
+  # 5. Task Scheduler (Cron Otomatis per Menit)
+  # ---------------------------------------------------------------------------
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: simlibas-app:latest
+    container_name: simlibas-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-sim_libas}
+      DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
+    volumes:
+      - ./app:/var/www/html/app
+      - ./database:/var/www/html/database
+      - ./routes:/var/www/html/routes
+      - ./resources:/var/www/html/resources
+      - ./config:/var/www/html/config
+      - simlibas_storage:/var/www/html/storage
+    depends_on:
+      app:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - simlibas-net
+
+# -----------------------------------------------------------------------------
+# Persistent Volumes (Menjaga Data Tidak Hilang Saat Kontainer Di-Restart)
+# -----------------------------------------------------------------------------
+volumes:
+  simlibas_db_data:
+    name: simlibas_db_data
+  simlibas_storage:
+    name: simlibas_storage
+
+# -----------------------------------------------------------------------------
+# Isolated Bridge Network
+# -----------------------------------------------------------------------------
+networks:
+  simlibas-net:
+    name: simlibas-net
+    driver: bridge

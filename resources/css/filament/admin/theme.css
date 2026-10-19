@@ -1,290 +1,770 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@source '../../../vendor/filament/filament/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/forms/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/tables/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/infolists/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/notifications/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/widgets/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/schemas/resources/views/**/*.blade.php';
-@source '../../../vendor/filament/actions/resources/views/**/*.blade.php';
-@source '../../../app/Filament/**/*.php';
-@source '../../../resources/views/filament/**/*.blade.php';
+@source '../../../../vendor/filament/**/*.blade.php';
+@source '../../../../app/Filament/**/*.php';
+@source '../../../../resources/views/**/*.blade.php';
 
-/* ============================================================
- * SIM-LiBas RT 15 — Custom Filament Admin Panel Theme
- * Adaptasi Desain: Layout Modern IT All Role
- * ============================================================ */
+/* ==========================================================================
+ * SIM-LiBas RT 15 — Panel Pengurus (Admin) Theme
+ * Pola Desain: Opsi 1 (Full-Height Sidebar dengan Header Terpadu)
+ * Palet: Biru Utama (#0B3A85), Aksen (#19A7E8), Emas (#F2A900), Hijau (#1B7A3A)
+ * ========================================================================== */
+
+/* Hilangkan transisi/animasi meluncur saat reload awal halaman */
+html.preload-no-transition,
+html.preload-no-transition *,
+html.preload-no-transition *::before,
+html.preload-no-transition *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
+[x-cloak] {
+    display: none !important;
+}
 
 /* ----------------------------------------------------------------
- * 1. Global & Page Background
+ * 1. Global & Page Background (Harmoni dengan Homepage SIM-LiBas)
  * ---------------------------------------------------------------- */
 
 html, body, .fi-body {
-    background-color: #F8FAFC !important;
+    background-color: #F5F8FC !important;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
-    color: #0F172A !important;
+    color: #0F1F3D !important;
+    --topbar-height: 3.5rem !important;
 }
 
 .fi-main {
-    padding-top: 1.25rem !important;
-    padding-bottom: 2.5rem !important;
-    max-width: 1440px !important;
+    width: 100% !important;
+    max-width: none !important;
 }
 
 /* ----------------------------------------------------------------
- * 2. Topbar: Pure White, Minimalist & Clean (IT All Role)
+ * 2. Header Halaman (Topbar) — Solid Putih & Rapi
  * ---------------------------------------------------------------- */
 
 .fi-topbar {
     background-color: #ffffff !important;
-    border-bottom: 1px solid #E2E8F0 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
-    height: 4.25rem !important;
+    border-bottom: 1px solid #DDE5F0 !important;
+    box-shadow: 0 1px 4px rgba(11, 58, 133, 0.04) !important;
+    height: 3.5rem !important;
     --tw-ring-color: transparent !important;
+}
+
+/* Hilangkan padding kiri topbar di desktop agar garis vertikal sinkron 100% dengan sidebar */
+@media (min-width: 1024px) {
+    .fi-topbar {
+        padding-left: 0 !important;
+    }
 }
 
 .fi-topbar-ctn {
     background-color: #ffffff !important;
 }
 
-/* Topbar Buttons & Icons */
-.fi-topbar .fi-icon-btn,
-.fi-topbar button {
-    color: #64748B !important;
-    transition: all 0.15s ease !important;
-}
-
-.fi-topbar .fi-icon-btn:hover,
-.fi-topbar button:hover {
-    color: #0B3A85 !important;
-    background-color: #F1F5F9 !important;
-}
-
-/* Topbar User Avatar Circle (Mirip hijau 'A' di IT All Role, versi SIM-LiBas biru #0B3A85) */
+/* Avatar User di Ujung Kanan Topbar (Hijau Segar #166534, Tidak Hitam) */
 .fi-user-avatar {
-    background-color: #0B3A85 !important;
+    background-color: #166534 !important;
     color: #ffffff !important;
     font-weight: 700 !important;
     border-radius: 9999px !important;
-    border: 2px solid #E2E8F0 !important;
+    border: 2px solid #D2EBD9 !important;
+}
+
+/* Tombol Logout Berwarna Merah di Dropdown User Menu */
+.fi-user-menu form[action*="logout"] button,
+.fi-dropdown-list-item:has(form[action*="logout"]),
+form[action*="logout"] .fi-dropdown-list-item {
+    color: #DC2626 !important;
+}
+
+.fi-user-menu form[action*="logout"] button svg,
+.fi-dropdown-list-item:has(form[action*="logout"]) svg,
+form[action*="logout"] .fi-dropdown-list-item svg {
+    color: #DC2626 !important;
+}
+
+.fi-user-menu form[action*="logout"] button:hover,
+.fi-dropdown-list-item:has(form[action*="logout"]):hover,
+form[action*="logout"] .fi-dropdown-list-item:hover {
+    background-color: #FEF2F2 !important;
+    color: #B91C1C !important;
+}
+
+.fi-user-menu form[action*="logout"] button:hover svg,
+.fi-dropdown-list-item:has(form[action*="logout"]):hover svg,
+form[action*="logout"] .fi-dropdown-list-item:hover svg {
+    color: #B91C1C !important;
+}
+
+/* Judul Halaman di Topbar (Dashboard) */
+.fi-topbar-page-title {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.fi-topbar-page-title span {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    color: #0F1F3D !important;
+    letter-spacing: -0.02em !important;
 }
 
 /* ----------------------------------------------------------------
- * 3. Logo SIM-LiBas: Tajam, Alami, Tanpa Filter Rusak
+ * 3. HEADER TERPADU: BRAND LOGO (KIRI) & TOMBOL COLLAPSE (KANAN)
  * ---------------------------------------------------------------- */
 
-.fi-logo {
-    filter: none !important;
-    -webkit-filter: none !important;
-    object-fit: contain !important;
-    height: 2.75rem !important;
-    max-height: 2.75rem !important;
-    width: auto !important;
-    display: block !important;
-    transition: opacity 0.2s ease !important;
-}
+/* Di Desktop: .fi-topbar-start bertindak sebagai Brand Header yang lebarnya
+   selaras 100% dengan sidebar di bawahnya dan dibatasi garis pemisah vertikal */
+@media (min-width: 1024px) {
+    .fi-topbar-start {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        width: var(--sidebar-width, 15rem) !important;
+        min-width: var(--sidebar-width, 15rem) !important;
+        max-width: var(--sidebar-width, 15rem) !important;
+        border-right: 1px solid #DDE5F0 !important;
+        box-sizing: border-box !important;
+        padding-left: 1rem !important;        /* Jarak nyaman dari tepi layar */
+        padding-right: 0.75rem !important;    /* Jarak tombol collapse dari garis pembatas */
+        margin: 0 !important;
+        margin-right: 0 !important;
+        transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                    min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                    max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                    padding 0.25s ease !important;
+    }
 
-.fi-topbar-start .fi-logo {
-    filter: none !important;
-    -webkit-filter: none !important;
-    height: 2.5rem !important;
-    margin-left: 0.5rem !important;
-}
+    /* Logo SIM-LiBas berada di KIRI (order: 1) */
+    .fi-topbar-start > a,
+    .fi-topbar-start > .fi-logo {
+        order: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        height: auto !important;
+        max-height: 2.25rem !important;
+        width: auto !important;
+        text-decoration: none !important;
+    }
 
-/* ----------------------------------------------------------------
- * 4. Sidebar: Solid Pure White & Hidden Scrollbar (IT All Role)
- * ---------------------------------------------------------------- */
+    .fi-topbar-start .fi-logo {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+    }
 
-.fi-sidebar,
-.fi-sidebar.fi-sidebar-open {
-    background-color: #ffffff !important;
-    border-right: 1px solid #E2E8F0 !important;
-    box-shadow: none !important;
-    width: var(--sidebar-width, 16.5rem) !important;
-}
+    /* Tombol Collapse Sidebar berada di KANAN (order: 2), rapi di batas tepi sidebar */
+    .fi-topbar-collapse-sidebar-btn-ctn {
+        order: 2 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
 
-/* Mobile sidebar backdrop & solid white */
-@media (max-width: 1024px) {
-    .fi-sidebar.fi-sidebar-open {
-        background-color: #ffffff !important;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        --tw-ring-color: transparent !important;
+    .fi-topbar-collapse-sidebar-btn-ctn button {
+        width: 1.875rem !important;
+        height: 1.875rem !important;
+        border-radius: 8px !important;
+        color: #5B6B82 !important;
+        background-color: #F5F8FC !important;
+        border: 1px solid #DDE5F0 !important;
+        transition: all 0.15s ease !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .fi-topbar-collapse-sidebar-btn-ctn button .fi-icon,
+    .fi-topbar-collapse-sidebar-btn-ctn button svg {
+        width: 1rem !important;
+        height: 1rem !important;
+        display: block !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Pastikan Alpine.js x-show dihormati: tombol yang disembunyikan tidak muncul ganda */
+    .fi-topbar-collapse-sidebar-btn-ctn button[style*="display: none"],
+    .fi-topbar-collapse-sidebar-btn-ctn button[hidden] {
+        display: none !important;
+    }
+
+    .fi-topbar-collapse-sidebar-btn-ctn button:hover {
+        background-color: #0B3A85 !important;
+        color: #ffffff !important;
+        border-color: #0B3A85 !important;
+        box-shadow: 0 2px 6px rgba(11, 58, 133, 0.2) !important;
+    }
+
+    /* Feedback klik taktil seketika (0ms) saat ditekan */
+    .fi-topbar-collapse-sidebar-btn-ctn button:active {
+        transform: scale(0.92) !important;
+        background-color: #0B3A85 !important;
+        color: #ffffff !important;
+    }
+
+    /* KETIKA SIDEBAR COLLAPSED (TERTUTUP):
+       Header menyusut tepat menjadi 4rem (64px), logo teks disembunyikan,
+       dan tombol expand (>) berada persis di tengah rel 4rem. */
+    html.sidebar-is-collapsed .fi-topbar-start,
+    body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-topbar-start {
+        width: var(--collapsed-sidebar-width, 4rem) !important;
+        min-width: var(--collapsed-sidebar-width, 4rem) !important;
+        max-width: var(--collapsed-sidebar-width, 4rem) !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        justify-content: center !important;
+    }
+
+    html.sidebar-is-collapsed .fi-topbar-start > a,
+    html.sidebar-is-collapsed .fi-topbar-start .fi-logo,
+    body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-topbar-start > a,
+    body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-topbar-start .fi-logo {
+        display: none !important;
+    }
+
+    html.sidebar-is-collapsed .fi-topbar-collapse-sidebar-btn-ctn,
+    body:has(.fi-sidebar:not(.fi-sidebar-open)) .fi-topbar-collapse-sidebar-btn-ctn {
+        margin: 0 auto !important;
+    }
+
+    /* Switch ikon tombol collapse & expand secara instan pada frame klik */
+    html.sidebar-is-collapsed .fi-topbar-close-collapse-sidebar-btn {
+        display: none !important;
+    }
+
+    html.sidebar-is-collapsed .fi-topbar-open-collapse-sidebar-btn {
+        display: flex !important;
     }
 }
 
-/* Sidebar Header dengan Logo */
-.fi-sidebar-header {
-    height: 4.25rem !important;
-    padding: 0.75rem 1.25rem !important;
-    border-bottom: 1px solid #E2E8F0 !important;
-    display: flex !important;
-    align-items: center !important;
-    background-color: #ffffff !important;
+/* Di Mobile: Sembunyikan Logo di Topbar agar bersih hanya ada Hamburger & Judul Halaman */
+@media (max-width: 1023px) {
+    .fi-topbar-start {
+        display: none !important;
+    }
+
+    .fi-topbar-collapse-sidebar-btn-ctn {
+        display: none !important;
+    }
+
+    .fi-topbar {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .fi-topbar-page-title {
+        display: flex !important;
+        align-items: center !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .fi-topbar-page-title span {
+        font-size: 1.125rem !important;
+        font-weight: 800 !important;
+        color: #0F1F3D !important;
+    }
+
+    /* Tampilkan Header Logo di dalam Sidebar pada Mobile */
+    .fi-sidebar-header-ctn {
+        display: block !important;
+    }
+
+    .fi-sidebar-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 3.5rem !important;
+        padding-left: 1rem !important;
+        padding-right: 0.75rem !important;
+        border-bottom: 1px solid #DDE5F0 !important;
+        background-color: #ffffff !important;
+        box-sizing: border-box !important;
+    }
+
+    .fi-sidebar-header-logo-ctn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
+
+    .fi-sidebar-header .fi-logo {
+        height: auto !important;
+        max-height: 2rem !important;
+        filter: none !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Transisi Halus & Mulus Sidebar Drawer di Mobile */
+    .fi-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        z-index: 50 !important;
+        width: var(--sidebar-width, 15rem) !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        background-color: #ffffff !important;
+        box-sizing: border-box !important;
+        box-shadow: none !important;
+        transform: translate3d(-100%, 0, 0) !important;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease !important;
+        will-change: transform !important;
+    }
+
+    .fi-sidebar.fi-sidebar-open {
+        transform: translate3d(0, 0, 0) !important;
+        box-shadow: 0 20px 25px -5px rgba(15, 31, 61, 0.18), 0 8px 10px -6px rgba(15, 31, 61, 0.12) !important;
+    }
+
+    /* Overlay / Backdrop lembut saat sidebar terbuka di mobile */
+    .fi-sidebar-close-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 40 !important;
+        background-color: rgba(15, 31, 61, 0.45) !important;
+        backdrop-filter: blur(2px) !important;
+        -webkit-backdrop-filter: blur(2px) !important;
+        transition: opacity 0.3s ease !important;
+    }
 }
 
-/* HILANGKAN SCROLLBAR SIDEBAR 100% (Permintaan Pengguna) */
+/* ----------------------------------------------------------------
+ * 4. SIDEBAR NAVIGASI: FULL-HEIGHT & DUAL-STATE (EXPANDED & COLLAPSED)
+ * ---------------------------------------------------------------- */
+
+.fi-sidebar {
+    background-color: #ffffff !important;
+    border-right: 1px solid #DDE5F0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Di Layar Desktop (>= 1024px): Sticky Sidebar & Smooth Collapse Width */
+@media (min-width: 1024px) {
+    .fi-sidebar {
+        position: sticky !important;
+        top: var(--topbar-height, 3.5rem) !important;
+        height: calc(100vh - var(--topbar-height, 3.5rem)) !important;
+        transform: none !important;
+        box-shadow: none !important;
+        transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 20 !important;
+    }
+
+    /* Lebar Sidebar Saat Terbuka di Desktop */
+    .fi-sidebar,
+    .fi-sidebar.fi-sidebar-open {
+        width: var(--sidebar-width, 15rem) !important;
+    }
+
+    /* Header default sidebar disembunyikan di Desktop karena sudah terpadu di Topbar-start */
+    .fi-sidebar-header {
+        display: none !important;
+    }
+}
+
+/* Scrollbar Sidebar Bersih & Padding Lega dari Tepi Layar */
 .fi-sidebar-nav {
     overflow-y: auto !important;
     scrollbar-width: none !important;        /* Firefox */
     -ms-overflow-style: none !important;     /* IE & Edge */
-    padding: 1.25rem 0.875rem !important;
+    padding: 0.875rem 0.75rem !important;    /* Jarak proporsional dan ringkas */
 }
 
 .fi-sidebar-nav::-webkit-scrollbar {
-    display: none !important;                /* Chrome / Safari / Opera / Brave */
+    display: none !important;                /* Chrome, Safari, Edge, Brave */
     width: 0 !important;
     height: 0 !important;
 }
 
+/* Reset margin negatif bawaan Filament yang memotong padding kiri */
+.fi-sidebar-nav-groups {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    gap: 0.875rem !important;
+}
+
+.fi-sidebar-group {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.fi-sidebar-group-items {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Rel Ikon Ramping Saat Collapsed di Desktop */
+@media (min-width: 1024px) {
+    html.sidebar-is-collapsed .fi-sidebar,
+    .fi-sidebar:not(.fi-sidebar-open) {
+        width: var(--collapsed-sidebar-width, 4rem) !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-nav,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-nav {
+        padding: 0.75rem 0.375rem !important;
+    }
+
+    /* Sembunyikan item teks grup & tombol judul grup seketika (0ms) saat collapsed agar browser terbebas dari layout thrashing */
+    html.sidebar-is-collapsed .fi-sidebar-group-items,
+    html.sidebar-is-collapsed .fi-sidebar-group-btn {
+        display: none !important;
+    }
+
+    /* Tampilkan trigger dropdown kategori segera */
+    html.sidebar-is-collapsed .fi-sidebar-group-dropdown-trigger-btn {
+        display: flex !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-item-btn,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-btn {
+        justify-content: center !important;
+        padding: 0.5rem 0.375rem !important;
+        width: 100% !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+        background-color: #0B3A85 !important;
+        box-shadow: 0 4px 12px rgba(11, 58, 133, 0.22) !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+        color: #ffffff !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-item-btn::before,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-btn::before {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    .fi-sidebar.fi-sidebar-open {
+        background-color: #ffffff !important;
+        box-shadow: 0 10px 25px -5px rgba(11, 58, 133, 0.12) !important;
+        --tw-ring-color: transparent !important;
+    }
+}
+
 /* ----------------------------------------------------------------
- * 5. Navigation Items & Groups (Pill Style IT All Role)
+ * 5. Menu Navigasi Sidebar (Opsi 1: Clean Indent & Soft-Pill)
  * ---------------------------------------------------------------- */
 
+/* Hilangkan Garis Pohon & Titik Abu-abu Bawaan Filament */
+.fi-sidebar-item-grouped-border {
+    display: none !important;
+}
+
+/* Judul Kategori Grup */
 .fi-sidebar-group-label {
-    color: #94A3B8 !important;
-    font-size: 0.6875rem !important;
-    font-weight: 700 !important;
+    color: #64748B !important;
+    font-size: 0.65rem !important;
+    font-weight: 800 !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    padding: 0.5rem 0.625rem 0.25rem !important;
+    padding: 0.375rem 0.5rem 0.2rem !important;
+}
+
+.fi-sidebar-group-btn {
+    padding-left: 0.375rem !important;
+    padding-right: 0.375rem !important;
+    border-radius: 8px !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.fi-sidebar-group-btn:hover {
+    background-color: #F8FAFC !important;
 }
 
 .fi-sidebar-group-collapse-btn {
     color: #94A3B8 !important;
 }
 
+/* Tombol Item Menu */
 .fi-sidebar-item-btn {
-    border-radius: 10px !important;
-    padding: 0.5rem 0.75rem !important;
-    margin-bottom: 2px !important;
+    border-radius: 8px !important;
+    padding: 0.4375rem 0.625rem !important;
+    margin-bottom: 1px !important;
     transition: all 0.15s ease !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.625rem !important;
 }
 
 .fi-sidebar-item-label {
-    font-size: 0.84375rem !important;
+    font-size: 0.8125rem !important;
     font-weight: 500 !important;
-    color: #475569 !important;
+    color: #334A6E !important;
+    transition: color 0.15s ease !important;
 }
 
-.fi-sidebar-item-btn > .fi-icon {
-    color: #64748B !important;
-    width: 1.25rem !important;
-    height: 1.25rem !important;
+.fi-sidebar-item-btn > .fi-icon,
+.fi-sidebar-item-icon {
+    color: #5B6B82 !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+    flex-shrink: 0 !important;
+    transition: color 0.15s ease !important;
 }
 
-/* Hover state: background abu-biru muda halus */
+/* Efek Hover Menu: Halus & Nyaman */
 .fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover {
-    background-color: #F1F5F9 !important;
+    background-color: #F4F7FB !important;
 }
 
-.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover .fi-sidebar-item-label {
-    color: #0B3A85 !important;
-    font-weight: 600 !important;
-}
-
-.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon {
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover .fi-sidebar-item-label,
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover > .fi-icon,
+.fi-sidebar-item.fi-sidebar-item-has-url > .fi-sidebar-item-btn:hover .fi-sidebar-item-icon {
     color: #0B3A85 !important;
 }
 
-/* ACTIVE STATE: Solid Blue Pill (Adaptasi tombol hijau Dashboard di IT All Role) */
+/* Item Menu Aktif: Gaya Soft-Pill Biru Pastel Modern (#EBF3FC) */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
-    background-color: #0B3A85 !important;
-    box-shadow: 0 2px 6px rgba(11, 58, 133, 0.22) !important;
+    background-color: #EBF3FC !important;
+    box-shadow: none !important;
 }
 
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
-    color: #ffffff !important;
-    font-weight: 600 !important;
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: #0B3A85 !important;
+    font-weight: 700 !important;
 }
-
-.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
-    color: #ffffff !important;
-}
-
-/* ----------------------------------------------------------------
- * 6. Sidebar User Footer
- * ---------------------------------------------------------------- */
 
 .fi-sidebar-footer {
-    border-top: 1px solid #E2E8F0 !important;
-    padding: 0.75rem !important;
+    border-top: 1px solid #DDE5F0 !important;
+    padding: 0.625rem 0.75rem !important;
     margin: 0 !important;
     background-color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
 }
 
-.fi-sidebar .fi-user-menu-trigger {
-    border-radius: 10px !important;
-    padding: 0.5rem 0.625rem !important;
-    transition: background-color 0.15s ease !important;
-}
+@media (min-width: 1024px) {
+    html.sidebar-is-collapsed .fi-sidebar-footer-user-info,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-footer-user-info {
+        display: none !important;
+    }
 
-.fi-sidebar .fi-user-menu-trigger:hover {
-    background-color: #F1F5F9 !important;
+    html.sidebar-is-collapsed .fi-sidebar-footer,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-footer {
+        padding: 0.625rem 0.375rem !important;
+        justify-content: center !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-footer-content,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-footer-content {
+        justify-content: center !important;
+    }
+
+    html.sidebar-is-collapsed .fi-sidebar-footer-logout-form,
+    .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-footer-logout-form {
+        margin: 0 auto !important;
+    }
 }
 
 /* ----------------------------------------------------------------
- * 7. Page Header / Breadcrumbs
+ * 6. Header Judul Halaman (Dashboard & Resource Pages)
  * ---------------------------------------------------------------- */
 
-.fi-header {
-    margin-bottom: 1.25rem !important;
+.fi-page-header-main-ctn {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.5rem !important;
 }
 
 .fi-header-heading {
-    font-size: 1.5rem !important;
+    font-size: 1.25rem !important;
     font-weight: 800 !important;
-    color: #0F172A !important;
+    color: #0F1F3D !important;
     letter-spacing: -0.02em !important;
 }
 
+/* Kategori & Judul Halaman Standar SIM-LiBas (Dashboard & Resource Pages) */
+.sim-header-category {
+    display: block !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: #0B3A85 !important;
+    margin-bottom: 0.2rem !important;
+    line-height: 1 !important;
+}
+
+.sim-header-title {
+    display: block !important;
+    font-size: 1.375rem !important;
+    font-weight: 800 !important;
+    color: #0F1F3D !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.25 !important;
+}
+
+.fi-header-subheading {
+    color: #5B6B82 !important;
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    margin-top: 0.2rem !important;
+}
+
 /* ----------------------------------------------------------------
- * 8. Tables, Forms & Sections (Clean Modern Styling)
+ * 7. Komponen Tabel, Form & Card Filament Lainnya
  * ---------------------------------------------------------------- */
 
+/* Hover baris tabel lebih halus & nyaman */
+.fi-ta-row:hover {
+    background-color: #F8FAFC !important;
+}
+
 .fi-ta-ctn {
-    border-radius: 16px !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 4px rgba(11, 58, 133, 0.04) !important;
+    border: 1px solid #DDE5F0 !important;
     background-color: #ffffff !important;
     overflow: hidden !important;
 }
 
 .fi-ta-header-cell {
     background-color: #F8FAFC !important;
-    font-size: 0.6875rem !important;
+    font-size: 0.65rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.06em !important;
     text-transform: uppercase !important;
-    color: #64748B !important;
-    border-bottom: 1px solid #E2E8F0 !important;
+    color: #5B6B82 !important;
+    border-bottom: 1px solid #DDE5F0 !important;
+    padding: 0.5rem 0.75rem !important;
+}
+
+.fi-ta-cell {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.8125rem !important;
 }
 
 .fi-section {
-    border-radius: 16px !important;
-    border: 1px solid #E2E8F0 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 12px !important;
+    border: 1px solid #DDE5F0 !important;
+    box-shadow: 0 1px 4px rgba(11, 58, 133, 0.04) !important;
     background: #ffffff !important;
 }
 
 .fi-section-header-ctn {
-    border-bottom: 1px solid #F1F5F9 !important;
-    padding: 1rem 1.5rem !important;
+    border-bottom: 1px solid #EEF3FB !important;
+    padding: 0.625rem 1rem !important;
+}
+
+.fi-section-content-ctn {
+    padding: 0.875rem 1rem !important;
 }
 
 .fi-section-header-heading {
     font-weight: 700 !important;
-    color: #0F172A !important;
-    font-size: 1rem !important;
+    color: #0F1F3D !important;
+    font-size: 0.9375rem !important;
 }
 
 .fi-btn.fi-color-primary {
     border-radius: 10px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    font-size: 0.8125rem !important;
+    min-height: 2.125rem !important;
+    padding: 0.375rem 0.75rem !important;
     background-color: #0B3A85 !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease !important;
 }
 
-/* Hapus AI Slop info box */
+.fi-btn.fi-color-primary,
+.fi-btn.fi-color-primary *,
+.fi-btn.fi-color-primary .fi-btn-label,
+.fi-btn.fi-color-primary span,
+.fi-btn.fi-color-primary svg {
+    color: #ffffff !important;
+}
+
+.fi-btn.fi-color-primary:hover {
+    background-color: #0B2F6B !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(11, 47, 107, 0.25) !important;
+}
+
+.fi-btn.fi-color-primary:hover *,
+.fi-btn.fi-color-primary:hover .fi-btn-label,
+.fi-btn.fi-color-primary:hover span,
+.fi-btn.fi-color-primary:hover svg {
+    color: #ffffff !important;
+}
+
+.fi-input-wrp {
+    border-radius: 10px !important;
+    font-size: 0.8125rem !important;
+    min-height: 2.25rem !important;
+}
+
+.fi-input {
+    font-size: 0.8125rem !important;
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+}
+
+.fi-fo-field-wrp-label {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: #334A6E !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.fi-modal-close-overlay {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background-color: rgba(15, 23, 42, 0.45) !important;
+}
+
+.fi-modal-window {
+    border-radius: 16px !important;
+}
+
+.fi-modal-header {
+    padding: 0.875rem 1.25rem !important;
+}
+
+.fi-modal-content {
+    padding: 1rem 1.25rem !important;
+}
+
+.fi-modal-footer {
+    padding: 0.75rem 1.25rem !important;
+}
+
+.fi-pagination {
+    font-size: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+}
+
+.fi-pagination-record-count {
+    font-size: 0.75rem !important;
+}
+
+.fi-pagination-items button {
+    height: 1.875rem !important;
+    min-width: 1.875rem !important;
+    font-size: 0.75rem !important;
+}
+
 .fi-wi-filament-info {
     display: none !important;
 }

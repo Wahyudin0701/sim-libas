@@ -22,6 +22,8 @@ class MsmeProfileResource extends Resource
 {
     protected static ?string $model = MsmeProfile::class;
 
+    protected static ?int $navigationSort = 1;
+
     protected static string|UnitEnum|null $navigationGroup = 'Kampung Digital';
 
     protected static ?string $navigationLabel = 'Katalog UMKM Warga';
@@ -31,6 +33,17 @@ class MsmeProfileResource extends Resource
     protected static ?string $pluralModelLabel = 'Katalog UMKM Warga';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-storefront';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'sekretaris'])
+            || $user->can('moderasi_umkm')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

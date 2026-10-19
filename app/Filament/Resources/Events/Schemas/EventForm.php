@@ -19,6 +19,9 @@ class EventForm
                     ->required(),
                 Textarea::make('deskripsi')
                     ->columnSpanFull(),
+                TextInput::make('penyelenggara')
+                    ->default('Pengurus RT 15')
+                    ->maxLength(150),
                 TextInput::make('lokasi'),
                 DateTimePicker::make('tanggal_mulai')
                     ->required(),

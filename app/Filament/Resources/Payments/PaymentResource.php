@@ -20,6 +20,8 @@ class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
+    protected static ?int $navigationSort = 3;
+
     protected static string|UnitEnum|null $navigationGroup = 'Keuangan RT';
 
     protected static ?string $navigationLabel = 'Validasi Pembayaran';
@@ -29,6 +31,17 @@ class PaymentResource extends Resource
     protected static ?string $pluralModelLabel = 'Validasi Pembayaran';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
+
+    public static function canViewAny(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        return (bool) ($user && (
+            $user->hasAnyRole(['super_admin', 'admin', 'bendahara'])
+            || $user->can('validasi_pembayaran')
+        ));
+    }
 
     public static function form(Schema $schema): Schema
     {

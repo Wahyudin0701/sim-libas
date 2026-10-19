@@ -19,6 +19,11 @@ class DatabaseSeeder extends Seeder
             FeeTypeSeeder::class,
             WasteTypeSeeder::class,
             UserAndResidentSeeder::class,
+            LetterSeeder::class,
+            CashTransactionSeeder::class,
+            PaymentSeeder::class,
+            CommunicationAndSecuritySeeder::class,
+            KampungDigitalSeeder::class,
         ]);
     }
 }

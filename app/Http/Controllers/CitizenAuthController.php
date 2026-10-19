@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Resident;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class CitizenAuthController extends Controller
@@ -24,7 +26,7 @@ class CitizenAuthController extends Controller
     }
 
     /**
-     * Proses autentikasi login warga (email atau nomor HP)
+     * Proses autentikasi login warga (NIK, email, atau nomor HP)
      */
     public function login(Request $request): RedirectResponse
     {
@@ -33,17 +35,35 @@ class CitizenAuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        $loginInput = trim($credentials['login']);
+        $password = $credentials['password'];
+        $remember = $request->boolean('remember');
 
-        $attemptCredentials = [
-            $loginField => $credentials['login'],
-            'password' => $credentials['password'],
-        ];
+        $user = null;
 
-        if (Auth::attempt($attemptCredentials, $request->boolean('remember'))) {
+        // 1. Cek jika input adalah NIK 16 digit angka
+        if (preg_match('/^\d{16}$/', $loginInput)) {
+            $nikHash = hash('sha256', $loginInput);
+            $resident = Resident::where('nik_hash', $nikHash)->first();
+            if ($resident && $resident->user_id) {
+                $user = User::find($resident->user_id);
+            }
+        }
+
+        // 2. Jika bukan NIK atau belum ketemu, cek via email
+        if (!$user && filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
+            $user = User::where('email', $loginInput)->first();
+        }
+
+        // 3. Jika belum ketemu, cek via nomor telepon
+        if (!$user) {
+            $user = User::where('phone', $loginInput)->first();
+        }
+
+        // 4. Verifikasi kredensial dan login
+        if ($user && Hash::check($password, $user->password)) {
+            Auth::login($user, $remember);
             $request->session()->regenerate();
-
-            $user = Auth::user();
 
             if ($user->status !== 'aktif') {
                 Auth::logout();
@@ -66,7 +86,7 @@ class CitizenAuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Nomor HP/Email atau kata sandi yang Anda masukkan salah.',
+            'login' => 'NIK, Nomor HP, Email, atau kata sandi yang Anda masukkan salah.',
         ])->onlyInput('login');
     }
 

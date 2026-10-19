@@ -139,7 +139,7 @@
                 {{-- Input Email atau HP --}}
                 <div>
                     <label for="login" class="block text-xs font-bold text-primary-900 uppercase tracking-wider mb-2">
-                        Email atau Nomor HP (WhatsApp)
+                        NIK (16 Digit), Nomor HP, atau Email
                     </label>
                     <input
                         type="text"
@@ -149,7 +149,7 @@
                         required
                         autofocus
                         autocomplete="username"
-                        placeholder="warga.dedi@simlibas.id atau 0812..."
+                        placeholder="Contoh: 157101... (NIK) atau 0812... atau email"
                         class="w-full px-4 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
                     >
                 </div>
@@ -216,28 +216,26 @@
                 </button>
             </form>
 
-            {{-- Divider: Belum punya akun? (Persis referensi) --}}
+            {{-- Divider: Akses Portal Lainnya --}}
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-border-soft"></div>
                 </div>
                 <div class="relative flex justify-center">
-                    <span class="bg-white px-3 text-xs text-text-muted font-medium">Belum punya akun?</span>
+                    <span class="bg-white px-3 text-xs text-text-muted font-medium">Akses Portal Lainnya</span>
                 </div>
             </div>
 
-            {{-- 2 Tombol Pilihan (Persis layout tombol "Kelompok Tani" & "Umum" di referensi) --}}
+            {{-- 2 Tombol Pilihan (Portal Pengurus & Ke Beranda) --}}
             <div class="grid grid-cols-2 gap-3">
                 <a
-                    href="https://wa.me/6281274001515?text=Halo%20Pengurus%20RT%2015,%20saya%20warga%20ingin%20mengaktifkan%20akun%20Portal%20Warga%20SIM-LiBas."
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="{{ url('/admin/login') }}"
                     class="py-2.5 px-3 text-center border border-border-soft hover:border-primary-500 hover:bg-blue-50/50 rounded-xl text-xs font-bold text-primary-700 hover:text-primary-900 transition flex items-center justify-center gap-1.5"
                 >
-                    <svg class="w-3.5 h-3.5 text-green-600 fill-current shrink-0" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                    <svg class="w-3.5 h-3.5 text-primary-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
-                    <span>Aktivasi Warga</span>
+                    <span>Portal Pengurus</span>
                 </a>
 
                 <a
@@ -251,9 +249,15 @@
                 </a>
             </div>
 
+            {{-- Keterangan Aktivasi Warga di Bawah Tombol --}}
             <div class="mt-4 text-center">
-                <a href="/admin/login" class="text-[11px] text-text-muted hover:text-primary-700 transition font-medium underline">
-                    Masuk sebagai Pengurus RT
+                <a
+                    href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin mengaktifkan akun Portal Warga SIM-LiBas.') }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs text-text-muted hover:text-primary-700 transition font-medium inline-block"
+                >
+                    Belum punya akun? <span class="font-bold text-primary-700 hover:underline">Aktivasi Warga</span>
                 </a>
             </div>
         </div>

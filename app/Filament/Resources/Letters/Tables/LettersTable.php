@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Letters\Tables;
 
 use App\Models\Letter;
+use App\Services\NotificationService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -109,12 +110,23 @@ class LettersTable
                             'tanggal_disetujui' => now(),
                         ]);
 
+                        // Kirim notifikasi sistem ke warga pemohon
+                        NotificationService::notifyLetterApproved($record);
+
                         FilamentToast::make()
                             ->title('Surat Berhasil Disetujui')
                             ->body("Nomor Surat: {$record->nomor_surat}")
                             ->success()
                             ->send();
                     }),
+
+                Action::make('cetak')
+                    ->label('Cetak')
+                    ->icon('heroicon-o-printer')
+                    ->color('primary')
+                    ->url(fn (Letter $record): string => route('letters.print', $record))
+                    ->openUrlInNewTab()
+                    ->visible(fn (Letter $record): bool => $record->status === 'disetujui'),
 
                 Action::make('tolak')
                     ->label('Tolak')
@@ -133,6 +145,9 @@ class LettersTable
                             'alasan_tolak' => $data['alasan_tolak'],
                             'disetujui_oleh' => auth()->id(),
                         ]);
+
+                        // Kirim notifikasi sistem ke warga pemohon
+                        NotificationService::notifyLetterRejected($record, $data['alasan_tolak']);
 
                         FilamentToast::make()
                             ->title('Permohonan Surat Ditolak')
