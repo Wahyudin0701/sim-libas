@@ -149,9 +149,9 @@
         {{-- ====================================================================
              3. SEARCH BAR & MULTI DROPDOWN FILTER & RESET FILTER
              ==================================================================== --}}
-        <div class="flex flex-col lg:flex-row items-stretch lg:items-center lg:justify-between gap-2.5">
+        <div class="flex flex-col 2xl:flex-row items-stretch 2xl:items-center 2xl:justify-between gap-2.5 sm:gap-3">
             {{-- Search Bar --}}
-            <div class="relative w-full lg:max-w-md">
+            <div class="relative w-full 2xl:max-w-md">
                 <div class="relative flex items-center">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94A3B8]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,46 +183,48 @@
             </div>
 
             {{-- Filter Sisi Kanan (Event, Modul, Periode & Reset) --}}
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 flex-wrap">
-                {{-- Filter Event / Tindakan --}}
-                <div class="w-full sm:w-40">
-                    <select 
-                        wire:model.live="eventFilter" 
-                        class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium"
-                    >
-                        <option value="semua">Semua Tindakan</option>
-                        <option value="created">Data Dibuat (Created)</option>
-                        <option value="updated">Data Diubah (Updated)</option>
-                        <option value="deleted">Data Dihapus (Deleted)</option>
-                        <option value="login">Masuk (Login)</option>
-                    </select>
-                </div>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 w-full 2xl:w-auto">
+                    {{-- Filter Event / Tindakan --}}
+                    <div class="w-full 2xl:w-44">
+                        <select 
+                            wire:model.live="eventFilter" 
+                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                        >
+                            <option value="semua">Semua Tindakan</option>
+                            <option value="created">Data Dibuat (Created)</option>
+                            <option value="updated">Data Diubah (Updated)</option>
+                            <option value="deleted">Data Dihapus (Deleted)</option>
+                            <option value="login">Masuk (Login)</option>
+                        </select>
+                    </div>
 
-                {{-- Filter Modul --}}
-                <div class="w-full sm:w-44">
-                    <select 
-                        wire:model.live="moduleFilter" 
-                        class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium"
-                    >
-                        <option value="semua">Semua Modul</option>
-                        @foreach($availableModules as $key => $label)
-                            <option value="{{ $key }}">{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                    {{-- Filter Modul --}}
+                    <div class="w-full 2xl:w-44">
+                        <select 
+                            wire:model.live="moduleFilter" 
+                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                        >
+                            <option value="semua">Semua Modul</option>
+                            @foreach($availableModules as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                {{-- Filter Periode Waktu --}}
-                <div class="w-full sm:w-36">
-                    <select 
-                        wire:model.live="periodFilter" 
-                        class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium"
-                    >
-                        <option value="semua">Semua Waktu</option>
-                        <option value="hari_ini">Hari Ini</option>
-                        <option value="7_hari">7 Hari Terakhir</option>
-                        <option value="30_hari">30 Hari Terakhir</option>
-                        <option value="bulan_ini">Bulan Ini</option>
-                    </select>
+                    {{-- Filter Periode Waktu --}}
+                    <div class="w-full 2xl:w-40">
+                        <select 
+                            wire:model.live="periodFilter" 
+                            class="w-full py-2.5 px-3 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all cursor-pointer font-medium truncate"
+                        >
+                            <option value="semua">Semua Waktu</option>
+                            <option value="hari_ini">Hari Ini</option>
+                            <option value="7_hari">7 Hari Terakhir</option>
+                            <option value="30_hari">30 Hari Terakhir</option>
+                            <option value="bulan_ini">Bulan Ini</option>
+                        </select>
+                    </div>
                 </div>
 
                 {{-- Tombol Reset Filter --}}
@@ -230,7 +232,7 @@
                     <button 
                         type="button" 
                         wire:click="resetFilters" 
-                        class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs"
+                        class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold transition-all cursor-pointer whitespace-nowrap shadow-2xs shrink-0"
                         title="Kembalikan semua filter ke kondisi awal"
                     >
                         <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

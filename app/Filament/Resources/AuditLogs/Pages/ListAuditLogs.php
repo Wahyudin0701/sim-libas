@@ -50,6 +50,26 @@ class ListAuditLogs extends ListRecords
         }
     }
 
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
+
+    public function getHeading(): string
+    {
+        return '';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [];
+    }
+
     public function updatedSearch(): void
     {
         $this->resetPage();
