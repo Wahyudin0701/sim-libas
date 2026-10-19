@@ -23,6 +23,7 @@ services:
       DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
       DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
     volumes:
+      - ./.env:/var/www/html/.env
       - ./app:/var/www/html/app
       - ./database:/var/www/html/database
       - ./routes:/var/www/html/routes
@@ -108,6 +109,7 @@ services:
       DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
       DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
     volumes:
+      - ./.env:/var/www/html/.env
       - ./app:/var/www/html/app
       - ./database:/var/www/html/database
       - ./routes:/var/www/html/routes
@@ -147,6 +149,7 @@ services:
       DB_USERNAME: ${DOCKER_DB_USER:-sim_libas_user}
       DB_PASSWORD: ${DOCKER_DB_PASSWORD:-rahasia_rt15}
     volumes:
+      - ./.env:/var/www/html/.env
       - ./app:/var/www/html/app
       - ./database:/var/www/html/database
       - ./routes:/var/www/html/routes
