@@ -105,7 +105,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nomor ID KK, nama kepala keluarga, alamat, atau jenis iuran..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -190,7 +190,7 @@
         {{-- ====================================================================
              4. TABEL DATA TAGIHAN (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="statusFilter, feeTypeFilter, search, resetFilters, previousPage, nextPage, gotoPage" 
@@ -198,17 +198,17 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1100px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1100px] text-left border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[240px]">KARTU KELUARGA / KEPALA</th>
-                            <th class="py-2.5 px-3 min-w-[200px] whitespace-nowrap">JENIS IURAN</th>
-                            <th class="py-2.5 px-3 min-w-[130px] whitespace-nowrap">PERIODE</th>
-                            <th class="py-2.5 px-3 text-right min-w-[130px] whitespace-nowrap">NOMINAL</th>
-                            <th class="py-2.5 px-3 min-w-[125px] whitespace-nowrap">JATUH TEMPO</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 md:min-w-[240px]"><span class="md:hidden">KODE KK</span><span class="hidden md:inline">KARTU KELUARGA / KEPALA</span></th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[200px] whitespace-nowrap">JENIS IURAN</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[130px] whitespace-nowrap">PERIODE</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-right min-w-[130px] whitespace-nowrap">NOMINAL</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[125px] whitespace-nowrap">JATUH TEMPO</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center min-w-[90px] md:min-w-[110px] whitespace-nowrap">STATUS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center w-24 sm:w-28 md:w-auto md:min-w-[110px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -236,15 +236,15 @@
                                 data-status="{{ $inv->status }}"
                                 data-fee-type="{{ $inv->fee_type_id }}"
                             >
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $invoices->firstItem() ? ($invoices->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. KARTU KELUARGA --}}
-                                <td class="py-2.5 px-3">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-mono text-[11px] font-bold text-[#0B3A85] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                                {{-- 2. KARTU KELUARGA / KODE KK (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-mono text-[11px] font-bold text-[#0B3A85] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 shrink-0">
                                             {{ $inv->household?->id_kk ?? '-' }}
                                         </span>
                                         <span class="font-bold text-xs text-[#0F1F3D]">
@@ -256,25 +256,25 @@
                                     </div>
                                 </td>
 
-                                {{-- 3. JENIS IURAN --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 3. JENIS IURAN (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     <span class="font-semibold text-xs text-slate-800">
                                         {{ $inv->feeType?->nama ?? '-' }}
                                     </span>
                                 </td>
 
-                                {{-- 4. PERIODE --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap font-medium text-slate-700">
+                                {{-- 4. PERIODE (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap font-medium text-slate-700">
                                     {{ $inv->periode_label }}
                                 </td>
 
-                                {{-- 5. NOMINAL --}}
-                                <td class="py-2.5 px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900">
+                                {{-- 5. NOMINAL (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900">
                                     Rp {{ number_format($inv->jumlah, 0, ',', '.') }}
                                 </td>
 
-                                {{-- 6. JATUH TEMPO --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 6. JATUH TEMPO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     @if($inv->tanggal_jatuh_tempo)
                                         <span class="text-xs text-slate-700 font-medium">
                                             {{ \Carbon\Carbon::parse($inv->tanggal_jatuh_tempo)->translatedFormat('d M Y') }}
@@ -284,8 +284,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 7. STATUS --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 7. STATUS (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     @if($inv->status === 'lunas')
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                             Lunas
@@ -301,8 +301,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 8. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 8. AKSI (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
                                         {{-- Tombol Detail Tagihan (Mata Navy) --}}
                                         <button 

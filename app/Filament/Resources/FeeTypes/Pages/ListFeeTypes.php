@@ -30,6 +30,10 @@ class ListFeeTypes extends ListRecords
     public string $periode = 'bulanan';
     public bool $is_active = true;
 
+    // State Modal Detail
+    public bool $detailModalOpen = false;
+    public ?FeeType $selectedFeeType = null;
+
     public function mount(): void
     {
         if (request()->has('search') && empty($this->search)) {
@@ -128,6 +132,18 @@ class ListFeeTypes extends ListRecords
         $this->periode = $ft->periode;
         $this->is_active = (bool) $ft->is_active;
         $this->feeTypeModalOpen = true;
+    }
+
+    public function openDetail(int $id): void
+    {
+        $this->selectedFeeType = FeeType::withCount('invoices')->findOrFail($id);
+        $this->detailModalOpen = true;
+    }
+
+    public function closeDetail(): void
+    {
+        $this->detailModalOpen = false;
+        $this->selectedFeeType = null;
     }
 
     public function closeFormModal(): void

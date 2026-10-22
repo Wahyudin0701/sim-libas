@@ -115,4 +115,46 @@ class AuditLogTest extends TestCase
             ->assertSet('eventFilter', 'semua')
             ->assertSet('moduleFilter', 'semua');
     }
+
+    /**
+     * Memastikan aktivitas login dan logout tercatat di audit log.
+     */
+    public function test_user_login_and_logout_are_recorded_in_audit_log(): void
+    {
+        $initialLoginCount = AuditLog::where('event', 'login')->where('causer_id', $this->superAdmin->id)->count();
+
+        // 1. Simulasikan event Login (panggil dua kali untuk memastikan tidak terjadi duplikasi)
+        event(new \Illuminate\Auth\Events\Login('web', $this->superAdmin, false));
+        event(new \Illuminate\Auth\Events\Login('web', $this->superAdmin, false));
+
+        $loginLogs = AuditLog::where('event', 'login')
+            ->where('causer_id', $this->superAdmin->id)
+            ->get();
+
+        $this->assertCount($initialLoginCount + 1, $loginLogs);
+
+        $loginLog = $loginLogs->last();
+        $this->assertNotNull($loginLog);
+        $this->assertEquals('Masuk Sistem', $loginLog->action_label);
+        $this->assertEquals('Akun Pengguna', $loginLog->module_name);
+        $this->assertStringContainsString('Super Admin', $loginLog->description);
+
+        $props = $loginLog->getSafeProperties();
+        $this->assertEquals($this->superAdmin->email, $props['attributes']['email'] ?? null);
+
+        // 2. Simulasikan event Logout (panggil dua kali untuk memastikan tidak terjadi duplikasi)
+        $initialLogoutCount = AuditLog::where('event', 'logout')->where('causer_id', $this->superAdmin->id)->count();
+        event(new \Illuminate\Auth\Events\Logout('web', $this->superAdmin));
+        event(new \Illuminate\Auth\Events\Logout('web', $this->superAdmin));
+
+        $logoutLogs = AuditLog::where('event', 'logout')
+            ->where('causer_id', $this->superAdmin->id)
+            ->get();
+
+        $this->assertCount($initialLogoutCount + 1, $logoutLogs);
+
+        $logoutLog = $logoutLogs->last();
+        $this->assertNotNull($logoutLog);
+        $this->assertEquals('Keluar Sistem', $logoutLog->action_label);
+    }
 }

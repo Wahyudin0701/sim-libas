@@ -67,13 +67,13 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 flex-wrap">
+            <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 {{-- Tombol Primer: Tambah Role Baru --}}
                 <button 
                     type="button" 
                     @click="formModalOpen = true"
                     wire:click="openCreate" 
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0B3A85] hover:bg-[#07275E] text-white text-xs font-bold transition-all shadow-2xs hover:shadow-sm cursor-pointer"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#0B3A85] hover:bg-[#07275E] text-white text-xs font-bold transition-all shadow-2xs hover:shadow-sm cursor-pointer"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
@@ -86,73 +86,73 @@
         {{-- ====================================================================
              2. KARTU STATISTIK (KPI OVERVIEW)
              ==================================================================== --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             {{-- Card 1: Total Role --}}
-            <div class="bg-white rounded-xl p-4 border border-[#E2E8F0] shadow-2xs">
+            <div class="bg-white rounded-xl p-3 sm:p-4 border border-[#E2E8F0] shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Total Role</span>
-                    <span class="p-1.5 rounded-lg bg-blue-50 text-[#0B3A85]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Total Role</span>
+                    <span class="p-1 sm:p-1.5 rounded-lg bg-blue-50 text-[#0B3A85]">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                         </svg>
                     </span>
                 </div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-2xl font-black text-[#0F1F3D]">{{ $totalRoles }}</span>
-                    <span class="text-xs text-[#5B6B82] font-semibold">peran</span>
+                <div class="mt-1.5 sm:mt-2 flex items-baseline gap-1.5 sm:gap-2">
+                    <span class="text-xl sm:text-2xl font-black text-[#0F1F3D]">{{ $totalRoles }}</span>
+                    <span class="text-[11px] sm:text-xs text-[#5B6B82] font-semibold">peran</span>
                 </div>
-                <p class="text-[11px] text-[#94A3B8] mt-0.5">Struktur kewenangan di sistem</p>
+                <p class="text-[10px] sm:text-[11px] text-[#94A3B8] mt-0.5 truncate">Struktur kewenangan di sistem</p>
             </div>
 
             {{-- Card 2: Total Permissions --}}
-            <div class="bg-white rounded-xl p-4 border border-[#E2E8F0] shadow-2xs">
+            <div class="bg-white rounded-xl p-3 sm:p-4 border border-[#E2E8F0] shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Total Hak Akses</span>
-                    <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Total Hak Akses</span>
+                    <span class="p-1 sm:p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                         </svg>
                     </span>
                 </div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-2xl font-black text-[#0F1F3D]">{{ $totalPermissions }}</span>
-                    <span class="text-xs text-emerald-700 font-semibold">permissions</span>
+                <div class="mt-1.5 sm:mt-2 flex items-baseline gap-1.5 sm:gap-2">
+                    <span class="text-xl sm:text-2xl font-black text-[#0F1F3D]">{{ $totalPermissions }}</span>
+                    <span class="text-[11px] sm:text-xs text-emerald-700 font-semibold">permissions</span>
                 </div>
-                <p class="text-[11px] text-[#94A3B8] mt-0.5">Izin wewenang lintas modul</p>
+                <p class="text-[10px] sm:text-[11px] text-[#94A3B8] mt-0.5 truncate">Izin wewenang lintas modul</p>
             </div>
 
             {{-- Card 3: Pengguna Terdaftar --}}
-            <div class="bg-white rounded-xl p-4 border border-[#E2E8F0] shadow-2xs">
+            <div class="bg-white rounded-xl p-3 sm:p-4 border border-[#E2E8F0] shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Pengguna Berperan</span>
-                    <span class="p-1.5 rounded-lg bg-indigo-50 text-indigo-700">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Pengguna Berperan</span>
+                    <span class="p-1 sm:p-1.5 rounded-lg bg-indigo-50 text-indigo-700">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </span>
                 </div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-2xl font-black text-[#0F1F3D]">{{ $totalAssignedUsers }}</span>
-                    <span class="text-xs text-indigo-700 font-semibold">pengguna</span>
+                <div class="mt-1.5 sm:mt-2 flex items-baseline gap-1.5 sm:gap-2">
+                    <span class="text-xl sm:text-2xl font-black text-[#0F1F3D]">{{ $totalAssignedUsers }}</span>
+                    <span class="text-[11px] sm:text-xs text-indigo-700 font-semibold">pengguna</span>
                 </div>
-                <p class="text-[11px] text-[#94A3B8] mt-0.5">Akun dengan penugasan role</p>
+                <p class="text-[10px] sm:text-[11px] text-[#94A3B8] mt-0.5 truncate">Akun dengan penugasan role</p>
             </div>
 
             {{-- Card 4: Role Bawaan Sistem --}}
-            <div class="bg-white rounded-xl p-4 border border-[#E2E8F0] shadow-2xs">
+            <div class="bg-white rounded-xl p-3 sm:p-4 border border-[#E2E8F0] shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Role Sistem Inti</span>
-                    <span class="p-1.5 rounded-lg bg-purple-50 text-purple-700">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#5B6B82]">Role Sistem Inti</span>
+                    <span class="p-1 sm:p-1.5 rounded-lg bg-purple-50 text-purple-700">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
                     </span>
                 </div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <span class="text-2xl font-black text-[#0F1F3D]">{{ $coreRolesCount }}</span>
-                    <span class="text-xs text-purple-700 font-semibold">role inti</span>
+                <div class="mt-1.5 sm:mt-2 flex items-baseline gap-1.5 sm:gap-2">
+                    <span class="text-xl sm:text-2xl font-black text-[#0F1F3D]">{{ $coreRolesCount }}</span>
+                    <span class="text-[11px] sm:text-xs text-purple-700 font-semibold">role inti</span>
                 </div>
-                <p class="text-[11px] text-[#94A3B8] mt-0.5">Dilindungi dari penghapusan</p>
+                <p class="text-[10px] sm:text-[11px] text-[#94A3B8] mt-0.5 truncate">Dilindungi dari penghapusan</p>
             </div>
         </div>
 
@@ -172,7 +172,7 @@
                     <input 
                         type="text" 
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama role, slug, atau hak akses..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -224,7 +224,7 @@
         {{-- ====================================================================
              4. TABEL DATA ROLE & HAK AKSES (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="search, typeFilter, resetFilters, previousPage, nextPage, gotoPage" 
@@ -232,16 +232,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1000px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1000px] text-left border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[220px]">NAMA PERAN (ROLE) & SLUG</th>
-                            <th class="py-2.5 px-3 min-w-[270px]">DESKRIPSI & CAKUPAN TUGAS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">PENGGUNA / AKUN</th>
-                            <th class="py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">HAK AKSES</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">TIPE PERAN</th>
-                            <th class="py-2.5 px-3 text-center min-w-[150px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-3 min-w-[140px] md:min-w-[220px]">NAMA PERAN (ROLE) & SLUG</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[270px]">DESKRIPSI & CAKUPAN TUGAS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center min-w-[90px] md:min-w-[130px] whitespace-nowrap">PENGGUNA / AKUN</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">HAK AKSES</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">TIPE PERAN</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center min-w-[76px] md:min-w-[150px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -253,52 +253,55 @@
                             @endphp
                             <tr class="hover:bg-[#F8FAFC] transition-colors">
                                 {{-- 1. NO --}}
-                                <td class="py-3 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $roles->firstItem() ? ($roles->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
                                 {{-- 2. NAMA PERAN & SLUG --}}
                                 <td class="py-3 px-3">
-                                    <div class="font-extrabold text-[#0F1F3D] text-[13px]">
+                                    <div class="font-extrabold text-[#0F1F3D] hover:text-[#0B3A85] text-xs sm:text-[13px] cursor-pointer transition-colors" wire:click="openDetail({{ $role->id }})" title="Klik untuk lihat rincian hak akses">
                                         {{ $detail['label'] }}
                                     </div>
-                                    <div class="mt-0.5 flex items-center gap-1.5">
-                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                                            {{ $role->name }}
+                                    <div class="mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded font-mono text-[9.5px] sm:text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                             {{ $role->name }}
                                         </span>
-                                        <span class="text-[10px] text-slate-400 font-mono">
+                                        <span class="text-[9.5px] sm:text-[10px] text-slate-400 font-mono">
                                             #{{ $role->id }}
+                                        </span>
+                                        <span class="md:hidden inline-flex items-center px-1.5 py-0.2 rounded text-[8.5px] font-bold {{ $isCore ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }}">
+                                            {{ $isCore ? 'Inti' : 'Kustom' }}
                                         </span>
                                     </div>
                                 </td>
 
                                 {{-- 3. DESKRIPSI & CAKUPAN TUGAS --}}
-                                <td class="py-3 px-3">
+                                <td class="hidden md:table-cell py-3 px-3">
                                     <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                                         {{ $detail['desc'] }}
                                     </p>
                                 </td>
 
                                 {{-- 4. JUMLAH PENGGUNA (INTERACTIVE BADGE TO MANAGE ACCOUNTS) --}}
-                                <td class="py-3 px-3 text-center whitespace-nowrap">
+                                <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <button 
                                         type="button" 
                                         wire:click="openManageAccounts({{ $role->id }})"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold {{ $role->users_count > 0 ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300' : 'bg-slate-50 text-slate-400 border border-slate-200 hover:bg-slate-100' }} transition-all cursor-pointer group shadow-2xs"
+                                        class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold {{ $role->users_count > 0 ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300' : 'bg-slate-50 text-slate-400 border border-slate-200 hover:bg-slate-100' }} transition-all cursor-pointer group shadow-2xs"
                                         title="Klik untuk kelola akun, nama personil, email, dan password pemegang role ini"
                                     >
-                                        <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                         </svg>
                                         <span>{{ $role->users_count }} Akun</span>
-                                        <svg class="w-3 h-3 text-indigo-400 group-hover:text-indigo-600 transition-colors ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="hidden sm:inline-block w-3 h-3 text-indigo-400 group-hover:text-indigo-600 transition-colors ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                         </svg>
                                     </button>
                                 </td>
 
                                 {{-- 5. TOTAL HAK AKSES --}}
-                                <td class="py-3 px-3 text-center whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3 px-3 text-center whitespace-nowrap">
                                     @if($role->name === 'super_admin')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
                                             <svg class="w-3 h-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,7 +317,7 @@
                                 </td>
 
                                 {{-- 6. TIPE PERAN --}}
-                                <td class="py-3 px-3 text-center whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3 px-3 text-center whitespace-nowrap">
                                     @if($isCore)
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200" title="Role bawaan sistem yang esensial">
                                             <svg class="w-2.5 h-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,8 +333,8 @@
                                 </td>
 
                                 {{-- 7. AKSI (4 TOMBOL KONSISTEN) --}}
-                                <td class="py-3 px-3 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
+                                    <div class="inline-grid grid-cols-2 md:flex md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         {{-- Tombol 1: Kelola Akun & Kredensial (Indigo) --}}
                                         <button 
                                             type="button" 

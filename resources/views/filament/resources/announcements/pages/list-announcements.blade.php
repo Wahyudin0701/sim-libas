@@ -101,7 +101,7 @@
                         name="search"
                         value="{{ $search }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari judul pengumuman, isi pesan, atau target audiens..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -188,7 +188,7 @@
         {{-- ====================================================================
              4. TABEL DATA PENGUMUMAN (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="statusFilter, targetFilter, search, resetFilters, setStatus, previousPage, nextPage, gotoPage"
@@ -196,15 +196,15 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[460px] w-[50%]">Judul & Pesan Pengumuman</th>
-                            <th class="py-3 px-4 font-bold min-w-[150px] whitespace-nowrap">Target Audiens</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Periode Tayang</th>
-                            <th class="py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
-                            <th class="py-3 px-4 font-bold text-center w-40 min-w-[160px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold md:min-w-[460px] md:w-[50%]"><span class="md:hidden">Judul</span><span class="hidden md:inline">Judul & Pesan Pengumuman</span></th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[150px] whitespace-nowrap">Target Audiens</th>
+                            <th class="py-3 px-2.5 sm:px-4 font-bold whitespace-nowrap w-32 md:w-auto md:min-w-[160px]">Periode Tayang</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-12 md:w-40 whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -220,38 +220,40 @@
                                 data-pinned="{{ $item->is_pinned ? '1' : '0' }}"
                                 data-target="{{ $item->target }}"
                             >
-                                {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                {{-- Kolom Nomor Urut (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $announcements->firstItem() ? ($announcements->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- Kolom Judul & Ringkasan --}}
-                                <td class="py-3.5 px-4 min-w-[460px]">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-extrabold text-[#0F1F3D] text-[13px] sm:text-[14px] leading-snug hover:text-[#0B3A85] cursor-pointer" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
-                                            {{ $item->judul }}
-                                        </span>
+                                {{-- Kolom Judul & Ringkasan (Pesan disembunyikan di Mobile) --}}
+                                <td class="py-3.5 px-3 sm:px-4 md:min-w-[460px]">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
                                         @if($item->is_pinned)
-                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0" title="Pengumuman Disematkan di Posisi Teratas">
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 shrink-0 self-start md:order-last" title="Pengumuman Disematkan di Posisi Teratas">
                                                 <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
                                                     <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
                                                 </svg>
                                                 PIN
                                             </span>
                                         @endif
+                                        <span class="font-extrabold text-[#0F1F3D] text-[13px] sm:text-[14px] leading-snug hover:text-[#0B3A85] cursor-pointer" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
+                                            {{ $item->judul }}
+                                        </span>
                                     </div>
-                                    <p class="text-slate-500 text-[11px] sm:text-xs mt-1 leading-relaxed line-clamp-2">
+                                    {{-- Pesan pengumuman (Hanya Desktop) --}}
+                                    <p class="hidden md:block text-slate-500 text-[11px] sm:text-xs mt-1 leading-relaxed line-clamp-2">
                                         {{ Str::limit($item->isi, 130) }}
                                     </p>
-                                    <div class="flex items-center gap-2 mt-1.5 text-[10px] sm:text-[11px] text-slate-400 whitespace-nowrap">
+                                    {{-- Info Pembuat & Waktu (Hanya Desktop) --}}
+                                    <div class="hidden md:flex items-center gap-2 mt-1.5 text-[10px] sm:text-[11px] text-slate-400 whitespace-nowrap">
                                         <span>Dibuat: {{ $item->pembuat ? $item->pembuat->name : 'Pengurus RT' }}</span>
                                         <span>•</span>
                                         <span>{{ $item->created_at ? $item->created_at->diffForHumans() : '-' }}</span>
                                     </div>
                                 </td>
 
-                                {{-- Kolom Target Audiens --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Target Audiens (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @if($item->target === 'semua')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-[#0B3A85] border border-blue-200">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,17 +276,17 @@
                                 </td>
 
                                 {{-- Kolom Periode Tayang --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
-                                    <div class="text-[11px] font-bold text-slate-700">
+                                <td class="py-3.5 px-2.5 sm:px-4 whitespace-nowrap">
+                                    <div class="text-[10.5px] sm:text-[11px] font-bold text-slate-700">
                                         {{ $item->tanggal_tayang ? \Carbon\Carbon::parse($item->tanggal_tayang)->format('d M Y, H:i') : 'Langsung' }}
                                     </div>
-                                    <div class="text-[10px] text-slate-400 mt-0.5">
+                                    <div class="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5">
                                         s/d {{ $item->tanggal_berakhir ? \Carbon\Carbon::parse($item->tanggal_berakhir)->format('d M Y, H:i') : 'Tanpa batas' }}
                                     </div>
                                 </td>
 
-                                {{-- Kolom Status Dinamis --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Status Dinamis (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @if($item->status === 'tayang')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -312,8 +314,8 @@
                                 </td>
 
                                 {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         {{-- Toggle Pin (Kuning/Amber jika aktif, Abu-abu jika nonaktif) --}}
                                         <button 
                                             type="button" 

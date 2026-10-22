@@ -154,7 +154,7 @@ class ListLetterTypes extends ListRecords
             'deskripsi' => ['nullable', 'string', 'max:1000'],
             'format_nomor' => ['required', 'string', 'max:100'],
             'persyaratan_text' => ['nullable', 'string', 'max:2000'],
-            'urutan' => ['required', 'integer', 'min:0'],
+            'urutan' => ['nullable', 'integer', 'min:0'],
         ], [
             'nama.required' => 'Nama jenis surat pengantar wajib diisi.',
             'kode.required' => 'Kode singkat surat (misal: SP-SKCK) wajib diisi.',

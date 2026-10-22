@@ -137,7 +137,7 @@
                     <input 
                         type="text" 
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari ID KK, nomor KK, nama kepala keluarga, no telepon, atau alamat rumah..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-9 pr-9 py-2 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -201,7 +201,7 @@
         {{-- ====================================================================
              4. TABEL DATA KARTU KELUARGA (HEADER DEEP NAVY SESUAI REFERENSI)
              ==================================================================== --}}
-        <div class="bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
+        <div class="bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="anggotaFilter, search, resetFilters, previousPage, nextPage, gotoPage"
@@ -209,19 +209,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1290px] text-left border-collapse">
+                <table class="w-full text-left border-collapse">
                     {{-- Header Tabel Deep Navy --}}
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">ID KARTU KELUARGA</th>
-                            <th class="py-2.5 px-3 min-w-[170px] whitespace-nowrap">NOMOR KK</th>
-                            <th class="py-2.5 px-3 min-w-[200px] whitespace-nowrap">KEPALA KELUARGA</th>
-                            <th class="py-2.5 px-3 min-w-[195px] whitespace-nowrap">NO. TELEPON / WA</th>
-                            <th class="py-2.5 px-3 min-w-[240px] whitespace-nowrap">ALAMAT RUMAH</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">FOTO KK</th>
-                            <th class="py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">JUMLAH ANGGOTA</th>
-                            <th class="py-2.5 px-3 text-center min-w-[90px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-3 text-center sm:w-36 whitespace-nowrap">ID KARTU KELUARGA</th>
+                            <th class="hidden md:table-cell py-2.5 px-4 text-left whitespace-nowrap">KEPALA KELUARGA</th>
+                            <th class="hidden md:table-cell py-2.5 px-4 text-left whitespace-nowrap">NO. TELEPON / WA</th>
+                            <th class="py-2.5 px-3 text-center sm:w-36 whitespace-nowrap">JUMLAH ANGGOTA</th>
+                            <th class="py-2.5 px-3 text-center sm:w-28 whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -239,27 +236,20 @@
                                 $waNumber = !empty($cleanPhone) ? (str_starts_with($cleanPhone, '0') ? '62' . substr($cleanPhone, 1) : $cleanPhone) : '';
                             @endphp
                             <tr class="household-row hover:bg-[#F8FAFC] transition-colors">
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $households->firstItem() ? ($households->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. ID KARTU KELUARGA --}}
+                                {{-- 2. ID KARTU KELUARGA (Desktop & Mobile) --}}
                                 <td class="py-2.5 px-3 text-center whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EBF3FC] text-[#0B3A85] border border-[#D6E5FF] whitespace-nowrap">
                                         {{ $household->id_kk ?? 'KK' . sprintf('%03d', $household->id) }}
                                     </span>
                                 </td>
 
-                                {{-- 3. NOMOR KK --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
-                                    <span class="font-mono text-xs font-bold text-[#0F1F3D] tracking-wider select-all whitespace-nowrap">
-                                        {{ $household->masked_no_kk }}
-                                    </span>
-                                </td>
-
-                                {{-- 4. KEPALA KELUARGA ([nama] [NIK : ...]) --}}
-                                <td class="py-2.5 px-3 min-w-[200px]">
+                                {{-- 3. KEPALA KELUARGA (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-4">
                                     <div class="font-bold text-xs sm:text-sm text-[#0F1F3D] flex items-center gap-1.5 whitespace-nowrap">
                                         <svg class="w-3.5 h-3.5 text-[#0B3A85] shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
@@ -271,8 +261,8 @@
                                     </div>
                                 </td>
 
-                                {{-- 5. NO. TELEPON / WA --}}
-                                <td class="py-2.5 px-3 text-xs whitespace-nowrap min-w-[195px]">
+                                {{-- 4. NO. TELEPON / WA (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-4 text-xs whitespace-nowrap">
                                     @if($kepala?->telepon)
                                         @if(!empty($waNumber))
                                             <a 
@@ -293,33 +283,7 @@
                                     @endif
                                 </td>
 
-                                {{-- 6. ALAMAT RUMAH --}}
-                                <td class="py-2.5 px-3 text-xs text-[#5B6B82] min-w-[240px]">
-                                    <div class="font-medium text-[#0F1F3D] leading-snug">{{ $household->alamat ?? '-' }}</div>
-                                    <div class="text-[10.5px] text-slate-400 mt-0.5 whitespace-nowrap">{{ $household->rt_rw ?? 'RT 15 / RW 04' }}</div>
-                                </td>
-
-                                {{-- 7. FOTO KK --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
-                                    @if($household->foto_kk_url)
-                                        <a 
-                                            href="{{ $household->foto_kk_url }}" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer" 
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 transition-all shadow-2xs whitespace-nowrap"
-                                            title="Buka Foto Fisik Kartu Keluarga"
-                                        >
-                                            <img src="{{ $household->foto_kk_url }}" alt="Foto KK" class="w-4.5 h-3 object-cover rounded shrink-0 border border-emerald-300" />
-                                            <span class="text-[11px] font-bold">Ada</span>
-                                        </a>
-                                    @else
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded text-[10.5px] font-medium bg-slate-100 text-slate-400 border border-slate-200 whitespace-nowrap" title="Foto fisik KK belum diunggah">
-                                            Belum Ada
-                                        </span>
-                                    @endif
-                                </td>
-
-                                {{-- 8. JUMLAH ANGGOTA --}}
+                                {{-- 5. JUMLAH ANGGOTA (Desktop & Mobile) --}}
                                 <td class="py-2.5 px-3 text-center whitespace-nowrap">
                                     <a 
                                         href="{{ url('/admin/households/' . $household->id) }}" 
@@ -333,7 +297,7 @@
                                     </a>
                                 </td>
 
-                                {{-- 9. AKSI (EDIT) --}}
+                                {{-- 6. AKSI (Desktop & Mobile) --}}
                                 <td class="py-2.5 px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center whitespace-nowrap">
                                         {{-- Tombol Edit (Ikon Pensil) --}}
@@ -351,7 +315,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="py-12 text-center text-sm text-[#5B6B82]">
+                                <td colspan="6" class="py-12 text-center text-sm text-[#5B6B82]">
                                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-2">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             @if(filled($search))

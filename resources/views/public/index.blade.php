@@ -222,6 +222,12 @@
                         <h2 class="text-2xl font-extrabold text-primary-900">Pengumuman RT 15</h2>
                         <p class="text-xs text-text-muted mt-1">Kabar penting dan maklumat pengurus untuk warga</p>
                     </div>
+                    <a href="{{ route('public.pengumuman.index') }}" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary-700 hover:text-primary-900 group">
+                        <span>Lihat Semua</span>
+                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
 
                 @if($pengumuman->isEmpty())
@@ -234,10 +240,7 @@
                         @foreach($pengumuman as $item)
                             <a href="{{ route('public.pengumuman.detail', $item->id) }}" class="sim-card p-5 sm:p-6 hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5 transition block group cursor-pointer">
                                 <div class="flex items-center justify-between gap-2 mb-2">
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-100 text-primary-700">
-                                            {{ $item->target }}
-                                        </span>
+                                    <div>
                                         @if($item->is_pinned)
                                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
                                                 📌 Penting
@@ -261,16 +264,27 @@
                             </a>
                         @endforeach
                     </div>
+                    <div class="mt-4 text-center sm:hidden">
+                        <a href="{{ route('public.pengumuman.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary-700 hover:text-primary-900">
+                            <span>Lihat Semua Pengumuman &rarr;</span>
+                        </a>
+                    </div>
                 @endif
             </div>
 
             <!-- Agenda Terdekat -->
-            <div class="lg:col-span-5">
+            <div class="lg:col-span-5" id="agenda">
                 <div class="flex items-center justify-between mb-8">
                     <div>
                         <h2 class="text-2xl font-extrabold text-primary-900">Agenda Kegiatan</h2>
                         <p class="text-xs text-text-muted mt-1">Jadwal kegiatan lingkungan RT 15</p>
                     </div>
+                    <a href="{{ route('public.agenda.index') }}" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary-700 hover:text-primary-900 group">
+                        <span>Lihat Semua</span>
+                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
 
                 @if($agenda->isEmpty())
@@ -281,13 +295,15 @@
                 @else
                     <div class="space-y-4">
                         @foreach($agenda as $event)
-                            <div class="sim-card p-5 flex items-center gap-4">
-                                <div class="w-14 h-14 rounded-xl sim-gradient text-white flex flex-col items-center justify-center shrink-0">
+                            <a href="{{ route('public.agenda.detail', $event->id) }}" class="sim-card p-5 flex items-center gap-4 hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5 transition group cursor-pointer">
+                                <div class="w-14 h-14 rounded-xl sim-gradient text-white flex flex-col items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
                                     <span class="text-xs font-semibold leading-none">{{ $event->tanggal_mulai->format('M') }}</span>
                                     <span class="text-xl font-extrabold leading-none mt-1">{{ $event->tanggal_mulai->format('d') }}</span>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-primary-900 text-sm">{{ $event->judul }}</h4>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-primary-900 text-sm group-hover:text-primary-700 transition leading-snug">
+                                        {{ $event->judul }}
+                                    </h4>
                                     <p class="text-xs text-text-muted mt-1 flex items-center gap-1">
                                         📍 {{ $event->lokasi ?? 'Lingkungan RT 15' }}
                                     </p>
@@ -302,8 +318,18 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
+                                <div class="hidden sm:flex text-slate-300 group-hover:text-primary-700 group-hover:translate-x-1 transition duration-200 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </a>
                         @endforeach
+                    </div>
+                    <div class="mt-4 text-center sm:hidden">
+                        <a href="{{ route('public.agenda.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary-700 hover:text-primary-900">
+                            <span>Lihat Semua Agenda &rarr;</span>
+                        </a>
                     </div>
                 @endif
             </div>

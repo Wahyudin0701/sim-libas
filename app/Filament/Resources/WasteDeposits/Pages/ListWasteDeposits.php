@@ -38,7 +38,7 @@ class ListWasteDeposits extends ListRecords
     public ?int $depositId = null;
     public ?int $form_household_id = null;
     public ?int $form_waste_type_id = null;
-    public string $form_berat_kg = '1.00';
+    public string $form_berat_kg = '1';
     public string $form_harga_saat_setor = '0';
     public string $form_nilai = '0';
     public string $form_catatan = '';
@@ -90,12 +90,21 @@ class ListWasteDeposits extends ListRecords
         return [];
     }
 
+    private function formatCleanNumber(float|int|string|null $val): string
+    {
+        if ($val === null || $val === '') {
+            return '0';
+        }
+        $floatVal = (float) str_replace(',', '.', (string) $val);
+        return $floatVal == (int) $floatVal ? (string) (int) $floatVal : (string) $floatVal;
+    }
+
     public function updatedFormWasteTypeId(): void
     {
         if ($this->form_waste_type_id) {
             $type = WasteType::find($this->form_waste_type_id);
             if ($type) {
-                $this->form_harga_saat_setor = (string) $type->harga_per_kg;
+                $this->form_harga_saat_setor = $this->formatCleanNumber($type->harga_per_kg);
                 $this->recalculateNilai();
             }
         }
@@ -144,7 +153,7 @@ class ListWasteDeposits extends ListRecords
         $firstType = WasteType::where('is_active', true)->first();
         if ($firstType) {
             $this->form_waste_type_id = $firstType->id;
-            $this->form_harga_saat_setor = (string) $firstType->harga_per_kg;
+            $this->form_harga_saat_setor = $this->formatCleanNumber($firstType->harga_per_kg);
             $this->recalculateNilai();
         }
 
@@ -160,8 +169,8 @@ class ListWasteDeposits extends ListRecords
         $this->isEditing = true;
         $this->form_household_id = $dep->household_id;
         $this->form_waste_type_id = $dep->waste_type_id;
-        $this->form_berat_kg = (string) $dep->berat_kg;
-        $this->form_harga_saat_setor = (string) $dep->harga_saat_setor;
+        $this->form_berat_kg = $this->formatCleanNumber($dep->berat_kg);
+        $this->form_harga_saat_setor = $this->formatCleanNumber($dep->harga_saat_setor);
         $this->form_nilai = (string) $dep->nilai;
         $this->form_catatan = $dep->catatan ?? '';
 
@@ -178,7 +187,7 @@ class ListWasteDeposits extends ListRecords
     {
         $this->form_household_id = null;
         $this->form_waste_type_id = null;
-        $this->form_berat_kg = '1.00';
+        $this->form_berat_kg = '1';
         $this->form_harga_saat_setor = '0';
         $this->form_nilai = '0';
         $this->form_catatan = '';

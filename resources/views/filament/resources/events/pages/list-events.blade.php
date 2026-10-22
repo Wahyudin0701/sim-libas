@@ -102,7 +102,7 @@
                         name="search"
                         value="{{ $search }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama kegiatan, lokasi, deskripsi, atau kategori acara..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -188,7 +188,7 @@
         {{-- ====================================================================
              4. TABEL DATA AGENDA KEGIATAN (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="waktuFilter, kategoriFilter, search, resetFilters, setWaktu, previousPage, nextPage, gotoPage"
@@ -196,15 +196,15 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[180px] whitespace-nowrap">Waktu & Tanggal</th>
-                            <th class="py-3 px-4 font-bold min-w-[340px] w-[35%]">Nama Agenda & Kategori</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Lokasi Pelaksanaan</th>
-                            <th class="py-3 px-4 font-bold min-w-[140px] whitespace-nowrap">Penyelenggara</th>
-                            <th class="py-3 px-4 font-bold text-center w-36 min-w-[140px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[180px] whitespace-nowrap">Waktu & Tanggal</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold md:min-w-[340px] md:w-[35%]"><span class="md:hidden">Nama Agenda</span><span class="hidden md:inline">Nama Agenda & Kategori</span></th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Lokasi Pelaksanaan</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[140px] whitespace-nowrap">Penyelenggara</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-28 sm:w-36 md:min-w-[140px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -218,13 +218,13 @@
                                 class="hover:bg-slate-50/80 transition-colors event-data-row"
                                 data-kategori="{{ $item->kategori }}"
                             >
-                                {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                {{-- Kolom Nomor Urut (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $events->firstItem() ? ($events->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
-                                {{-- Kolom Tanggal & Waktu --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Tanggal & Waktu (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <div class="flex items-center gap-2">
                                         <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 text-[#0B3A85] flex flex-col items-center justify-center shrink-0">
                                             <span class="text-[9px] font-black uppercase">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('M') }}</span>
@@ -246,12 +246,13 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Nama Kegiatan & Kategori --}}
-                                <td class="py-3.5 px-4 min-w-[340px]">
-                                    <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer" wire:click="openDetail({{ $item->id }})">
+                                {{-- Kolom Nama Kegiatan & Kategori (Kategori disembunyikan di Mobile) --}}
+                                <td class="py-3.5 px-3 sm:px-4 md:min-w-[340px]">
+                                    <div class="font-extrabold text-[#0F1F3D] text-[13px] sm:text-[14px] leading-snug hover:text-[#0B3A85] cursor-pointer" wire:click="openDetail({{ $item->id }})">
                                         {{ $item->judul }}
                                     </div>
-                                    <div class="flex items-center gap-2 mt-1">
+                                    {{-- Kategori & Tag Rutin (Hanya Desktop) --}}
+                                    <div class="hidden md:flex items-center gap-2 mt-1">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase">
                                             {{ str_replace('_', ' ', $item->kategori) }}
                                         </span>
@@ -266,8 +267,8 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Lokasi Pelaksanaan --}}
-                                <td class="py-3.5 px-4">
+                                {{-- Kolom Lokasi Pelaksanaan (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <div class="flex items-center gap-1.5 text-slate-700 font-semibold">
                                         <svg class="w-3.5 h-3.5 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -277,8 +278,8 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Penyelenggara --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Penyelenggara (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <div class="text-[11px] font-bold text-slate-700">
                                         {{ $item->penyelenggara ?: ($item->pembuat ? $item->pembuat->name : 'Pengurus RT 15') }}
                                     </div>
@@ -288,7 +289,7 @@
                                 </td>
 
                                 {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                                         {{-- Detail Modal (Ikon Mata - Biru) --}}
                                         <button 

@@ -639,6 +639,12 @@ form[action*="logout"] .fi-dropdown-list-item:hover svg {
     overflow: hidden !important;
 }
 
+@media (max-width: 767.98px) {
+    .fi-ta-ctn {
+        border-radius: 0 !important;
+    }
+}
+
 .fi-ta-header-cell {
     background-color: #F8FAFC !important;
     font-size: 0.65rem !important;

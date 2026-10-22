@@ -36,7 +36,7 @@ class Letter extends Model
         'resident_id',
         'keperluan',
         'data_tambahan',
-        'status', // 'diajukan', 'diperiksa', 'disetujui', 'ditolak', 'selesai'
+        'status', // 'diajukan', 'diperiksa', 'disetujui', 'ditolak'
         'catatan_pengurus',
         'alasan_tolak',
         'pdf_path',

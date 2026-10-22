@@ -22,7 +22,11 @@ class LetterForm
                     ->getOptionLabelFromRecordUsing(fn (Resident $record) => "{$record->nama} (NIK: {$record->masked_nik}) [{$record->id_warga}]")
                     ->searchable(['nama', 'id_warga'])
                     ->preload()
-                    ->required(),
+                    ->required()
+                    ->validationMessages([
+                        'required' => 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.',
+                        'exists' => 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.',
+                    ]),
 
                 Select::make('letter_type_id')
                     ->label('Jenis Surat')
@@ -39,11 +43,6 @@ class LetterForm
                     ->rows(3)
                     ->columnSpanFull(),
 
-                TextInput::make('nomor_surat')
-                    ->label('Nomor Surat Resmi')
-                    ->placeholder('Contoh: 001/SP-SKCK/RT.15/X/2026')
-                    ->helperText('Diterbitkan otomatis saat disetujui, atau dapat diisi manual.'),
-
                 Select::make('status')
                     ->label('Status Permohonan')
                     ->options([
@@ -51,23 +50,27 @@ class LetterForm
                         'diperiksa' => 'Diperiksa',
                         'disetujui' => 'Disetujui',
                         'ditolak' => 'Ditolak',
-                        'selesai' => 'Selesai',
                     ])
                     ->default('diajukan')
+                    ->live()
                     ->required(),
 
-                Textarea::make('catatan_pengurus')
-                    ->label('Catatan Pengurus RT')
-                    ->placeholder('Catatan verifikasi pengurus...')
-                    ->columnSpanFull(),
+                TextInput::make('nomor_surat')
+                    ->label('Nomor Surat Resmi')
+                    ->placeholder('Contoh: 001/SP-SKCK/RT.15/X/2026')
+                    ->helperText('Diterbitkan otomatis saat disetujui, atau dapat diisi manual.')
+                    ->hidden(fn ($get) => in_array($get('status'), ['diajukan', 'ditolak'])),
 
-                Textarea::make('alasan_tolak')
-                    ->label('Alasan Penolakan (Bila Ditolak)')
-                    ->placeholder('Alasan mengapa permohonan ditolak...')
-                    ->columnSpanFull(),
+                Textarea::make('catatan_pengurus')
+                    ->label(fn ($get) => $get('status') === 'ditolak' ? 'Catatan Pengurus / Alasan Penolakan' : 'Catatan Pengurus RT')
+                    ->placeholder(fn ($get) => $get('status') === 'ditolak' ? 'Tuliskan catatan atau alasan penolakan...' : 'Catatan verifikasi pengurus...')
+                    ->columnSpanFull()
+                    ->required(fn ($get) => $get('status') === 'ditolak')
+                    ->hidden(fn ($get) => $get('status') === 'diajukan'),
 
                 DateTimePicker::make('tanggal_disetujui')
-                    ->label('Tanggal Disetujui'),
+                    ->label('Tanggal Disetujui')
+                    ->hidden(fn ($get) => in_array($get('status'), ['diajukan', 'ditolak'])),
             ]);
     }
 }

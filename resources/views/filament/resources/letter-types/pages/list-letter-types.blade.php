@@ -107,7 +107,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama jenis surat, kode singkatan, deskripsi, atau format penomoran..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -148,7 +148,7 @@
         {{-- ====================================================================
              3. TABEL DATA MASTER JENIS SURAT (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="search, previousPage, nextPage, gotoPage" 
@@ -156,17 +156,17 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1100px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1100px] text-left border-collapse">
                     {{-- Header Tabel Deep Navy --}}
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">KODE</th>
-                            <th class="py-2.5 px-3 min-w-[260px] whitespace-nowrap">NAMA JENIS SURAT & DESKRIPSI</th>
-                            <th class="py-2.5 px-3 min-w-[240px] whitespace-nowrap">FORMAT PENOMORAN RESMI</th>
-                            <th class="py-2.5 px-3 min-w-[220px]">PERSYARATAN BERKAS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[90px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap w-24 md:w-auto md:min-w-[110px]">KODE</th>
+                            <th class="py-2.5 px-3 md:min-w-[260px]"><span class="md:hidden">NAMA JENIS SURAT</span><span class="hidden md:inline">NAMA JENIS SURAT & DESKRIPSI</span></th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[240px] whitespace-nowrap">FORMAT PENOMORAN RESMI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[220px]">PERSYARATAN BERKAS</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[90px] whitespace-nowrap">STATUS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap w-24 md:w-auto md:min-w-[100px]">AKSI</th>
                         </tr>
                     </thead>
 
@@ -192,39 +192,39 @@
 
                         @forelse($letterTypes as $type)
                             <tr class="lettertype-data-row hover:bg-[#F8FAFC] transition-colors">
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $letterTypes->firstItem() ? ($letterTypes->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
                                 {{-- 2. KODE --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                <td class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EBF3FC] text-[#0B3A85] border border-[#D6E5FF] whitespace-nowrap">
                                         {{ $type->kode }}
                                     </span>
                                 </td>
 
-                                {{-- 3. NAMA & DESKRIPSI --}}
-                                <td class="py-2.5 px-3 min-w-[260px]">
+                                {{-- 3. NAMA (Deskripsi Hanya di Desktop) --}}
+                                <td class="py-2.5 px-3 md:min-w-[260px]">
                                     <div class="font-bold text-xs sm:text-sm text-[#0F1F3D]">
                                         {{ $type->nama }}
                                     </div>
                                     @if($type->deskripsi)
-                                        <div class="text-[11px] text-[#5B6B82] mt-0.5 line-clamp-2 leading-relaxed">
+                                        <div class="hidden md:block text-[11px] text-[#5B6B82] mt-0.5 line-clamp-2 leading-relaxed">
                                             {{ $type->deskripsi }}
                                         </div>
                                     @endif
                                 </td>
 
-                                {{-- 4. FORMAT PENOMORAN --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap min-w-[240px]">
+                                {{-- 4. FORMAT PENOMORAN (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap min-w-[240px]">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono bg-slate-50 text-slate-700 border border-slate-200 whitespace-nowrap">
                                         {{ $type->format_nomor ?: '{NO}/SP/RT.15/{ROMAN_MONTH}/{YEAR}' }}
                                     </span>
                                 </td>
 
-                                {{-- 5. PERSYARATAN BERKAS --}}
-                                <td class="py-2.5 px-3 min-w-[220px]">
+                                {{-- 5. PERSYARATAN BERKAS (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 min-w-[220px]">
                                     @if(is_array($type->persyaratan) && count($type->persyaratan) > 0)
                                         <div class="flex flex-wrap gap-1">
                                             @foreach($type->persyaratan as $syarat)
@@ -238,8 +238,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 6. STATUS AKTIF (BADGE STATIS INFORMATIF) --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 6. STATUS AKTIF (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     <span 
                                         class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold select-none {{ $type->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200' }}"
                                         title="Status: {{ $type->is_active ? 'Aktif (Dapat dipilih warga)' : 'Nonaktif' }}"
@@ -250,7 +250,7 @@
                                 </td>
 
                                 {{-- 7. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
                                         {{-- Tombol Ubah (Ikon Pensil) --}}
                                         <button 

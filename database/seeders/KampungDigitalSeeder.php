@@ -203,29 +203,43 @@ class KampungDigitalSeeder extends Seeder
             ];
 
             foreach ($deposits as $dep) {
-                $createdDep = WasteDeposit::create($dep);
-
-                // Update saldo WasteWallet keluarga
-                $wallet = WasteWallet::firstOrCreate(
-                    ['household_id' => $dep['household_id']],
-                    ['saldo' => 0]
+                $createdDep = WasteDeposit::firstOrCreate(
+                    [
+                        'household_id' => $dep['household_id'],
+                        'waste_type_id' => $dep['waste_type_id'],
+                        'berat_kg' => $dep['berat_kg'],
+                        'catatan' => $dep['catatan'],
+                    ],
+                    $dep
                 );
 
-                $saldoSebelum = $wallet->saldo;
-                $saldoSesudah = $saldoSebelum + $dep['nilai'];
-                $wallet->saldo = $saldoSesudah;
-                $wallet->save();
+                // Update saldo WasteWallet keluarga hanya jika deposit baru dibuat
+                if ($createdDep->wasRecentlyCreated) {
+                    $wallet = WasteWallet::firstOrCreate(
+                        ['household_id' => $dep['household_id']],
+                        ['saldo' => 0]
+                    );
 
-                WasteWalletTransaction::create([
-                    'household_id' => $dep['household_id'],
-                    'jenis' => 'setoran',
-                    'jumlah' => $dep['nilai'],
-                    'saldo_sebelum' => $saldoSebelum,
-                    'saldo_sesudah' => $saldoSesudah,
-                    'keterangan' => "Setoran sampah {$createdDep->wasteType?->nama} ({$dep['berat_kg']} kg)",
-                    'dicatat_oleh' => $pencatat->id,
-                    'created_at' => $dep['created_at'],
-                ]);
+                    $saldoSebelum = $wallet->saldo;
+                    $saldoSesudah = $saldoSebelum + $dep['nilai'];
+                    $wallet->saldo = $saldoSesudah;
+                    $wallet->save();
+
+                    WasteWalletTransaction::firstOrCreate(
+                        [
+                            'household_id' => $dep['household_id'],
+                            'keterangan' => "Setoran sampah {$createdDep->wasteType?->nama} ({$dep['berat_kg']} kg)",
+                            'jumlah' => $dep['nilai'],
+                        ],
+                        [
+                            'jenis' => 'setoran',
+                            'saldo_sebelum' => $saldoSebelum,
+                            'saldo_sesudah' => $saldoSesudah,
+                            'dicatat_oleh' => $pencatat->id,
+                            'created_at' => $dep['created_at'],
+                        ]
+                    );
+                }
             }
         }
     }

@@ -134,18 +134,14 @@
                                     'organik' => 'bg-emerald-50 text-emerald-800 border-emerald-200',
                                     default => 'bg-slate-100 text-slate-700 border-slate-200',
                                 };
-                                $wasteJson = htmlspecialchars(json_encode([
-                                    'id' => $type->id,
-                                    'nama' => $type->nama,
-                                    'kategori' => ucfirst($type->kategori),
-                                    'satuan' => $type->satuan,
-                                    'harga' => number_format($type->harga_per_kg, 0, ',', '.'),
-                                    'badge_class' => $badgeClass,
-                                ]), ENT_QUOTES, 'UTF-8');
                             @endphp
                             <tr class="cursor-pointer hover:bg-blue-50/50 active:bg-blue-100/60 transition duration-150 group"
-                                onclick="openWasteModal(JSON.parse(this.dataset.waste))"
-                                data-waste="{{ $wasteJson }}"
+                                onclick="openWasteModal(this)"
+                                data-nama="{{ $type->nama }}"
+                                data-kategori="{{ ucfirst($type->kategori) }}"
+                                data-satuan="{{ $type->satuan }}"
+                                data-harga="{{ number_format($type->harga_per_kg, 0, ',', '.') }}"
+                                data-badge="{{ $badgeClass }}"
                                 title="Ketuk untuk melihat detail {{ $type->nama }}">
                                 <!-- Kolom 1: Nama Jenis Sampah (Muncul di Mobile & Desktop) -->
                                 <td class="py-3.5 px-4 sm:py-4 sm:px-6 font-bold text-primary-900">
@@ -221,49 +217,99 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Step 1 -->
-                <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
-                        01
+                <div class="relative flex flex-col">
+                    <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition h-full flex flex-col">
+                        <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
+                            01
+                        </div>
+                        <h4 class="text-base font-bold text-primary-900 mb-2">Pilah dari Rumah</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Pisahkan sampah anorganik kering (kardus, botol plastik, kaleng/besi, minyak jelantah) ke wadah terpisah dari sampah basah.
+                        </p>
                     </div>
-                    <h4 class="text-base font-bold text-primary-900 mb-2">Pilah dari Rumah</h4>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Pisahkan sampah anorganik kering (kardus, botol plastik, kaleng/besi, minyak jelantah) ke wadah terpisah dari sampah basah.
-                    </p>
+
+                    <!-- Panah Horizontal (Desktop lg ke atas - Nempel antar Card) -->
+                    <div class="hidden lg:flex absolute left-full ml-3 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </div>
+
+                    <!-- Panah Vertikal (Mobile di bawah lg - Nempel antar Card) -->
+                    <div class="flex lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-3 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
-                        02
+                <div class="relative flex flex-col">
+                    <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition h-full flex flex-col">
+                        <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
+                            02
+                        </div>
+                        <h4 class="text-base font-bold text-primary-900 mb-2">Bawa ke Posko</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Kunjungi posko penimbangan Bank Sampah di Pos RT 15 setiap Minggu ke-2 dan ke-4 pukul 08.00 - 11.00 WIB.
+                        </p>
                     </div>
-                    <h4 class="text-base font-bold text-primary-900 mb-2">Bawa ke Posko</h4>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Kunjungi posko penimbangan Bank Sampah di Pos RT 15 setiap Minggu ke-2 dan ke-4 pukul 08.00 - 11.00 WIB.
-                    </p>
+
+                    <!-- Panah Horizontal (Desktop lg ke atas - Nempel antar Card) -->
+                    <div class="hidden lg:flex absolute left-full ml-3 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </div>
+
+                    <!-- Panah Vertikal (Mobile di bawah lg - Nempel antar Card) -->
+                    <div class="flex lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-3 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
-                        03
+                <div class="relative flex flex-col">
+                    <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition h-full flex flex-col">
+                        <div class="w-10 h-10 rounded-xl bg-primary-700 text-white font-extrabold flex items-center justify-center text-sm mb-4">
+                            03
+                        </div>
+                        <h4 class="text-base font-bold text-primary-900 mb-2">Penimbangan Digital</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Petugas menimbang sampah di hadapan Anda dan menginput beratnya ke sistem SIM-LiBas sesuai harga berlaku.
+                        </p>
                     </div>
-                    <h4 class="text-base font-bold text-primary-900 mb-2">Penimbangan Digital</h4>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Petugas menimbang sampah di hadapan Anda dan menginput beratnya ke sistem SIM-LiBas sesuai harga berlaku.
-                    </p>
+
+                    <!-- Panah Horizontal (Desktop lg ke atas - Nempel antar Card) -->
+                    <div class="hidden lg:flex absolute left-full ml-3 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </div>
+
+                    <!-- Panah Vertikal (Mobile di bawah lg - Nempel antar Card) -->
+                    <div class="flex lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-3 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border-2 border-emerald-500 text-emerald-600 shadow-md items-center justify-center pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Step 4 -->
-                <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-extrabold flex items-center justify-center text-sm mb-4">
-                        04
+                <div class="relative flex flex-col">
+                    <div class="sim-card p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition h-full flex flex-col">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-extrabold flex items-center justify-center text-sm mb-4">
+                            04
+                        </div>
+                        <h4 class="text-base font-bold text-primary-900 mb-2">Saldo Masuk & Cair</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Saldo otomatis tercatat di akun Portal Warga Anda. Bisa ditarik tunai atau dipotongkan langsung ke tagihan iuran RT.
+                        </p>
                     </div>
-                    <h4 class="text-base font-bold text-primary-900 mb-2">Saldo Masuk & Cair</h4>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Saldo otomatis tercatat di akun Portal Warga Anda. Bisa ditarik tunai atau dipotongkan langsung ke tagihan iuran RT.
-                    </p>
                 </div>
             </div>
         </div>
@@ -288,7 +334,7 @@
     <!-- Modal Popup Detail Harga Beli Sampah (Mobile-Friendly & Responsif) -->
     <div id="waste-detail-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="waste-modal-title">
         <!-- Backdrop Blur -->
-        <div id="waste-modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0"></div>
+        <div id="waste-modal-backdrop" onclick="closeWasteModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 cursor-pointer"></div>
 
         <!-- Modal Wrapper (Bottom Sheet di Mobile, Centered Modal di Desktop) -->
         <div class="fixed inset-0 z-10 flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
@@ -400,11 +446,19 @@
 
 @push('scripts')
 <script>
-    function openWasteModal(data) {
+    function openWasteModal(target) {
         const modal = document.getElementById('waste-detail-modal');
         const backdrop = document.getElementById('waste-modal-backdrop');
         const panel = document.getElementById('waste-modal-panel');
-        if (!modal) return;
+        if (!modal || !target) return;
+
+        const data = (target instanceof HTMLElement) ? {
+            nama: target.dataset.nama || '',
+            harga: target.dataset.harga || '0',
+            satuan: target.dataset.satuan || 'kg',
+            kategori: target.dataset.kategori || 'Anorganik',
+            badge_class: target.dataset.badge || 'bg-slate-100 text-slate-700 border-slate-200'
+        } : target;
 
         // Populate modal data
         document.getElementById('waste-modal-name').textContent = data.nama || '-';

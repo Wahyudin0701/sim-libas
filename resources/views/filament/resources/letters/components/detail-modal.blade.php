@@ -232,7 +232,7 @@
                     </div>
 
                     {{-- 3. INFORMASI PENGESAHAN --}}
-                    @if(in_array($let->status, ['disetujui', 'selesai']))
+                    @if($let->status === 'disetujui')
                         <div class="bg-emerald-50/50 rounded-xl border border-emerald-200 p-3.5 space-y-2">
                             <span class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
                                 <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,7 +293,7 @@
                             </button>
                         @endif
 
-                        @if(in_array($let->status, ['disetujui', 'selesai']))
+                        @if($let->status === 'disetujui')
                             <a 
                                 href="{{ route('letters.print', $let->id) }}" 
                                 target="_blank" 

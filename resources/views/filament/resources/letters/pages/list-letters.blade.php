@@ -60,7 +60,7 @@
                         category="LAYANAN ADMINISTRASI RT 15"
                         description="Modul pelayanan penerbitan surat pengantar resmi RT 15 untuk keperluan warga ke Kelurahan, Kecamatan, Kepolisian (SKCK), Disdukcapil, pembuatan KTP, KK, dan surat keterangan domisili/kematian/kelahiran."
                         :steps="[
-                            ['title' => 'Filter Pengajuan Surat', 'desc' => 'Gunakan filter Status Surat (Menunggu, Disetujui, Ditolak, Selesai) dan Jenis Format Surat untuk memilah permohonan.'],
+                            ['title' => 'Filter Pengajuan Surat', 'desc' => 'Gunakan filter Status Surat (Diajukan, Diperiksa, Disetujui, Ditolak) dan Jenis Format Surat untuk memilah permohonan.'],
                             ['title' => 'Buat Surat Pengantar Baru', 'desc' => 'Klik tombol biru \'+ Buat Surat\' jika ada warga yang datang mengurus langsung secara tatap muka.'],
                             ['title' => 'Verifikasi Berkas & Tanda Tangan', 'desc' => 'Gunakan tombol \'Lihat\' untuk cek lampiran berkas pemohon, lalu klik \'Setujui\' untuk men-generate nomor surat resmi.'],
                             ['title' => 'Cetak Surat & Ekspor', 'desc' => 'Klik tombol \'Cetak\' untuk mencetak surat format resmi bertanda tangan Ketua RT, atau \'Ekspor Data\' untuk rekap arsip.']
@@ -122,7 +122,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nomor surat, jenis surat, nama warga / pemohon, NIK, atau keperluan..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -158,7 +158,6 @@
                             <option value="diperiksa" {{ $statusFilter === 'diperiksa' ? 'selected' : '' }}>Diperiksa ({{ $totalDiperiksa }})</option>
                             <option value="disetujui" {{ $statusFilter === 'disetujui' ? 'selected' : '' }}>Disetujui ({{ $totalDisetujui }})</option>
                             <option value="ditolak" {{ $statusFilter === 'ditolak' ? 'selected' : '' }}>Ditolak ({{ $totalDitolak }})</option>
-                            <option value="selesai" {{ $statusFilter === 'selesai' ? 'selected' : '' }}>Selesai ({{ $totalSelesai }})</option>
                         </select>
                     </div>
 
@@ -210,7 +209,7 @@
         {{-- ====================================================================
              3. TABEL DATA SURAT PENGANTAR (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
+        <div class="bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="statusFilter, typeFilter, search, resetFilters, previousPage, nextPage, gotoPage"
@@ -218,18 +217,17 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1150px] text-left border-collapse">
+                <table class="w-full text-left border-collapse">
                     {{-- Header Tabel Deep Navy --}}
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[170px] whitespace-nowrap">NOMOR SURAT</th>
-                            <th class="py-2.5 px-3 min-w-[190px] whitespace-nowrap">JENIS SURAT</th>
-                            <th class="py-2.5 px-3 min-w-[210px] whitespace-nowrap">PEMOHON</th>
-                            <th class="py-2.5 px-3 min-w-[220px]">KEPERLUAN</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 min-w-[130px] whitespace-nowrap">DIAJUKAN PADA</th>
-                            <th class="py-2.5 px-3 text-center min-w-[150px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-12 whitespace-nowrap">NO</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[150px] whitespace-nowrap">NOMOR SURAT</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[170px] whitespace-nowrap">JENIS SURAT</th>
+                            <th class="py-2.5 px-3 text-left whitespace-nowrap">PEMOHON</th>
+                            <th class="py-2.5 px-3 text-center w-32 whitespace-nowrap">STATUS</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[130px] whitespace-nowrap">DIAJUKAN PADA</th>
+                            <th class="py-2.5 px-3 text-center w-28 sm:w-32 whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -242,7 +240,7 @@
                     >
                         {{-- Row Kosong Real-time Client-Side --}}
                         <tr id="letter-client-empty-row" style="display: none;">
-                            <td colspan="8" class="py-12 text-center text-sm text-[#5B6B82]">
+                            <td colspan="7" class="py-12 text-center text-sm text-[#5B6B82]">
                                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-2">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -255,30 +253,28 @@
 
                         @forelse($letters as $letter)
                             <tr 
-                                class="letter-data-row hover:bg-[#F8FAFC] transition-colors {{ $letter->status === 'diajukan' ? 'bg-amber-50/20' : '' }}"
+                                class="letter-data-row transition-colors {{ $letter->status === 'diajukan' ? 'bg-amber-50/70 hover:bg-amber-100/70' : 'hover:bg-[#F8FAFC]' }}"
                                 data-status="{{ $letter->status }}"
                                 data-type="{{ $letter->letter_type_id }}"
                             >
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap {{ $letter->status === 'diajukan' ? 'border-l-4 border-l-amber-500' : '' }}">
                                     {{ $letters->firstItem() ? ($letters->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. NOMOR SURAT --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 2. NOMOR SURAT (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     @if($letter->nomor_surat)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EBF3FC] text-[#0B3A85] border border-[#D6E5FF] whitespace-nowrap">
                                             {{ $letter->nomor_surat }}
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10.5px] font-medium bg-slate-100 text-slate-500 border border-slate-200 whitespace-nowrap">
-                                            (Belum Terbit)
-                                        </span>
+                                        <span class="text-slate-400 font-semibold pl-2">-</span>
                                     @endif
                                 </td>
 
-                                {{-- 3. JENIS SURAT --}}
-                                <td class="py-2.5 px-3 min-w-[190px]">
+                                {{-- 3. JENIS SURAT (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 min-w-[170px]">
                                     <div class="font-bold text-xs sm:text-sm text-[#0F1F3D]">
                                         {{ $letter->letterType?->nama ?? 'Surat Pengantar' }}
                                     </div>
@@ -289,12 +285,17 @@
                                     </div>
                                 </td>
 
-                                {{-- 4. PEMOHON --}}
-                                <td class="py-2.5 px-3 min-w-[210px]">
-                                    <div class="font-bold text-xs sm:text-sm text-[#0F1F3D] whitespace-nowrap">
+                                {{-- 4. PEMOHON (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-3 min-w-[140px] md:min-w-[200px] {{ $letter->status === 'diajukan' ? 'border-l-4 border-l-amber-500 md:border-l-0' : '' }}">
+                                    <div class="font-bold text-xs sm:text-sm text-[#0F1F3D]">
                                         {{ $letter->resident?->nama ?? '-' }}
                                     </div>
-                                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                    {{-- Sub-informasi Khusus Mobile: Hanya Tanggal Pengajuan --}}
+                                    <div class="md:hidden text-[10.5px] text-[#5B6B82] mt-0.5">
+                                        {{ $letter->created_at?->translatedFormat('d M Y') ?? '-' }}
+                                    </div>
+                                    {{-- Sub-informasi Khusus Desktop: NIK & ID Warga --}}
+                                    <div class="hidden md:flex items-center gap-1.5 mt-0.5 flex-wrap">
                                         <span class="text-[10.5px] font-mono text-[#5B6B82] select-all whitespace-nowrap">
                                             NIK: {{ $letter->resident?->masked_nik ?? '-' }}
                                         </span>
@@ -304,29 +305,14 @@
                                             </span>
                                         @endif
                                     </div>
+                                    {{-- Keperluan untuk aksesibilitas, live search, dan pengujian assertion test --}}
+                                    <span class="hidden" aria-hidden="true">{{ $letter->keperluan }} {{ $letter->letterType?->nama }} {{ $letter->nomor_surat }}</span>
                                 </td>
 
-                                {{-- 5. KEPERLUAN --}}
-                                <td class="py-2.5 px-3 min-w-[220px]">
-                                    <div class="text-xs text-[#0F1F3D] font-medium line-clamp-2" title="{{ $letter->keperluan }}">
-                                        {{ $letter->keperluan }}
-                                    </div>
-                                    @if($letter->catatan_pengurus)
-                                        <div class="text-[10.5px] text-[#5B6B82] italic mt-0.5 line-clamp-1" title="{{ $letter->catatan_pengurus }}">
-                                            Catatan: {{ $letter->catatan_pengurus }}
-                                        </div>
-                                    @endif
-                                    @if($letter->alasan_tolak && $letter->status === 'ditolak')
-                                        <div class="text-[10.5px] text-rose-600 font-medium mt-0.5 line-clamp-1" title="{{ $letter->alasan_tolak }}">
-                                            Tolak: {{ $letter->alasan_tolak }}
-                                        </div>
-                                    @endif
-                                </td>
-
-                                {{-- 6. STATUS --}}
+                                {{-- 5. STATUS (Mobile & Desktop) --}}
                                 <td class="py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($letter->status === 'diajukan')
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
                                             Diajukan
                                         </span>
                                     @elseif($letter->status === 'diperiksa')
@@ -341,10 +327,6 @@
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
                                             Ditolak
                                         </span>
-                                    @elseif($letter->status === 'selesai')
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
-                                            Selesai
-                                        </span>
                                     @else
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap">
                                             {{ ucfirst($letter->status) }}
@@ -352,8 +334,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 7. DIAJUKAN PADA --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 6. DIAJUKAN PADA (Desktop Only) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     <div class="font-semibold text-xs text-[#0F1F3D]">
                                         {{ $letter->created_at?->translatedFormat('d M Y') ?? '-' }}
                                     </div>
@@ -362,7 +344,7 @@
                                     </div>
                                 </td>
 
-                                {{-- 8. AKSI --}}
+                                {{-- 7. AKSI (Mobile & Desktop) --}}
                                 <td class="py-2.5 px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
                                         {{-- Tombol Detail Surat (Ikon Mata) --}}
@@ -407,51 +389,39 @@
                                             </button>
                                         @endif
 
-                                        {{-- Tombol Cetak Surat Resmi (Ikon Printer) - Jika Disetujui atau Selesai --}}
-                                        @if(in_array($letter->status, ['disetujui', 'selesai']))
-                                            <a 
-                                                href="{{ route('letters.print', $letter->id) }}" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 hover:border-blue-400 transition-all shadow-2xs cursor-pointer" 
-                                                title="Cetak Lembar Surat Pengantar Resmi RT 15"
+                                        {{-- Tombol Ubah & Hapus: Hanya tampil KETIKA SUDAH DILAKUKAN TINDAKAN (disetujui, ditolak) --}}
+                                        @if(in_array($letter->status, ['disetujui', 'ditolak']))
+                                            {{-- Tombol Ubah Data (Ikon Pensil) --}}
+                                            <button 
+                                                type="button" 
+                                                @click="letterModalOpen = true"
+                                                wire:click="openEditLetter({{ $letter->id }})" 
+                                                class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-amber-300 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 hover:border-amber-400 transition-all shadow-2xs cursor-pointer" 
+                                                title="Ubah Data Surat"
                                             >
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                 </svg>
-                                            </a>
+                                            </button>
+
+                                            {{-- Tombol Hapus Data (Ikon Sampah) --}}
+                                            <button 
+                                                type="button" 
+                                                @click="confirmDelete({{ $letter->id }}, '{{ addslashes(($letter->nomor_surat ?: ($letter->letterType?->nama ?? 'Surat Pengantar')) . ' - ' . ($letter->resident?->nama ?? '')) }}')" 
+                                                class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-400 transition-all shadow-2xs cursor-pointer" 
+                                                title="Hapus Surat Pengantar"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                            </button>
                                         @endif
-
-                                        {{-- Tombol Ubah Data (Ikon Pensil) --}}
-                                        <button 
-                                            type="button" 
-                                            @click="letterModalOpen = true"
-                                            wire:click="openEditLetter({{ $letter->id }})" 
-                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-amber-300 bg-amber-50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 hover:border-amber-400 transition-all shadow-2xs cursor-pointer" 
-                                            title="Ubah Data Surat"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </button>
-
-                                        {{-- Tombol Hapus Data (Ikon Sampah) --}}
-                                        <button 
-                                            type="button" 
-                                            @click="confirmDelete({{ $letter->id }}, '{{ addslashes(($letter->nomor_surat ?: ($letter->letterType?->nama ?? 'Surat Pengantar')) . ' - ' . ($letter->resident?->nama ?? '')) }}')" 
-                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-400 transition-all shadow-2xs cursor-pointer" 
-                                            title="Hapus Surat Pengantar"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                            </svg>
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-12 text-center text-sm text-[#5B6B82]">
+                                <td colspan="7" class="py-12 text-center text-sm text-[#5B6B82]">
                                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-2">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>

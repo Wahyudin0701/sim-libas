@@ -228,4 +228,42 @@ class Resident extends Model
     {
         return $this->hasMany(Letter::class);
     }
+
+    /**
+     * Relasi ke penugasan jadwal ronda warga (PatrolMember).
+     */
+    public function patrolMembers(): HasMany
+    {
+        return $this->hasMany(PatrolMember::class);
+    }
+
+    /**
+     * Relasi ke jadwal ronda master mingguan yang diikuti warga.
+     */
+    public function patrolSchedules(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            PatrolSchedule::class,
+            PatrolMember::class,
+            'resident_id',
+            'id',
+            'id',
+            'patrol_schedule_id'
+        );
+    }
+
+    /**
+     * Relasi ke riwayat pelaksanaan ronda aktual yang pernah diikuti warga.
+     */
+    public function patrolExecutions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            PatrolExecution::class,
+            PatrolExecutionMember::class,
+            'resident_id',
+            'id',
+            'id',
+            'patrol_execution_id'
+        );
+    }
 }

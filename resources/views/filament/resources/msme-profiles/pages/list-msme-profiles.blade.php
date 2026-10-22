@@ -107,7 +107,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama usaha, produk, kategori, atau pemilik UMKM..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -192,7 +192,7 @@
         {{-- ====================================================================
              4. TABEL DATA UMKM (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="statusFilter, kategoriFilter, search, resetFilters, setStatus, previousPage, nextPage, gotoPage"
@@ -200,16 +200,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1100px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1100px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
-                            <th class="py-3 px-4 font-bold min-w-[240px]">Nama Usaha & Kategori</th>
-                            <th class="py-3 px-4 font-bold min-w-[200px]">Pemilik & Alamat</th>
-                            <th class="py-3 px-4 font-bold min-w-[170px] whitespace-nowrap">NO. TELEPON / WA</th>
-                            <th class="py-3 px-4 font-bold min-w-[200px]">Produk Unggulan</th>
-                            <th class="py-3 px-4 font-bold text-center w-40 min-w-[160px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold md:min-w-[240px]">Nama Usaha & Kategori</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[200px]">Pemilik & Alamat</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[170px] whitespace-nowrap">NO. TELEPON / WA</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[200px]">Produk Unggulan</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-20 sm:w-28 md:w-40 md:min-w-[160px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -225,12 +225,12 @@
                                 data-kategori="{{ $item->kategori }}"
                             >
                                 {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $msmes->firstItem() ? ($msmes->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
                                 {{-- Kolom Status Moderasi --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @if($item->status_moderasi === 'disetujui')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -250,17 +250,17 @@
                                 </td>
 
                                 {{-- Kolom Nama Usaha & Kategori --}}
-                                <td class="py-3.5 px-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200">
+                                <td class="py-3.5 px-3 sm:px-4">
+                                    <div class="flex items-center gap-2.5 sm:gap-3">
+                                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200">
                                             <x-umkm-card-image :item="$item" aspect="aspect-square" />
                                         </div>
-                                        <div>
-                                            <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer transition-colors" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
+                                        <div class="min-w-0">
+                                            <div class="font-extrabold text-[#0F1F3D] text-[12px] sm:text-[13px] hover:text-[#0B3A85] cursor-pointer transition-colors truncate" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
                                                 {{ $item->nama_usaha }}
                                             </div>
                                             <div class="mt-0.5">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
+                                                <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
                                                     {{ $item->kategori ?? 'Lainnya' }}
                                                 </span>
                                             </div>
@@ -269,7 +269,7 @@
                                 </td>
 
                                 {{-- Kolom Pemilik & Alamat --}}
-                                <td class="py-3.5 px-4">
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <div class="font-bold text-slate-700">
                                         {{ $item->household && $item->household->headOfHousehold ? $item->household->headOfHousehold->nama : 'Warga RT 15' }}
                                     </div>
@@ -285,7 +285,7 @@
                                 </td>
 
                                 {{-- Kolom Kontak & Multi-Medsos --}}
-                                <td class="py-3.5 px-4 text-xs whitespace-nowrap min-w-[170px]">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-xs whitespace-nowrap min-w-[170px]">
                                     @php
                                         $displayPhone = $item->telepon ?: $item->whatsapp;
                                         $cleanWa = $item->getSocialUrl('whatsapp');
@@ -308,7 +308,7 @@
                                 </td>
 
                                 {{-- Kolom Produk Unggulan --}}
-                                <td class="py-3.5 px-4">
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <div class="text-[11.5px] font-medium text-slate-700 max-w-[220px] line-clamp-2" title="{{ $item->produk }}">
                                         {{ $item->produk ?: '-' }}
                                     </div>
@@ -320,8 +320,8 @@
                                 </td>
 
                                 {{-- Kolom Aksi dengan Tombol Berwarna Konsisten Berdasarkan Status UMKM --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         @if($item->status_moderasi === 'pending')
                                             {{-- UMKM Menunggu Review: HANYA SATU AKSI -> REVIEW --}}
                                             <button 

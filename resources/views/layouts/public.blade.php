@@ -13,92 +13,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS (CDN fallback for instant loading & styling) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-900': '#0B2F6B',
-                        'primary-700': '#0B3A85',
-                        'primary-500': '#1C7ED6',
-                        'accent-cyan': '#19A7E8',
-                        'green-700': '#1B7A3A',
-                        'green-500': '#6DB33F',
-                        'gold-500': '#F2A900',
-                        'gold-700': '#C98A00',
-                        'bg-soft': '#F5F8FC',
-                        'surface': '#FFFFFF',
-                        'border-soft': '#DDE5F0',
-                        'text-main': '#0F1F3D',
-                        'text-muted': '#5B6B82',
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        #mobile-menu {
-            background-color: #FFFFFF !important;
-        }
-        .sim-gradient {
-            background: linear-gradient(135deg, #0B3A85 0%, #1C7ED6 55%, #19A7E8 100%);
-        }
-        .sim-green-gradient {
-            background: linear-gradient(135deg, #1B7A3A 0%, #6DB33F 100%);
-        }
-        .sim-card {
-            background-color: #FFFFFF;
-            border: 1px solid #DDE5F0;
-            border-radius: 16px;
-            box-shadow: 0 4px 16px rgba(11, 58, 133, 0.06);
-        }
-        .sim-btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #0B3A85;
-            color: #FFFFFF;
-            font-weight: 600;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease-in-out;
-        }
-        .sim-btn-primary:hover {
-            background-color: #0B2F6B;
-            color: #FFFFFF;
-        }
-        .sim-btn-gold {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #F2A900;
-            color: #0B2F6B;
-            font-weight: 700;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease-in-out;
-        }
-        .sim-btn-gold:hover {
-            background-color: #C98A00;
-            color: #071F47;
-        }
-        :root {
-            --navbar-height: 4rem;
-        }
-        .hero-fullscreen {
-            min-height: calc(100vh - var(--navbar-height));
-            min-height: calc(100dvh - var(--navbar-height));
-        }
-    </style>
+    <!-- Vite Assets (CSS & JS) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
 <body class="bg-bg-soft text-text-main font-sans antialiased flex flex-col min-h-screen">
@@ -120,11 +36,74 @@
             </a>
 
             <!-- Navigasi Menu Desktop -->
-            <nav class="hidden lg:flex items-center gap-3.5 xl:gap-6 text-xs xl:text-sm font-semibold text-text-muted">
+            <nav class="hidden lg:flex items-center gap-4 xl:gap-6 text-xs xl:text-sm font-semibold text-text-muted">
                 <a href="{{ route('public.home') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.home') ? 'text-primary-700 font-bold' : '' }}">Beranda</a>
                 <a href="{{ route('public.struktur-pengurus') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.struktur-pengurus') ? 'text-primary-700 font-bold' : '' }}">Struktur Pengurus</a>
-                <a href="{{ route('public.umkm') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.umkm*') ? 'text-primary-700 font-bold' : '' }}">Katalog UMKM</a>
-                <a href="{{ route('public.bank-sampah') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.bank-sampah') ? 'text-primary-700 font-bold' : '' }}">Bank Sampah</a>
+
+                <!-- Dropdown Informasi Warga (Pengumuman, Agenda, Katalog UMKM, Bank Sampah) -->
+                @php
+                    $isInfoActive = request()->routeIs('public.pengumuman*', 'public.agenda*', 'public.umkm*', 'public.bank-sampah*');
+                @endphp
+                <div class="relative group" id="info-nav-wrapper">
+                    <button type="button" id="info-nav-btn" class="hover:text-primary-700 transition flex items-center gap-1 focus:outline-none py-2 font-semibold {{ $isInfoActive ? 'text-primary-700 font-bold' : '' }}">
+                        <span>Informasi Warga</span>
+                        <svg class="w-3.5 h-3.5 text-text-muted transition-transform group-hover:rotate-180 {{ $isInfoActive ? 'text-primary-700' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <!-- Dropdown Panel Menu -->
+                    <div id="info-nav-menu" class="hidden group-hover:block absolute left-0 top-full pt-2 w-72 z-50">
+                        <div class="bg-white rounded-2xl shadow-xl border border-border-soft p-2.5">
+                            <div class="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-text-muted border-b border-border-soft mb-1">
+                                <span>Publikasi & Program RT</span>
+                            </div>
+                            
+                            <!-- 1. Pengumuman -->
+                            <a href="{{ route('public.pengumuman.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50/80 transition group/item {{ request()->routeIs('public.pengumuman*') ? 'bg-blue-50/80 text-primary-700 font-bold' : '' }}">
+                                <div>
+                                    <div class="text-xs font-semibold text-primary-900 group-hover/item:text-primary-700 transition">Pengumuman RT</div>
+                                    <div class="text-[10px] text-text-muted">Maklumat & edaran resmi pengurus</div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover/item:text-primary-700 group-hover/item:translate-x-0.5 transition shrink-0 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+
+                            <!-- 2. Agenda Kegiatan -->
+                            <a href="{{ route('public.agenda.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50/80 transition group/item {{ request()->routeIs('public.agenda*') ? 'bg-blue-50/80 text-primary-700 font-bold' : '' }}">
+                                <div>
+                                    <div class="text-xs font-semibold text-primary-900 group-hover/item:text-primary-700 transition">Agenda Kegiatan</div>
+                                    <div class="text-[10px] text-text-muted">Jadwal acara & kegiatan lingkungan</div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover/item:text-primary-700 group-hover/item:translate-x-0.5 transition shrink-0 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+
+                            <!-- 3. Katalog UMKM -->
+                            <a href="{{ route('public.umkm') }}" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50/80 transition group/item {{ request()->routeIs('public.umkm*') ? 'bg-blue-50/80 text-primary-700 font-bold' : '' }}">
+                                <div>
+                                    <div class="text-xs font-semibold text-primary-900 group-hover/item:text-primary-700 transition">Katalog UMKM</div>
+                                    <div class="text-[10px] text-text-muted">Produk & usaha warga RT 15</div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover/item:text-primary-700 group-hover/item:translate-x-0.5 transition shrink-0 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+
+                            <!-- 4. Bank Sampah -->
+                            <a href="{{ route('public.bank-sampah') }}" class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50/80 transition group/item {{ request()->routeIs('public.bank-sampah*') ? 'bg-blue-50/80 text-primary-700 font-bold' : '' }}">
+                                <div>
+                                    <div class="text-xs font-semibold text-primary-900 group-hover/item:text-primary-700 transition">Bank Sampah</div>
+                                    <div class="text-[10px] text-text-muted">Daur ulang & tabungan pilah sampah</div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover/item:text-primary-700 group-hover/item:translate-x-0.5 transition shrink-0 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Dropdown Layanan Warga -->
                 <div class="relative group" id="layanan-nav-wrapper">
@@ -168,7 +147,7 @@
             </nav>
 
             <!-- Tombol Masuk Portal Tunggal dengan Dropdown (Desktop) -->
-            <div class="hidden md:flex items-center shrink-0 relative" id="auth-dropdown-wrapper">
+            <div class="hidden lg:flex items-center shrink-0 relative" id="auth-dropdown-wrapper">
                 @auth
                     @if(auth()->user()->isWarga())
                         <a href="{{ route('warga.dashboard') }}" class="bg-primary-700 hover:bg-primary-900 text-white font-semibold text-xs xl:text-sm px-4 py-2 xl:px-4.5 xl:py-2.5 rounded-xl transition shadow-sm flex items-center gap-2">
@@ -210,7 +189,7 @@
             </div>
 
             <!-- Hamburger Button (Mobile / Tablet) -->
-            <div class="flex items-center gap-2 md:hidden">
+            <div class="flex items-center gap-2 lg:hidden">
                 <button id="mobile-menu-btn" type="button" aria-label="Buka Menu" class="p-2 rounded-xl text-text-muted hover:text-primary-900 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-primary-500 transition">
                     <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -222,14 +201,20 @@
             </div>
         </div>
 
-        <!-- Mobile Drawer Menu -->
-        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 w-full bg-white border-b border-border-soft px-6 pt-4 pb-8 space-y-4 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto z-50">
+        <!-- Mobile & Tablet Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden absolute top-full left-0 right-0 w-full bg-white border-b border-border-soft px-6 pt-4 pb-8 space-y-4 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto z-50">
             <nav class="flex flex-col space-y-1 text-sm font-semibold text-text-muted">
                 <a href="{{ route('public.home') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.home') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Beranda</span>
                 </a>
                 <a href="{{ route('public.struktur-pengurus') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.struktur-pengurus') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Struktur Pengurus</span>
+                </a>
+                <a href="{{ route('public.pengumuman.index') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.pengumuman*') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
+                    <span>Pengumuman</span>
+                </a>
+                <a href="{{ route('public.agenda.index') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.agenda*') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
+                    <span>Agenda Kegiatan</span>
                 </a>
                 <a href="{{ route('public.umkm') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.umkm*') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Katalog UMKM</span>
@@ -311,6 +296,8 @@
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Layanan Cepat</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="{{ route('public.pengumuman.index') }}" class="hover:text-gold-500 transition">Pengumuman RT 15</a></li>
+                        <li><a href="{{ route('public.agenda.index') }}" class="hover:text-gold-500 transition">Agenda Kegiatan</a></li>
                         <li><a href="{{ route('public.struktur-pengurus') }}" class="hover:text-gold-500 transition">Struktur Pengurus RT 15</a></li>
                         <li><a href="{{ route('citizen.login') }}" class="hover:text-gold-500 transition">Pengajuan Surat Pengantar</a></li>
                         <li><a href="{{ route('citizen.login') }}" class="hover:text-gold-500 transition">Bayar Iuran Bulanan</a></li>
@@ -395,6 +382,24 @@
                     if (authWrapper && !authWrapper.contains(e.target)) {
                         authMenu.classList.add('hidden');
                         if (authChevron) authChevron.classList.remove('rotate-180');
+                    }
+                });
+            }
+
+            // Dropdown Informasi Warga (Desktop Click Support)
+            const infoWrapper = document.getElementById('info-nav-wrapper');
+            const infoBtn = document.getElementById('info-nav-btn');
+            const infoMenu = document.getElementById('info-nav-menu');
+
+            if (infoBtn && infoMenu) {
+                infoBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    infoMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (infoWrapper && !infoWrapper.contains(e.target)) {
+                        infoMenu.classList.add('hidden');
                     }
                 });
             }

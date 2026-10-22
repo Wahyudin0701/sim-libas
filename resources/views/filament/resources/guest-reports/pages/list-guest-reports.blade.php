@@ -127,7 +127,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama tamu, NIK, asal daerah, nama kepala keluarga, atau alamat..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -191,7 +191,7 @@
         {{-- ====================================================================
              4. TABEL DATA LAPOR TAMU (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="statusFilter, search, resetFilters, previousPage, nextPage, gotoPage"
@@ -199,16 +199,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
-                            <th class="py-3 px-4 font-bold min-w-[240px]">Identitas Tamu</th>
-                            <th class="py-3 px-4 font-bold min-w-[220px]">Keluarga Tuan Rumah</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Tanggal Berkunjung</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px]">Tujuan</th>
-                            <th class="py-3 px-4 font-bold text-center w-36 min-w-[140px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold min-w-[95px] md:min-w-[110px] whitespace-nowrap">Status</th>
+                            <th class="py-3 px-2.5 sm:px-4 font-bold md:min-w-[240px]">Identitas Tamu</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[220px]">Keluarga Tuan Rumah</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Tanggal Berkunjung</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[160px]">Tujuan</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-12 sm:w-14 md:w-36 md:min-w-[140px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -225,27 +225,27 @@
                                 class="hover:bg-slate-50/80 transition-colors guest-data-row"
                                 data-status="{{ $item->status ?? 'menginap' }}"
                             >
-                                {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                {{-- Kolom Nomor Urut (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $reports->firstItem() ? ($reports->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
-                                {{-- Kolom Status --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Status (Mobile & Desktop) --}}
+                                <td class="py-3.5 px-2 sm:px-4 whitespace-nowrap">
                                     @if($isMenginap)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 rounded-full text-[10.5px] sm:text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                             Menginap
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 rounded-full text-[10.5px] sm:text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
                                             Sudah Pulang
                                         </span>
                                     @endif
                                 </td>
 
-                                {{-- Kolom Nama Tamu & NIK --}}
-                                <td class="py-3.5 px-4 min-w-[240px]">
+                                {{-- Kolom Nama Tamu & NIK (Mobile & Desktop) --}}
+                                <td class="py-3.5 px-2.5 sm:px-4 md:min-w-[240px]">
                                     <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer" wire:click="openDetail({{ $item->id }})">
                                         {{ $item->nama_tamu }}
                                     </div>
@@ -259,8 +259,8 @@
                                     @endif
                                 </td>
 
-                                {{-- Kolom Tuan Rumah --}}
-                                <td class="py-3.5 px-4">
+                                {{-- Kolom Tuan Rumah (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <div class="font-bold text-[#0F1F3D]">
                                         {{ $item->household && $item->household->headOfHousehold ? $item->household->headOfHousehold->nama_lengkap : 'Keluarga RT 15' }}
                                     </div>
@@ -269,8 +269,8 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Tanggal Datang - Pulang --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Tanggal Datang - Pulang (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <div class="text-[11px] font-bold text-slate-700">
                                         Datang: {{ \Carbon\Carbon::parse($item->tanggal_datang)->format('d M Y') }}
                                     </div>
@@ -279,16 +279,16 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Tujuan --}}
-                                <td class="py-3.5 px-4">
+                                {{-- Kolom Tujuan (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <p class="text-[11px] text-slate-600 line-clamp-1 max-w-[180px]">
                                         {{ $item->tujuan ?? 'Kunjungan Silaturahmi' }}
                                     </p>
                                 </td>
 
-                                {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas - Vertikal di Mobile) --}}
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         {{-- Catat Kepulangan jika sedang menginap (Emerald) --}}
                                         @if($isMenginap)
                                             <button 

@@ -6,9 +6,39 @@
             deleteComplaintTitle: '',
             detailModalOpen: @entangle('detailModalOpen'),
             handlingModalOpen: @entangle('handlingModalOpen'),
+            actionModalOpen: false,
+            actionType: 'selesai',
+            actionComplaintId: null,
+            actionComplaintTitle: '',
+            actionCatatan: '',
+            openActionConfirm(id, title, type) {
+                this.actionComplaintId = id;
+                this.actionComplaintTitle = title;
+                this.actionType = type;
+                this.actionCatatan = '';
+                this.actionModalOpen = true;
+            },
+            closeActionConfirm() {
+                this.actionModalOpen = false;
+                this.actionComplaintId = null;
+                this.actionCatatan = '';
+            },
+            submitAction() {
+                if (this.actionCatatan.trim().length === 0) return;
+                const id = this.actionComplaintId;
+                const catatan = this.actionCatatan.trim();
+                const type = this.actionType;
+                this.actionModalOpen = false;
+                if (type === 'selesai') {
+                    $wire.resolveComplaint(id, catatan);
+                } else {
+                    $wire.rejectComplaint(id, catatan);
+                }
+            },
             confirmDelete(id, title) {
                 this.deleteComplaintId = id;
                 this.deleteComplaintTitle = title;
+                this.detailModalOpen = false;
                 this.deleteConfirmModalOpen = true;
             },
             closeDeleteConfirm() {
@@ -24,7 +54,7 @@
                 }
             }
         }"
-        @keydown.escape.window="closeDeleteConfirm(); if (detailModalOpen) { detailModalOpen = false; $wire.closeDetail(); } if (handlingModalOpen) { handlingModalOpen = false; $wire.closeHandling(); }"
+        @keydown.escape.window="if (actionModalOpen) { closeActionConfirm(); } else if (deleteConfirmModalOpen) { closeDeleteConfirm(); } else if (detailModalOpen) { detailModalOpen = false; $wire.closeDetail(); } else if (handlingModalOpen) { handlingModalOpen = false; $wire.closeHandling(); }"
         class="w-full space-y-4"
     >
         {{-- ====================================================================
@@ -90,7 +120,7 @@
                         name="search"
                         value="{{ $search }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari judul pengaduan, nama pelapor, lokasi, atau deskripsi keluhan..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -176,7 +206,7 @@
         {{-- ====================================================================
              4. TABEL DATA PENGADUAN (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="statusFilter, kategoriFilter, search, resetFilters, setStatus, previousPage, nextPage, gotoPage"
@@ -184,16 +214,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[360px] w-[35%]">Judul & Keluhan</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Kategori & Lokasi</th>
-                            <th class="py-3 px-4 font-bold min-w-[140px] whitespace-nowrap">Pelapor</th>
-                            <th class="py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
-                            <th class="py-3 px-4 font-bold min-w-[130px] whitespace-nowrap">Penanganan</th>
-                            <th class="py-3 px-4 font-bold text-center w-36 min-w-[140px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold md:min-w-[360px] md:w-[35%]"><span class="md:hidden">Judul</span><span class="hidden md:inline">Judul & Keluhan</span></th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Kategori & Lokasi</th>
+                            <th class="py-3 px-2.5 sm:px-4 font-bold whitespace-nowrap md:min-w-[140px]">Pelapor</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[110px] whitespace-nowrap">Status</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[130px] whitespace-nowrap">Penanganan</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-14 sm:w-20 md:min-w-[80px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -204,30 +234,31 @@
                     >
                         @forelse($complaints as $index => $item)
                             <tr 
-                                class="hover:bg-slate-50/80 transition-colors complaint-data-row"
+                                class="complaint-data-row transition-colors {{ $item->status === 'diterima' ? 'bg-amber-50/70 hover:bg-amber-100/70' : 'hover:bg-slate-50/80' }}"
                                 data-status="{{ $item->status }}"
                                 data-kategori="{{ $item->kategori }}"
                             >
-                                {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                {{-- Kolom Nomor Urut (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap {{ $item->status === 'diterima' ? 'border-l-4 border-l-amber-500' : '' }}">
                                     {{ $complaints->firstItem() ? ($complaints->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
-                                {{-- Kolom Judul & Keluhan --}}
-                                <td class="py-3.5 px-4 min-w-[360px]">
-                                    <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer" wire:click="openDetail({{ $item->id }})">
+                                {{-- Kolom Judul & Keluhan (Keterangan keluhan disembunyikan di Mobile) --}}
+                                <td class="py-3.5 px-3 sm:px-4 md:min-w-[360px] {{ $item->status === 'diterima' ? 'border-l-4 border-l-amber-500 md:border-l-0' : '' }}">
+                                    <div class="font-extrabold text-[#0F1F3D] text-[13px] sm:text-[14px] leading-snug hover:text-[#0B3A85] cursor-pointer" wire:click="openDetail({{ $item->id }})">
                                         {{ $item->judul }}
                                     </div>
-                                    <p class="text-slate-500 text-[11px] leading-relaxed line-clamp-2 mt-1">
+                                    {{-- Keterangan Keluhan & Waktu Lapor (Hanya Desktop) --}}
+                                    <p class="hidden md:block text-slate-500 text-[11px] leading-relaxed line-clamp-2 mt-1">
                                         {{ Str::limit($item->deskripsi, 100) }}
                                     </p>
-                                    <div class="text-[10px] text-slate-400 mt-1.5 whitespace-nowrap">
+                                    <div class="hidden md:block text-[10px] text-slate-400 mt-1.5 whitespace-nowrap">
                                         Dilaporkan: {{ $item->created_at ? $item->created_at->format('d M Y, H:i') : '-' }}
                                     </div>
                                 </td>
 
-                                {{-- Kolom Kategori & Lokasi --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Kategori & Lokasi (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10.5px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
                                         {{ ucfirst($item->kategori) }}
                                     </span>
@@ -241,34 +272,34 @@
                                 </td>
 
                                 {{-- Kolom Pelapor --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="py-3.5 px-2.5 sm:px-4 whitespace-nowrap">
                                     @if($item->is_anonim)
-                                        <div class="flex items-center gap-1 text-slate-500 font-bold">
+                                        <div class="flex items-center gap-1 text-slate-500 font-bold text-[11px] sm:text-xs">
                                             <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
                                             </svg>
                                             <span>Warga (Anonim)</span>
                                         </div>
                                     @else
-                                        <div class="font-bold text-[#0F1F3D]">
+                                        <div class="font-bold text-[#0F1F3D] text-[11px] sm:text-xs">
                                             {{ $item->pelapor ? $item->pelapor->name : 'Warga RT' }}
                                         </div>
-                                        <div class="text-[10px] text-slate-400 mt-0.5">
+                                        <div class="hidden md:block text-[10px] text-slate-400 mt-0.5">
                                             {{ $item->pelapor ? $item->pelapor->email : '' }}
                                         </div>
                                     @endif
                                 </td>
 
-                                {{-- Kolom Status --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                {{-- Kolom Status (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @if($item->status === 'diterima')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                             Diterima
                                         </span>
                                     @elseif($item->status === 'diproses')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                             Diproses
                                         </span>
                                     @elseif($item->status === 'selesai')
@@ -285,8 +316,8 @@
                                     @endif
                                 </td>
 
-                                {{-- Kolom Penanganan --}}
-                                <td class="py-3.5 px-4">
+                                {{-- Kolom Penanganan (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-3.5 px-4">
                                     <div class="text-[11px] text-slate-700 font-semibold truncate max-w-[150px]">
                                         {{ $item->penanggungJawab ? $item->penanggungJawab->name : '-' }}
                                     </div>
@@ -297,8 +328,8 @@
                                     @endif
                                 </td>
 
-                                {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                {{-- Kolom Aksi: Hanya Tombol Mata (Sesuai Alur Standar SIM-LiBas) --}}
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                                         {{-- Detail Modal (Ikon Mata - Biru) --}}
                                         <button 
@@ -311,31 +342,6 @@
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                            </svg>
-                                        </button>
-
-                                        {{-- Tangani / Update Status Modal (Ikon Centang/Status - Emerald) --}}
-                                        <button 
-                                            type="button" 
-                                            @click="handlingModalOpen = true"
-                                            wire:click="openHandling({{ $item->id }})" 
-                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 hover:border-emerald-400 transition-all shadow-2xs cursor-pointer"
-                                            title="Tindak Lanjut / Ubah Status"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                                            </svg>
-                                        </button>
-
-                                        {{-- Hapus Modal (Ikon Sampah - Merah/Rose) --}}
-                                        <button 
-                                            type="button" 
-                                            @click="confirmDelete({{ $item->id }}, '{{ addslashes($item->judul) }}')" 
-                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-400 transition-all shadow-2xs cursor-pointer"
-                                            title="Hapus Pengaduan"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
                                         </button>
                                     </div>
@@ -469,11 +475,11 @@
                                     </span>
 
                                     @if($selectedComplaint->status === 'diterima')
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                                             STATUS: DITERIMA
                                         </span>
                                     @elseif($selectedComplaint->status === 'diproses')
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
                                             STATUS: DIPROSES
                                         </span>
                                     @elseif($selectedComplaint->status === 'selesai')
@@ -517,12 +523,13 @@
                                     </div>
                                 </div>
 
-                                @if($selectedComplaint->catatan_penanganan)
-                                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
-                                        <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1">
-                                            Catatan Penanganan & Tindak Lanjut
+                                {{-- Catatan Penanganan Tersimpan jika status 'selesai' atau 'ditolak' --}}
+                                @if(in_array($selectedComplaint->status, ['selesai', 'ditolak']) && $selectedComplaint->catatan_penanganan)
+                                    <div class="p-4 rounded-xl {{ $selectedComplaint->status === 'selesai' ? 'bg-emerald-50/70 border border-emerald-200' : 'bg-rose-50/70 border border-rose-200' }}">
+                                        <div class="text-[11px] font-bold {{ $selectedComplaint->status === 'selesai' ? 'text-emerald-800' : 'text-rose-800' }} uppercase tracking-wider mb-1">
+                                            {{ $selectedComplaint->status === 'selesai' ? 'Catatan Penanganan & Penyelesaian' : 'Alasan / Catatan Penolakan' }}
                                         </div>
-                                        <p class="text-xs text-emerald-900 leading-relaxed">
+                                        <p class="text-xs {{ $selectedComplaint->status === 'selesai' ? 'text-emerald-900' : 'text-rose-900' }} leading-relaxed">
                                             {{ $selectedComplaint->catatan_penanganan }}
                                         </p>
                                         @if($selectedComplaint->tanggal_selesai)
@@ -535,23 +542,56 @@
                             </div>
 
                             {{-- Modal Footer --}}
-                            <div class="bg-slate-50 px-6 py-3 border-t border-slate-100 flex items-center justify-between">
-                                <button 
-                                    type="button" 
-                                    @click="detailModalOpen = false; handlingModalOpen = true"
-                                    wire:click="openHandling({{ $selectedComplaint->id }})" 
-                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors cursor-pointer"
-                                >
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                                    </svg>
-                                    <span>Tindak Lanjut Laporan</span>
-                                </button>
+                            <div class="bg-slate-50 px-6 py-3 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+                                <div>
+                                    @if($selectedComplaint->status === 'diproses')
+                                        <div class="flex items-center gap-2">
+                                            {{-- Tombol Selesai (Emerald/Green) --}}
+                                            <button 
+                                                type="button" 
+                                                @click="openActionConfirm({{ $selectedComplaint->id }}, '{{ addslashes($selectedComplaint->judul) }}', 'selesai')" 
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs hover:shadow-md cursor-pointer"
+                                                title="Selesaikan pengaduan ini dengan konfirmasi dan catatan"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                <span>Selesai</span>
+                                            </button>
+
+                                            {{-- Tombol Ditolak (Rose/Red) --}}
+                                            <button 
+                                                type="button" 
+                                                @click="openActionConfirm({{ $selectedComplaint->id }}, '{{ addslashes($selectedComplaint->judul) }}', 'ditolak')" 
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white transition-all shadow-xs hover:shadow-md cursor-pointer"
+                                                title="Tolak pengaduan ini dengan konfirmasi dan alasan"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                <span>Ditolak</span>
+                                            </button>
+                                        </div>
+                                    @elseif(in_array($selectedComplaint->status, ['selesai', 'ditolak']))
+                                        {{-- Tombol Hapus Pengaduan --}}
+                                        <button 
+                                            type="button" 
+                                            @click="confirmDelete({{ $selectedComplaint->id }}, '{{ addslashes($selectedComplaint->judul) }}')" 
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors cursor-pointer"
+                                            title="Hapus pengaduan ini"
+                                        >
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
 
                                 <button 
                                     type="button" 
                                     @click="detailModalOpen = false; $wire.closeDetail()" 
-                                    class="px-4 py-2 bg-[#0B3A85] hover:bg-[#07275E] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                                    class="px-4 py-2 bg-[#0B3A85] hover:bg-[#07275E] text-white rounded-xl text-xs font-bold transition-colors cursor-pointer ml-auto"
                                 >
                                     Tutup
                                 </button>
@@ -784,10 +824,155 @@
                 </div>
             </div>
         </div>
+
+        {{-- ====================================================================
+             8. MODAL KONFIRMASI TINDAK LANJUT / STATUS PENGADUAN (SELESAI / TOLAK)
+             ==================================================================== --}}
+        <div 
+            x-show="actionModalOpen" 
+            x-cloak 
+            style="display: none;"
+            class="fixed inset-0 z-[60] overflow-y-auto" 
+            aria-labelledby="action-modal-title" 
+            role="dialog" 
+            aria-modal="true"
+        >
+            {{-- Backdrop Blur --}}
+            <div 
+                x-show="actionModalOpen"
+                x-transition:enter="ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer" 
+                style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"
+                @click="closeActionConfirm"
+            ></div>
+
+            {{-- Dialog Container --}}
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div 
+                    x-show="actionModalOpen"
+                    x-transition:enter="ease-out duration-200"
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave="ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full sm:max-w-lg border border-slate-200 p-6 space-y-4"
+                    @click.stop
+                >
+                    {{-- Header dengan Icon Dinamis --}}
+                    <div class="flex items-start gap-3.5">
+                        <div 
+                            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                            :class="actionType === 'selesai' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'"
+                        >
+                            {{-- Icon Selesai --}}
+                            <svg x-show="actionType === 'selesai'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{-- Icon Ditolak --}}
+                            <svg x-show="actionType === 'ditolak'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 
+                                class="text-sm sm:text-base font-extrabold text-[#0F1F3D]" 
+                                id="action-modal-title"
+                                x-text="actionType === 'selesai' ? 'Konfirmasi Penyelesaian Pengaduan' : 'Konfirmasi Penolakan Pengaduan'"
+                            ></h3>
+                            <p 
+                                class="text-xs text-slate-500 mt-0.5 leading-relaxed"
+                                x-text="actionType === 'selesai' ? 'Tandai pengaduan ini telah selesai ditindaklanjuti oleh pengurus RT.' : 'Pengaduan tidak dapat diterima atau ditindaklanjuti. Berikan penjelasan kepada pelapor.'"
+                            ></p>
+                        </div>
+                    </div>
+
+                    {{-- Info Pengaduan --}}
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-0.5">Judul Pengaduan</span>
+                        <span class="font-bold text-[#0F1F3D]" x-text="actionComplaintTitle"></span>
+                    </div>
+
+                    {{-- Textarea Catatan / Respon Pengurus --}}
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-700">
+                                <span x-text="actionType === 'selesai' ? 'Catatan Tindak Lanjut / Respon Pengurus' : 'Alasan Penolakan Pengaduan'"></span>
+                                <span class="text-rose-500 font-bold">*</span>
+                            </label>
+                            <span class="text-[10.5px] font-semibold text-rose-500">Wajib diisi</span>
+                        </div>
+                        <textarea 
+                            x-model="actionCatatan" 
+                            rows="4" 
+                            :placeholder="actionType === 'selesai' ? 'Tuliskan tindakan yang telah dilakukan untuk menyelesaikan pengaduan...' : 'Tuliskan alasan penolakan pengaduan ini...'"
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all resize-y"
+                        ></textarea>
+                        
+                        {{-- Validasi & Indikator Karakter --}}
+                        <div class="flex items-center justify-between text-[11px] pt-0.5">
+                            <div>
+                                <span x-show="actionCatatan.trim().length === 0" class="text-rose-500 font-medium flex items-center gap-1">
+                                    <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Catatan wajib diisi dan tidak boleh hanya berisi spasi
+                                </span>
+                                <span x-show="actionCatatan.trim().length > 0" class="text-emerald-600 font-medium flex items-center gap-1">
+                                    <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Catatan siap disimpan
+                                </span>
+                            </div>
+                            <span class="text-slate-400 font-medium" x-text="actionCatatan.trim().length + ' karakter'"></span>
+                        </div>
+                    </div>
+
+                    {{-- Footer Modal --}}
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                        <button 
+                            type="button" 
+                            @click="closeActionConfirm" 
+                            class="px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button 
+                            type="button" 
+                            @click="submitAction" 
+                            :disabled="actionCatatan.trim().length === 0"
+                            :class="actionCatatan.trim().length === 0 
+                                ? 'opacity-50 cursor-not-allowed bg-slate-300 text-slate-500' 
+                                : (actionType === 'selesai' ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer hover:shadow-md' : 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer hover:shadow-md')"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs"
+                        >
+                            <span x-show="actionType === 'selesai'" class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Konfirmasi Selesai</span>
+                            </span>
+                            <span x-show="actionType === 'ditolak'" class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <span>Konfirmasi Tolak</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- ====================================================================
-         8. SCRIPT REAL-TIME CLIENT-SIDE SEARCH & DYNAMIC RESET FILTER
+         9. SCRIPT REAL-TIME CLIENT-SIDE SEARCH & DYNAMIC RESET FILTER
          ATURAN STANDAR PENGEMBANGAN: SEARCH BAR & FILTER TABEL
          ==================================================================== --}}
     <script>

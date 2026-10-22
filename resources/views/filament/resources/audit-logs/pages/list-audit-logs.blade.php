@@ -162,7 +162,7 @@
                     <input 
                         type="text" 
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari pelaku, email, modul, ID, atau deskripsi..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -196,6 +196,7 @@
                             <option value="updated">Data Diubah (Updated)</option>
                             <option value="deleted">Data Dihapus (Deleted)</option>
                             <option value="login">Masuk (Login)</option>
+                            <option value="logout">Keluar (Logout)</option>
                         </select>
                     </div>
 
@@ -247,7 +248,7 @@
         {{-- ====================================================================
              4. TABEL AUDIT LOG (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="search, eventFilter, moduleFilter, periodFilter, resetFilters, exportCsv, previousPage, nextPage, gotoPage" 
@@ -276,12 +277,15 @@
                                 </td>
 
                                 {{-- Waktu & Tanggal --}}
-                                <td class="py-3 px-3">
-                                    <div class="font-bold text-[#0F1F3D] font-mono text-[11.5px]">
-                                        {{ $log->formatted_date }}
+                                <td class="py-3 px-3 whitespace-nowrap">
+                                    <div class="font-bold text-[#0F1F3D] text-xs sm:text-[13px] leading-tight">
+                                        {{ $log->formatted_date_only }}
                                     </div>
-                                    <div class="text-[10.5px] text-[#94A3B8] font-medium mt-0.5 flex items-center gap-1">
-                                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="font-mono text-slate-500 text-[11px] sm:text-xs mt-0.5 leading-tight">
+                                        {{ $log->formatted_time_only }}
+                                    </div>
+                                    <div class="text-[10px] sm:text-[10.5px] text-[#94A3B8] font-medium mt-1 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                         <span>{{ $log->relative_time }}</span>
@@ -321,6 +325,10 @@
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                         @elseif($log->event === 'deleted')
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        @elseif($log->event === 'login')
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                                        @elseif($log->event === 'logout')
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                         @else
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         @endif
@@ -520,7 +528,7 @@
                                 </div>
 
                                 {{-- Tampilan Mode Tabel Ramah Pengguna --}}
-                                <div x-show="!showRawJson" class="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                                <div x-show="!showRawJson" class="border border-slate-200 rounded-none md:rounded-xl overflow-hidden shadow-2xs">
                                     @if($hasOld && $hasAttributes)
                                         {{-- Kasus Diubah (Updated) - Tampilkan Side-by-side Diff --}}
                                         <div class="overflow-x-auto">

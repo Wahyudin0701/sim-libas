@@ -799,7 +799,7 @@
                                             {{ $patrol->regu }}
                                         </p>
                                         <p class="text-[11px] text-[#5B6B82] truncate mt-0.5">
-                                            {{ $patrol->tanggal?->format('d M Y') ?? '-' }} &bull; {{ $patrol->waktu_mulai }} - {{ $patrol->waktu_selesai }} &bull; {{ $patrol->members->count() }} Anggota
+                                            {{ $patrol->nama_hari }} Malam &bull; {{ $patrol->waktu_mulai }} - {{ $patrol->waktu_selesai }} &bull; {{ $patrol->members->count() }} Anggota
                                         </p>
                                     </div>
                                 </div>
@@ -939,7 +939,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
                                     {{ ucfirst($letter->status) }}
                                 </span>
                             </div>
@@ -1249,7 +1249,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'selesai' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold shrink-0 {{ match($letter->status) { 'disetujui' => 'bg-[#EDF9F1] text-[#1B7A3A] border border-[#D1FAE5]', 'ditolak' => 'bg-[#FEF2F2] text-[#DC2626] border border-[#FEE2E2]', 'diperiksa' => 'bg-[#EBF3FC] text-[#0B3A85] border border-[#DBEAFE]', default => 'bg-[#FFFBEB] text-[#D97706] border border-[#FEF3C7]' } }}">
                                     {{ ucfirst($letter->status) }}
                                 </span>
                             </div>

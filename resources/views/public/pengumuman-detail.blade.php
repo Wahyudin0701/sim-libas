@@ -14,36 +14,27 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Navigasi Path Breadcrumb [Beranda / Pengumuman / Detail] -->
-            <nav class="flex items-center gap-1.5 text-xs text-blue-200 mb-4 sm:mb-6 flex-wrap">
+            <nav class="flex items-center gap-2 text-xs text-blue-200 mb-4 sm:mb-6 flex-wrap">
                 <a href="{{ route('public.home') }}" class="hover:text-white transition">Beranda</a>
                 <span class="text-blue-300">/</span>
-                <a href="{{ route('public.home') }}#pengumuman" class="hover:text-white transition">Pengumuman</a>
+                <a href="{{ route('public.pengumuman.index') }}" class="hover:text-white transition">Pengumuman</a>
                 <span class="text-blue-300">/</span>
-                <span class="text-white font-bold bg-white/10 px-2 py-0.5 rounded-md border border-white/20">Detail</span>
+                <span class="text-white font-bold">Detail</span>
             </nav>
 
             <!-- Header Title & Badges -->
             <div class="max-w-3xl">
-                <div class="flex flex-wrap items-center gap-2 mb-3">
-                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-white/15 backdrop-blur-md text-gold-400 border border-white/20">
-                        Sasaran: {{ strtoupper($announcement->target) }}
-                    </span>
-                    @if($announcement->is_pinned)
+                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight mb-3">
+                    {{ $announcement->judul }}
+                </h1>
+
+                @if($announcement->is_pinned)
+                    <div class="mb-3">
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-primary-900 shadow-xs">
                             <span>📌 Penting</span>
                         </span>
-                    @endif
-                    <span class="text-xs text-blue-200 flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 text-blue-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span>{{ $announcement->created_at->translatedFormat('d F Y') }}</span>
-                    </span>
-                </div>
-
-                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight mb-1 sm:mb-3">
-                    {{ $announcement->judul }}
-                </h1>
+                    </div>
+                @endif
 
                 <div class="hidden sm:flex items-center gap-2 text-xs sm:text-sm text-blue-100 flex-wrap">
                     <span>Maklumat Resmi Pengurus RT 15 Pematang Sulur</span>
@@ -141,10 +132,7 @@
 
                 <!-- Kartu Informasi Sekretariat RT -->
                 <div class="bg-white border border-border-soft rounded-3xl p-6 shadow-sm">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="text-base">🏛️</span>
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-primary-900">Sekretariat RT 15</h3>
-                    </div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-primary-900 mb-3">Sekretariat RT 15</h3>
                     <p class="text-xs text-text-muted leading-relaxed mb-4">
                         Ada pertanyaan atau butuh klarifikasi mengenai pengumuman ini? Pengurus RT siap membantu warga melalui kontak berikut:
                     </p>
@@ -181,11 +169,8 @@
                         <div class="space-y-3.5">
                             @foreach($otherAnnouncements as $other)
                                 <a href="{{ route('public.pengumuman.detail', $other->id) }}" class="block p-3 rounded-xl hover:bg-blue-50/70 border border-slate-100 transition group">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-100 text-primary-700">
-                                            {{ $other->target }}
-                                        </span>
-                                        <span class="text-[10px] text-text-muted">{{ $other->created_at->format('d M Y') }}</span>
+                                    <div class="text-[10px] text-text-muted mb-1">
+                                        {{ $other->created_at->format('d M Y') }}
                                     </div>
                                     <h4 class="text-xs font-bold text-primary-900 group-hover:text-primary-700 transition leading-snug line-clamp-2">
                                         {{ $other->judul }}

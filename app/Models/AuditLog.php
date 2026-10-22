@@ -87,6 +87,22 @@ class AuditLog extends BaseActivity
     }
 
     /**
+     * Format tanggal ramah Indonesia (contoh: 19 Okt 2026).
+     */
+    public function getFormattedDateOnlyAttribute(): string
+    {
+        return Carbon::parse($this->created_at)->locale('id')->translatedFormat('d M Y');
+    }
+
+    /**
+     * Format jam ramah Indonesia (contoh: 11:33 WIB).
+     */
+    public function getFormattedTimeOnlyAttribute(): string
+    {
+        return Carbon::parse($this->created_at)->format('H:i') . ' WIB';
+    }
+
+    /**
      * Waktu relatif (e.g. 5 menit yang lalu).
      */
     public function getRelativeTimeAttribute(): string

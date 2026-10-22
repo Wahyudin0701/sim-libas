@@ -100,7 +100,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari komoditas sampah (misal: botol plastik, kardus, minyak jelantah)..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -166,7 +166,7 @@
         {{-- ====================================================================
              4. TABEL DATA MASTER HARGA (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="kategoriFilter, search, resetFilters, previousPage, nextPage, gotoPage"
@@ -174,16 +174,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[120px] whitespace-nowrap">Status</th>
-                            <th class="py-3 px-4 font-bold min-w-[260px]">Nama Komoditas Sampah</th>
-                            <th class="py-3 px-4 font-bold min-w-[130px] whitespace-nowrap">Kategori</th>
-                            <th class="py-3 px-4 font-bold text-right min-w-[140px] whitespace-nowrap">Patokan Harga Beli</th>
-                            <th class="py-3 px-4 font-bold text-center min-w-[130px] whitespace-nowrap">Total Terkumpul</th>
-                            <th class="py-3 px-4 font-bold text-center w-36 min-w-[140px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[120px] whitespace-nowrap">Status</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold md:min-w-[260px]">Nama Komoditas Sampah</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[130px] whitespace-nowrap">Kategori</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold text-right min-w-[110px] md:min-w-[140px] whitespace-nowrap">Patokan Harga Beli</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center min-w-[130px] whitespace-nowrap">Total Terkumpul</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-16 sm:w-24 md:w-36 md:min-w-[140px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -198,12 +198,12 @@
                                 data-kategori="{{ $item->kategori }}"
                             >
                                 {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $wasteTypes->firstItem() ? ($wasteTypes->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
                                 {{-- Kolom Status --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @if($item->is_active)
                                         <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -217,8 +217,8 @@
                                 </td>
 
                                 {{-- Kolom Nama Komoditas --}}
-                                <td class="py-3.5 px-4">
-                                    <div class="font-extrabold text-[#0F1F3D] text-[13px]">
+                                <td class="py-3.5 px-3 sm:px-4">
+                                    <div class="font-extrabold text-[#0F1F3D] text-[12px] sm:text-[13px]">
                                         {{ $item->nama }}
                                     </div>
                                     <div class="text-[10px] text-slate-400 font-mono mt-0.5">
@@ -227,7 +227,7 @@
                                 </td>
 
                                 {{-- Kolom Kategori --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     @php
                                         $badgeClass = match($item->kategori) {
                                             'organik' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -242,8 +242,8 @@
                                 </td>
 
                                 {{-- Kolom Patokan Harga Beli --}}
-                                <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                    <div class="font-black text-emerald-600 text-[13.5px]">
+                                <td class="py-3.5 px-3 sm:px-4 text-right whitespace-nowrap">
+                                    <div class="font-black text-emerald-600 text-[12.5px] sm:text-[13.5px]">
                                         Rp {{ number_format($item->harga_per_kg, 0, ',', '.') }}
                                     </div>
                                     <div class="text-[10px] text-slate-400 mt-0.5">
@@ -252,7 +252,7 @@
                                 </td>
 
                                 {{-- Kolom Total Terkumpul --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center whitespace-nowrap">
                                     <div class="font-bold text-slate-800">
                                         {{ number_format($item->deposits_sum_berat_kg ?? 0, 1, ',', '.') }} {{ $item->satuan }}
                                     </div>
@@ -262,8 +262,8 @@
                                 </td>
 
                                 {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         {{-- Toggle Aktif/Nonaktif (Teal jika aktif, Abu-abu jika nonaktif) --}}
                                         <button 
                                             type="button" 

@@ -391,18 +391,15 @@
         {{-- ====================================================================
              3. TABEL DAFTAR ANGGOTA KELUARGA
              ==================================================================== --}}
-        <div class="bg-white rounded-xl shadow-2xs border border-slate-200/90 overflow-hidden">
+        <div class="bg-white rounded-none md:rounded-xl shadow-2xs border border-slate-200/90 overflow-hidden">
             {{-- Header Bagian Tabel --}}
             <div class="px-4 py-2.5 sm:px-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 border-b border-slate-100">
                 <div>
                     <h2 class="text-sm sm:text-base font-bold text-[#0F1F3D] tracking-tight">
                         Daftar Anggota Keluarga
                     </h2>
-                    <p class="text-[11px] sm:text-xs text-[#5B6B82] flex flex-wrap items-center gap-1">
-                        <span>Seluruh jiwa yang terdaftar di dalam Kartu Keluarga ini.</span>
-                        <span class="inline-flex items-center gap-1 text-[#0B3A85] font-semibold sm:hidden">
-                            <span>&bull; Geser tabel ke kanan &rarr;</span>
-                        </span>
+                    <p class="text-[11px] sm:text-xs text-[#5B6B82]">
+                        Seluruh jiwa yang terdaftar di dalam Kartu Keluarga ini.
                     </p>
                 </div>
 
@@ -415,46 +412,46 @@
 
             {{-- Tabel Anggota Keluarga --}}
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1010px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1010px] text-left border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">ID WARGA</th>
-                            <th class="py-2.5 px-3 min-w-[200px] whitespace-nowrap">NAMA LENGKAP</th>
-                            <th class="py-2.5 px-3 text-center min-w-[140px] whitespace-nowrap">STATUS KELUARGA</th>
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">L/P</th>
-                            <th class="py-2.5 px-3 min-w-[195px] whitespace-nowrap">NO. TELEPON / WA</th>
-                            <th class="py-2.5 px-3 text-center min-w-[90px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[80px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap w-24 md:w-auto md:min-w-[100px]">ID WARGA</th>
+                            <th class="py-2.5 px-3 whitespace-nowrap md:min-w-[200px]">NAMA LENGKAP</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[140px] whitespace-nowrap">STATUS KELUARGA</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">L/P</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[195px] whitespace-nowrap">NO. TELEPON / WA</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[90px] whitespace-nowrap">STATUS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap w-28 md:w-auto md:min-w-[80px]">AKSI</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#F1F5F9] text-xs">
                         @forelse($residents as $resident)
                             <tr class="hover:bg-[#F8FAFC] transition-colors {{ $resident->is_kepala_keluarga ? 'bg-blue-50/20' : '' }}">
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $loop->iteration }}
                                 </td>
 
                                 {{-- 2. ID WARGA --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-[#EBF3FC] text-[#0B3A85] border border-[#D6E5FF] whitespace-nowrap">
+                                <td class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap">
+                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10.5px] sm:text-[11px] font-mono font-bold bg-[#EBF3FC] text-[#0B3A85] border border-[#D6E5FF] whitespace-nowrap">
                                         {{ $resident->id_warga ?? '-' }}
                                     </span>
                                 </td>
 
                                 {{-- 3. NAMA LENGKAP --}}
-                                <td class="py-2.5 px-3 min-w-[200px]">
+                                <td class="py-2.5 px-3 md:min-w-[200px]">
                                     <div class="font-bold text-xs sm:text-sm text-[#0F1F3D] whitespace-nowrap">
                                         {{ $resident->nama }}
                                     </div>
-                                    <div class="text-[10.5px] font-mono text-[#5B6B82] mt-0.5 select-all whitespace-nowrap">
+                                    <div class="text-[10px] sm:text-[10.5px] font-mono text-[#5B6B82] mt-0.5 select-all whitespace-nowrap">
                                         NIK: {{ $resident->masked_nik ?? '-' }}
                                     </div>
                                 </td>
 
-                                {{-- 4. STATUS KELUARGA --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 4. STATUS KELUARGA (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @php
                                         $relLabel = ucwords(str_replace('_', ' ', $resident->hubungan_keluarga ?? ($resident->is_kepala_keluarga ? 'Kepala Keluarga' : '-')));
                                         $isKepala = $resident->is_kepala_keluarga || strtolower($resident->hubungan_keluarga ?? '') === 'kepala_keluarga';
@@ -478,8 +475,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 4. L/P --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 5. L/P (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($resident->jenis_kelamin === 'L')
                                         <span class="inline-flex items-center justify-center w-5.5 h-5.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200" title="Laki-laki">
                                             L
@@ -491,8 +488,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 5. NO. TELEPON / WA --}}
-                                <td class="py-2.5 px-3 text-xs whitespace-nowrap min-w-[195px]">
+                                {{-- 6. NO. TELEPON / WA (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-xs whitespace-nowrap min-w-[195px]">
                                     @if($resident->telepon && $resident->wa_url)
                                         <a 
                                             href="{{ $resident->wa_url }}" 
@@ -511,8 +508,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 6. STATUS --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 7. STATUS (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($resident->status_kependudukan === 'aktif')
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             Aktif
@@ -524,8 +521,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 7. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 8. AKSI --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
                                         {{-- Tombol Detail Warga (Ikon Mata) --}}
                                         <button 

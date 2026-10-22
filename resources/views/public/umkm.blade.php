@@ -34,84 +34,48 @@
 
     <!-- Konten Utama: Search, Filter, Grid Produk & UMKM -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20 pb-16">
-        <!-- Kartu Registrasi Usaha Warga Cepat -->
-        <div class="bg-white border border-border-soft rounded-2xl p-4 sm:p-6 mb-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-            <div class="flex items-start sm:items-center justify-between gap-3 sm:gap-4 w-full md:w-auto">
-                <div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center shrink-0 text-gold-600">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        <!-- Toolbar Pencarian & Filter Cepat (Dibungkus Card) -->
+        <div class="bg-white border border-border-soft rounded-2xl shadow-sm p-4 sm:p-5 mb-6">
+            <!-- Form Pencarian Real-Time -->
+            <form action="{{ route('public.umkm') }}" method="GET" id="search-form" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full">
+                <div class="relative flex-1 w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <div class="min-w-0">
-                        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                            <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gold-700 bg-gold-50 px-2 py-0.5 rounded border border-gold-200">
-                                Khusus Warga RT 15
-                            </span>
-                            <h3 class="text-sm sm:text-base font-bold text-primary-900 leading-tight">Punya Usaha Rumahan atau Jasa?</h3>
-                        </div>
-                        <p class="hidden sm:block text-xs sm:text-sm text-text-muted mt-0.5">
-                            Promosikan produk kuliner, warung kelontong, atau keahlian Anda di katalog ini secara gratis melalui Portal Warga.
-                        </p>
-                    </div>
+                    <input type="text"
+                           id="search-input"
+                           name="search"
+                           value="{{ request('search', request('q')) }}"
+                           placeholder="Cari nama usaha, produk, atau menu (misal: Pempek, Jahit, Katering)..."
+                           autocomplete="off"
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-sm text-text-main shadow-2xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder:text-gray-400 transition">
                 </div>
 
-                <!-- Tombol Mobile di Kanan Atas -->
-                <a href="{{ route('citizen.login') }}" class="md:hidden bg-primary-700 hover:bg-primary-900 text-white font-semibold text-xs py-2 px-3 rounded-xl transition shadow-xs shrink-0 flex items-center gap-1.5 self-start">
-                    <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    <span>Daftar</span>
-                </a>
-            </div>
+                <div class="sm:w-56 shrink-0">
+                    <select id="kategori-select" name="kategori" class="w-full py-2.5 px-3.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-xl text-sm text-text-main shadow-2xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium transition cursor-pointer">
+                        <option value="">Semua Kategori</option>
+                        <option value="kuliner" {{ request('kategori') == 'kuliner' ? 'selected' : '' }}>Kuliner & Makanan</option>
+                        <option value="sembako" {{ request('kategori') == 'sembako' ? 'selected' : '' }}>Warung & Sembako</option>
+                        <option value="jasa" {{ request('kategori') == 'jasa' ? 'selected' : '' }}>Jasa & Layanan</option>
+                        <option value="kerajinan" {{ request('kategori') == 'kerajinan' ? 'selected' : '' }}>Kerajinan & Fashion</option>
+                        <option value="pertanian" {{ request('kategori') == 'pertanian' ? 'selected' : '' }}>Hasil Kebun & Pertanian</option>
+                    </select>
+                </div>
 
-            <!-- Tombol Desktop -->
-            <a href="{{ route('citizen.login') }}" class="hidden md:flex bg-primary-700 hover:bg-primary-900 text-white font-semibold text-xs sm:text-sm py-2.5 px-5 rounded-xl transition shadow-sm hover:shadow shrink-0 items-center gap-2">
-                <svg class="w-4 h-4 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span>Daftarkan Usaha Anda</span>
-            </a>
+                <button type="button"
+                        id="search-reset-btn"
+                        title="Reset Filter"
+                        style="{{ (request('search') || request('q') || (request('kategori') && request('kategori') !== 'semua')) ? '' : 'display: none;' }}"
+                        class="items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold transition shadow-2xs shrink-0 {{ (request('search') || request('q') || (request('kategori') && request('kategori') !== 'semua')) ? 'inline-flex' : 'hidden' }}">
+                    <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span class="text-red-600 font-bold">Reset Filter</span>
+                </button>
+            </form>
         </div>
-
-    <!-- Toolbar Pencarian & Filter Cepat (Unboxed / Tidak Dibungkus Card) -->
-    <div class="mb-6">
-        <!-- Form Pencarian Real-Time (Tanpa Card Wrapper) -->
-        <form action="{{ route('public.umkm') }}" method="GET" id="search-form" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="relative w-full sm:max-w-md">
-                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                <input type="text"
-                       id="search-input"
-                       name="search"
-                       value="{{ request('search', request('q')) }}"
-                       placeholder="Cari nama usaha, produk, atau menu (misal: Pempek, Jahit, Katering)..."
-                       autocomplete="off"
-                       class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-text-main shadow-xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 placeholder:text-gray-400 transition">
-            </div>
-
-            <div class="sm:w-56 shrink-0">
-                <select id="kategori-select" name="kategori" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-sm text-text-main shadow-xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium transition cursor-pointer">
-                    <option value="">Semua Kategori</option>
-                    <option value="kuliner" {{ request('kategori') == 'kuliner' ? 'selected' : '' }}>Kuliner & Makanan</option>
-                    <option value="sembako" {{ request('kategori') == 'sembako' ? 'selected' : '' }}>Warung & Sembako</option>
-                    <option value="jasa" {{ request('kategori') == 'jasa' ? 'selected' : '' }}>Jasa & Layanan</option>
-                    <option value="kerajinan" {{ request('kategori') == 'kerajinan' ? 'selected' : '' }}>Kerajinan & Fashion</option>
-                    <option value="pertanian" {{ request('kategori') == 'pertanian' ? 'selected' : '' }}>Hasil Kebun & Pertanian</option>
-                </select>
-            </div>
-
-            <a href="{{ route('public.umkm') }}" id="search-reset-btn" title="Reset Filter" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-xs font-bold transition shadow-2xs shrink-0 {{ (request('search') || request('q') || request('kategori')) ? '' : 'hidden' }}">
-                <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                <span class="text-red-600 font-bold">Reset Filter</span>
-            </a>
-        </form>
-    </div>
 
     <!-- Ringkasan Hasil Pencarian & View Toggle -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-text-muted mb-6 gap-3 px-1">
@@ -142,14 +106,14 @@
 
     <!-- Grid & Tabel Kartu UMKM -->
     @if($umkms->isEmpty())
-        <div class="bg-white border border-border-soft rounded-2xl p-12 text-center max-w-md mx-auto my-8 shadow-sm">
+        <div class="bg-white border border-border-soft rounded-2xl p-8 sm:p-12 text-center w-full my-6 sm:my-8 shadow-sm">
             <div class="w-12 h-12 rounded-full bg-blue-50 text-primary-600 flex items-center justify-center mx-auto mb-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
             <h3 class="text-base font-bold text-primary-900">Belum Ada Usaha yang Cocok</h3>
-            <p class="text-xs text-text-muted mt-1 leading-relaxed">
+            <p class="text-xs sm:text-sm text-text-muted mt-1 leading-relaxed max-w-md mx-auto">
                 Tidak ditemukan usaha warga dengan kriteria yang dicari. Silakan ubah kata kunci atau reset filter kategori.
             </p>
             <div class="mt-4">
@@ -160,14 +124,14 @@
         </div>
     @else
         <!-- Placeholder Kosong Real-time Client-Side -->
-        <div id="client-no-results" class="hidden bg-white border border-border-soft rounded-2xl p-12 text-center max-w-md mx-auto my-8 shadow-sm">
+        <div id="client-no-results" class="hidden bg-white border border-border-soft rounded-2xl p-8 sm:p-12 text-center w-full my-6 sm:my-8 shadow-sm">
             <div class="w-12 h-12 rounded-full bg-blue-50 text-primary-600 flex items-center justify-center mx-auto mb-3">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
             <h3 class="text-base font-bold text-primary-900">Belum Ada Usaha yang Cocok</h3>
-            <p class="text-xs text-text-muted mt-1 leading-relaxed">
+            <p class="text-xs sm:text-sm text-text-muted mt-1 leading-relaxed max-w-md mx-auto">
                 Tidak ditemukan usaha warga dengan kata kunci atau filter pencarian tersebut secara real-time.
             </p>
             <div class="mt-4">
@@ -455,8 +419,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (searchResetBtn) {
             if (query !== '' || selectedKategori !== '') {
                 searchResetBtn.classList.remove('hidden');
+                searchResetBtn.classList.add('inline-flex');
+                searchResetBtn.style.display = '';
             } else {
+                searchResetBtn.classList.remove('inline-flex');
                 searchResetBtn.classList.add('hidden');
+                searchResetBtn.style.display = 'none';
             }
         }
 
@@ -552,13 +520,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Reset button click
+    function resetSearch() {
+        if (searchInput) searchInput.value = '';
+        if (kategoriSelect) kategoriSelect.value = '';
+        if (window.history.replaceState) {
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+        applySearch();
+        if (searchInput) searchInput.focus();
+    }
+
+    if (searchResetBtn) {
+        searchResetBtn.addEventListener('click', resetSearch);
+    }
+
     if (clearSearchBtn) {
-        clearSearchBtn.addEventListener('click', function () {
-            if (searchInput) searchInput.value = '';
-            if (kategoriSelect) kategoriSelect.value = '';
-            applySearch();
-            if (searchInput) searchInput.focus();
-        });
+        clearSearchBtn.addEventListener('click', resetSearch);
     }
 
     // Toggle Tampilan: Grid vs Tabel
@@ -586,10 +563,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Jalankan pencarian jika sudah ada nilai awal dari SSR
-    if (searchInput && searchInput.value.trim() !== '') {
-        applySearch();
-    }
+    // Jalankan pencarian saat load agar status reset button dan counter sinkron
+    applySearch();
 });
 </script>
 @endpush

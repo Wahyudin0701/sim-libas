@@ -26,7 +26,7 @@ class LettersTable
                     ->label('Nomor Surat')
                     ->searchable()
                     ->sortable()
-                    ->default('(Belum Terbit)')
+                    ->default('-')
                     ->badge()
                     ->color(fn (?string $state): string => $state ? 'success' : 'gray'),
 
@@ -55,7 +55,6 @@ class LettersTable
                         'diperiksa' => 'info',
                         'disetujui' => 'success',
                         'ditolak' => 'danger',
-                        'selesai' => 'success',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state)),
@@ -77,7 +76,6 @@ class LettersTable
                         'diperiksa' => 'Diperiksa',
                         'disetujui' => 'Disetujui',
                         'ditolak' => 'Ditolak',
-                        'selesai' => 'Selesai',
                     ]),
                 SelectFilter::make('letter_type_id')
                     ->label('Jenis Surat')
@@ -119,14 +117,6 @@ class LettersTable
                             ->success()
                             ->send();
                     }),
-
-                Action::make('cetak')
-                    ->label('Cetak')
-                    ->icon('heroicon-o-printer')
-                    ->color('primary')
-                    ->url(fn (Letter $record): string => route('letters.print', $record))
-                    ->openUrlInNewTab()
-                    ->visible(fn (Letter $record): bool => $record->status === 'disetujui'),
 
                 Action::make('tolak')
                     ->label('Tolak')

@@ -103,7 +103,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama kepala KK, nomor KK, jenis sampah, atau catatan..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -169,7 +169,7 @@
         {{-- ====================================================================
              4. TABEL DATA SETORAN (DEEP NAVY #0B3A85 TABLE HEADER)
              ==================================================================== --}}
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
+        <div class="bg-white rounded-none md:rounded-2xl border border-slate-200 overflow-hidden shadow-xs relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="wasteTypeFilter, search, resetFilters, previousPage, nextPage, gotoPage"
@@ -177,17 +177,17 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left text-xs border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white">
-                            <th class="py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
-                            <th class="py-3 px-4 font-bold min-w-[150px] whitespace-nowrap">Waktu Setor</th>
-                            <th class="py-3 px-4 font-bold min-w-[220px]">Keluarga Penyetor (KK)</th>
-                            <th class="py-3 px-4 font-bold min-w-[160px] whitespace-nowrap">Jenis Komoditas</th>
-                            <th class="py-3 px-4 font-bold text-right min-w-[130px] whitespace-nowrap">Berat Timbangan</th>
-                            <th class="py-3 px-4 font-bold text-right min-w-[130px] whitespace-nowrap">Nilai Tabungan</th>
-                            <th class="py-3 px-4 font-bold min-w-[140px] whitespace-nowrap">Petugas Pencatat</th>
-                            <th class="py-3 px-4 font-bold text-center w-32 min-w-[130px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-center w-12 shrink-0">NO</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[150px] whitespace-nowrap">Waktu Setor</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold min-w-[140px] md:min-w-[220px]">Keluarga Penyetor (KK)</th>
+                            <th class="py-3 px-3 sm:px-4 font-bold min-w-[120px] md:min-w-[160px] whitespace-nowrap">Jenis Komoditas</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-right min-w-[130px] whitespace-nowrap">Berat Timbangan</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold text-right min-w-[130px] whitespace-nowrap">Nilai Tabungan</th>
+                            <th class="hidden md:table-cell py-3 px-4 font-bold min-w-[140px] whitespace-nowrap">Petugas Pencatat</th>
+                            <th class="py-3 px-2 sm:px-4 font-bold text-center w-16 sm:w-24 md:w-32 md:min-w-[130px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
                     <tbody 
@@ -202,12 +202,12 @@
                                 data-waste-type="{{ $item->waste_type_id }}"
                             >
                                 {{-- Kolom Nomor Urut --}}
-                                <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-center font-mono font-semibold text-slate-500 text-xs whitespace-nowrap">
                                     {{ $deposits->firstItem() ? ($deposits->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
                                 {{-- Kolom Waktu Setor --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <div class="font-bold text-[#0F1F3D]">
                                         {{ $item->created_at->format('d M Y') }}
                                     </div>
@@ -217,25 +217,25 @@
                                 </td>
 
                                 {{-- Kolom Keluarga Penyetor --}}
-                                <td class="py-3.5 px-4">
-                                    <div class="font-bold text-slate-800 text-[12.5px]">
+                                <td class="py-3.5 px-3 sm:px-4">
+                                    <div class="font-bold text-slate-800 text-[12px] sm:text-[12.5px]">
                                         {{ $item->household && $item->household->headOfHousehold ? $item->household->headOfHousehold->nama : 'Warga RT 15' }}
                                     </div>
-                                    <div class="text-[10.5px] text-slate-400 flex items-center gap-1 mt-0.5">
+                                    <div class="text-[10px] sm:text-[10.5px] text-slate-400 flex flex-wrap items-center gap-1 mt-0.5">
                                         <span class="font-mono">KK: {{ $item->household ? $item->household->no_kk : '-' }}</span>
                                         @if($item->household && $item->household->alamat)
-                                            <span>•</span>
-                                            <span class="truncate max-w-[150px]">{{ $item->household->alamat }}</span>
+                                            <span class="hidden sm:inline">•</span>
+                                            <span class="hidden sm:inline truncate max-w-[150px]">{{ $item->household->alamat }}</span>
                                         @endif
                                     </div>
                                 </td>
 
                                 {{-- Kolom Jenis Komoditas Sampah --}}
-                                <td class="py-3.5 px-4">
-                                    <div class="font-extrabold text-[#0F1F3D]">
+                                <td class="py-3.5 px-3 sm:px-4">
+                                    <div class="font-extrabold text-[#0F1F3D] text-[12px] sm:text-[13px]">
                                         {{ $item->wasteType ? $item->wasteType->nama : '-' }}
                                     </div>
-                                    <div class="flex items-center gap-1.5 mt-0.5">
+                                    <div class="flex flex-wrap items-center gap-1 sm:gap-1.5 mt-0.5">
                                         @php
                                             $kat = $item->wasteType ? $item->wasteType->kategori : 'lainnya';
                                             $badgeClass = match($kat) {
@@ -245,17 +245,17 @@
                                                 default => 'bg-slate-50 text-slate-600 border-slate-200',
                                             };
                                         @endphp
-                                        <span class="inline-flex items-center px-2 py-0.2 rounded-md text-[9.5px] font-bold uppercase tracking-wider border {{ $badgeClass }}">
+                                        <span class="inline-flex items-center px-1.5 sm:px-2 py-0.2 rounded-md text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider border {{ $badgeClass }}">
                                             {{ $kat }}
                                         </span>
-                                        <span class="text-[10px] text-slate-400">
+                                        <span class="text-[9.5px] sm:text-[10px] text-slate-400">
                                             @ Rp {{ number_format($item->harga_saat_setor, 0, ',', '.') }}/{{ $item->wasteType->satuan ?? 'kg' }}
                                         </span>
                                     </div>
                                 </td>
 
                                 {{-- Kolom Berat Timbangan --}}
-                                <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-right whitespace-nowrap">
                                     <span class="font-black text-[13px] text-slate-800">
                                         {{ number_format($item->berat_kg, 2, ',', '.') }}
                                     </span>
@@ -265,7 +265,7 @@
                                 </td>
 
                                 {{-- Kolom Nilai Tabungan --}}
-                                <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 text-right whitespace-nowrap">
                                     <div class="font-black text-emerald-600 text-[13px]">
                                         Rp {{ number_format($item->nilai, 0, ',', '.') }}
                                     </div>
@@ -275,7 +275,7 @@
                                 </td>
 
                                 {{-- Kolom Petugas Pencatat --}}
-                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3.5 px-4 whitespace-nowrap">
                                     <div class="font-medium text-slate-700">
                                         {{ $item->pencatat ? $item->pencatat->name : 'Pengurus RT' }}
                                     </div>
@@ -287,8 +287,8 @@
                                 </td>
 
                                 {{-- Kolom Aksi dengan Tombol Berwarna Konsisten (Standar SIM-LiBas) --}}
-                                <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                <td class="py-3.5 px-2 sm:px-4 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
                                         {{-- Detail Modal (Biru Deep Navy) --}}
                                         <button 
                                             type="button" 
@@ -643,9 +643,9 @@
                                     </label>
                                     <input 
                                         type="number" 
-                                        step="0.01" 
+                                        step="any" 
                                         wire:model.live.debounce.300ms="form_berat_kg" 
-                                        placeholder="Contoh: 2.5"
+                                        placeholder="Contoh: 1 atau 2.5"
                                         class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-bold"
                                     >
                                     @error('form_berat_kg') <span class="text-rose-600 text-[11px]">{{ $message }}</span> @enderror
@@ -653,14 +653,23 @@
 
                                 <div>
                                     <label class="block font-bold text-slate-700 mb-1">
-                                        Harga Patokan (Rp/Kg) <span class="text-rose-500">*</span>
+                                        Harga Patokan (Rp/Kg) <span class="text-[11px] font-normal text-slate-400">(Terkunci / Sesuai Master)</span>
                                     </label>
-                                    <input 
-                                        type="number" 
-                                        step="100" 
-                                        wire:model.live.debounce.300ms="form_harga_saat_setor" 
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-bold bg-slate-50"
-                                    >
+                                    <div class="relative">
+                                        <input 
+                                            type="number" 
+                                            wire:model="form_harga_saat_setor" 
+                                            readonly 
+                                            tabindex="-1"
+                                            class="w-full p-2.5 pr-8 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-bold text-xs cursor-not-allowed select-none focus:outline-none"
+                                            title="Harga patokan otomatis terkunci sesuai data master jenis komoditas sampah"
+                                        >
+                                        <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-slate-400">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                     @error('form_harga_saat_setor') <span class="text-rose-600 text-[11px]">{{ $message }}</span> @enderror
                                 </div>
                             </div>

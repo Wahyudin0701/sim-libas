@@ -181,7 +181,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari keterangan transaksi, kategori kas, nominal, atau nama pencatat..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -333,7 +333,7 @@
         {{-- ====================================================================
              4. TABEL BUKU KAS RT (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
+        <div class="bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden relative">
             {{-- Indikator Loading Standar SIM-LiBas saat Filter atau Navigasi Tabel --}}
             <x-table-loading-indicator 
                 target="jenisFilter, kategoriFilter, periodeFilter, startDate, endDate, search, resetFilters, setPeriode, previousPage, nextPage, gotoPage"
@@ -341,19 +341,19 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1100px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1100px] text-left border-collapse">
                     {{-- Header Deep Navy --}}
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[125px] whitespace-nowrap">TANGGAL</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">ARUS KAS</th>
-                            <th class="py-2.5 px-3 min-w-[170px] whitespace-nowrap">KATEGORI</th>
-                            <th class="py-2.5 px-3 min-w-[280px]">KETERANGAN / DESKRIPSI</th>
-                            <th class="py-2.5 px-3 text-right min-w-[150px] whitespace-nowrap">NOMINAL (RP)</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">BUKTI</th>
-                            <th class="py-2.5 px-3 min-w-[140px] whitespace-nowrap">PENCATAT</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 whitespace-nowrap md:min-w-[125px]">TANGGAL</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap md:min-w-[110px]">ARUS KAS</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[170px] whitespace-nowrap">KATEGORI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[280px]">KETERANGAN / DESKRIPSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-right min-w-[150px] whitespace-nowrap">NOMINAL (RP)</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">BUKTI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[140px] whitespace-nowrap">PENCATAT</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center w-24 sm:w-28 md:w-auto md:min-w-[100px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -382,13 +382,13 @@
                                 data-jenis="{{ $tx->jenis }}"
                                 data-kategori="{{ $tx->kategori }}"
                             >
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $transactions->firstItem() ? ($transactions->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. TANGGAL --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 2. TANGGAL (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3 whitespace-nowrap">
                                     <div class="font-bold text-xs text-[#0F1F3D]">
                                         {{ \Carbon\Carbon::parse($tx->tanggal)->translatedFormat('d M Y') }}
                                     </div>
@@ -397,8 +397,8 @@
                                     </div>
                                 </td>
 
-                                {{-- 3. ARUS KAS (JENIS) --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 3. ARUS KAS (JENIS) (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3 text-center whitespace-nowrap">
                                     @if($tx->jenis === 'masuk')
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                             <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -416,22 +416,22 @@
                                     @endif
                                 </td>
 
-                                {{-- 4. KATEGORI --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 4. KATEGORI (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                                         {{ $tx->kategori }}
                                     </span>
                                 </td>
 
-                                {{-- 5. KETERANGAN / DESKRIPSI --}}
-                                <td class="py-2.5 px-3 min-w-[280px]">
+                                {{-- 5. KETERANGAN / DESKRIPSI (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 min-w-[280px]">
                                     <div class="text-xs text-[#0F1F3D] font-medium leading-relaxed" title="{{ $tx->deskripsi }}">
                                         {{ $tx->deskripsi }}
                                     </div>
                                 </td>
 
-                                {{-- 6. NOMINAL (RP) --}}
-                                <td class="py-2.5 px-3 text-right whitespace-nowrap font-mono">
+                                {{-- 6. NOMINAL (RP) (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-right whitespace-nowrap font-mono">
                                     @if($tx->jenis === 'masuk')
                                         <span class="text-xs font-black text-emerald-600">
                                             + Rp {{ number_format($tx->jumlah, 0, ',', '.') }}
@@ -443,8 +443,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 7. BUKTI TRANSAKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 7. BUKTI TRANSAKSI (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($tx->bukti_path)
                                         <a 
                                             href="{{ \Illuminate\Support\Facades\Storage::url($tx->bukti_path) }}" 
@@ -463,8 +463,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 8. PENCATAT --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 8. PENCATAT (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     <div class="text-xs font-semibold text-[#0F1F3D]">
                                         {{ $tx->pencatat?->name ?? 'Pengurus RT' }}
                                     </div>
@@ -473,8 +473,8 @@
                                     </div>
                                 </td>
 
-                                {{-- 9. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 9. AKSI (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
                                         {{-- Tombol Detail (Mata Navy) --}}
                                         <button 

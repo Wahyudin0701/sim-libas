@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class Payment extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -41,10 +42,11 @@ class Payment extends Model
         'metode', // 'tunai', 'transfer', 'qris', 'bank_sampah'
         'bukti_path',
         'catatan',
+        'catatan_validasi',
         'tanggal_bayar',
         'divalidasi_oleh',
         'tanggal_validasi',
-        'status', // 'menunggu_konfirmasi', 'diterima', 'ditolak'
+        'status', // 'pending', 'valid', 'ditolak'
     ];
 
     /**

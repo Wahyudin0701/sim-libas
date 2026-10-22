@@ -5,6 +5,36 @@
             deleteConfirmModalOpen: false,
             deletePaymentId: null,
             deletePaymentInfo: '',
+            actionModalOpen: false,
+            actionType: 'valid',
+            actionPaymentId: null,
+            actionPaymentInfo: '',
+            actionCatatan: '',
+            openActionConfirm(id, info, type) {
+                this.actionPaymentId = id;
+                this.actionPaymentInfo = info;
+                this.actionType = type;
+                this.actionCatatan = '';
+                this.actionModalOpen = true;
+            },
+            closeActionConfirm() {
+                this.actionModalOpen = false;
+                this.actionPaymentId = null;
+                this.actionPaymentInfo = '';
+                this.actionCatatan = '';
+            },
+            submitAction() {
+                if (this.actionCatatan.trim().length === 0) return;
+                const id = this.actionPaymentId;
+                const catatan = this.actionCatatan.trim();
+                const type = this.actionType;
+                this.actionModalOpen = false;
+                if (type === 'valid') {
+                    $wire.approvePayment(id, catatan);
+                } else {
+                    $wire.rejectPayment(id, catatan);
+                }
+            },
             confirmDelete(id, info) {
                 this.deletePaymentId = id;
                 this.deletePaymentInfo = info;
@@ -24,8 +54,14 @@
             },
         }"
         @keydown.escape.window="
-            closeDeleteConfirm();
-            if (validateModalOpen) { validateModalOpen = false; $wire.closeValidateModal(); }
+            if (actionModalOpen) {
+                closeActionConfirm();
+            } else if (deleteConfirmModalOpen) {
+                closeDeleteConfirm();
+            } else if (validateModalOpen) {
+                validateModalOpen = false;
+                $wire.closeValidateModal();
+            }
         "
         class="space-y-4"
     >
@@ -88,7 +124,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama kepala keluarga, ID KK, jenis iuran, metode bayar, atau catatan..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -153,7 +189,7 @@
         {{-- ====================================================================
              4. TABEL VALIDASI PEMBAYARAN (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="statusFilter, search, resetFilters, previousPage, nextPage, gotoPage" 
@@ -161,18 +197,18 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1100px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1100px] text-left border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[125px] whitespace-nowrap">TANGGAL BAYAR</th>
-                            <th class="py-2.5 px-3 min-w-[220px]">KARTU KELUARGA / WARGA</th>
-                            <th class="py-2.5 px-3 min-w-[200px]">TAGIHAN & PERIODE</th>
-                            <th class="py-2.5 px-3 text-right min-w-[130px] whitespace-nowrap">JUMLAH (RP)</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">METODE</th>
-                            <th class="py-2.5 px-3 text-center min-w-[95px] whitespace-nowrap">BUKTI</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[125px] whitespace-nowrap">TANGGAL BAYAR</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 md:min-w-[220px]"><span class="md:hidden">KODE KK</span><span class="hidden md:inline">KARTU KELUARGA / WARGA</span></th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[200px]">TAGIHAN & PERIODE</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-right min-w-[130px] whitespace-nowrap">JUMLAH (RP)</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">METODE</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[95px] whitespace-nowrap">BUKTI</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center min-w-[85px] md:min-w-[110px] whitespace-nowrap">STATUS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center w-14 sm:w-20 md:w-auto md:min-w-[110px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -196,16 +232,16 @@
 
                         @forelse($payments as $p)
                             <tr 
-                                class="payment-data-row hover:bg-[#F8FAFC] transition-colors"
+                                class="payment-data-row transition-colors {{ $p->status === 'pending' ? 'bg-amber-50/70 hover:bg-amber-100/70' : 'hover:bg-[#F8FAFC]' }}"
                                 data-status="{{ $p->status }}"
                             >
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap {{ $p->status === 'pending' ? 'border-l-4 border-l-amber-500' : '' }}">
                                     {{ $payments->firstItem() ? ($payments->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. TANGGAL BAYAR --}}
-                                <td class="py-2.5 px-3 whitespace-nowrap">
+                                {{-- 2. TANGGAL BAYAR (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 whitespace-nowrap">
                                     <div class="font-bold text-xs text-[#0F1F3D]">
                                         {{ \Carbon\Carbon::parse($p->tanggal_bayar)->translatedFormat('d M Y') }}
                                     </div>
@@ -214,23 +250,23 @@
                                     </div>
                                 </td>
 
-                                {{-- 3. KARTU KELUARGA --}}
-                                <td class="py-2.5 px-3">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="font-mono text-[11px] font-bold text-[#0B3A85] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                                {{-- 3. KARTU KELUARGA / KODE KK (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3 {{ $p->status === 'pending' ? 'border-l-4 border-l-amber-500 md:border-l-0' : '' }}">
+                                    <div class="flex items-center gap-1.5 flex-wrap cursor-pointer hover:text-[#0B3A85]" @click="validateModalOpen = true" wire:click="openDetail({{ $p->id }})" title="Klik untuk melihat detail pembayaran">
+                                        <span class="font-mono text-[11px] font-bold text-[#0B3A85] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 shrink-0">
                                             {{ $p->invoice?->household?->id_kk ?? '-' }}
                                         </span>
-                                        <span class="font-bold text-xs text-[#0F1F3D]">
+                                        <span class="font-bold text-xs text-[#0F1F3D] hover:underline">
                                             {{ $p->invoice?->household?->kepalaKeluarga?->nama ?? '-' }}
                                         </span>
                                     </div>
-                                    <div class="text-[10.5px] text-[#5B6B82] mt-0.5 line-clamp-1">
+                                    <div class="hidden md:block text-[10.5px] text-[#5B6B82] mt-0.5 line-clamp-1">
                                         {{ $p->invoice?->household?->alamat ?? '-' }}
                                     </div>
                                 </td>
 
-                                {{-- 4. TAGIHAN & PERIODE --}}
-                                <td class="py-2.5 px-3">
+                                {{-- 4. TAGIHAN & PERIODE (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3">
                                     <div class="font-semibold text-xs text-slate-800">
                                         {{ $p->invoice?->feeType?->nama ?? '-' }}
                                     </div>
@@ -239,13 +275,13 @@
                                     </div>
                                 </td>
 
-                                {{-- 5. JUMLAH BAYAR --}}
-                                <td class="py-2.5 px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900">
+                                {{-- 5. JUMLAH BAYAR (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900">
                                     Rp {{ number_format($p->jumlah, 0, ',', '.') }}
                                 </td>
 
-                                {{-- 6. METODE --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 6. METODE (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($p->metode === 'transfer')
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">
                                             Transfer
@@ -257,8 +293,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 7. BUKTI TRANSFER --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 7. BUKTI TRANSFER (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     @if($p->bukti_path)
                                         <a 
                                             href="{{ \Illuminate\Support\Facades\Storage::url($p->bukti_path) }}" 
@@ -277,8 +313,8 @@
                                     @endif
                                 </td>
 
-                                {{-- 8. STATUS VALIDASI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 8. STATUS VALIDASI (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     @if($p->status === 'valid')
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
                                             Valid
@@ -288,68 +324,26 @@
                                             Ditolak
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-sky-50 text-sky-700 border border-sky-200 whitespace-nowrap">
+                                        <span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200 whitespace-nowrap">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                             Menunggu
                                         </span>
                                     @endif
                                 </td>
 
-                                {{-- 9. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 9. AKSI (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                                     <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
-                                        {{-- Tombol Detail / Lihat Info (Mata Navy) --}}
                                         <button 
                                             type="button" 
                                             @click="validateModalOpen = true"
                                             wire:click="openDetail({{ $p->id }})" 
                                             class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-[#0B3A85]/30 bg-[#EBF3FC] text-[#0B3A85] hover:bg-[#0B3A85] hover:text-white hover:border-[#0B3A85] transition-all shadow-2xs cursor-pointer" 
-                                            title="Lihat Rincian Pembayaran"
+                                            title="Lihat Detail & Validasi Pembayaran"
                                         >
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                            </svg>
-                                        </button>
-
-                                        {{-- Tombol Validasi Centang (Hijau Soft Hover) --}}
-                                        @if($p->status !== 'valid')
-                                            <button 
-                                                type="button" 
-                                                @click="validateModalOpen = true"
-                                                wire:click="openApprove({{ $p->id }})" 
-                                                class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 hover:border-emerald-400 transition-all shadow-2xs cursor-pointer" 
-                                                title="Konfirmasi Pembayaran Valid"
-                                            >
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                            </button>
-                                        @endif
-
-                                        {{-- Tombol Tolak Silang (Merah Soft Hover) --}}
-                                        @if($p->status !== 'ditolak')
-                                            <button 
-                                                type="button" 
-                                                @click="validateModalOpen = true"
-                                                wire:click="openReject({{ $p->id }})" 
-                                                class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-400 transition-all shadow-2xs cursor-pointer" 
-                                                title="Tolak Pembayaran"
-                                            >
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                </svg>
-                                            </button>
-                                        @endif
-
-                                        {{-- Tombol Hapus --}}
-                                        <button 
-                                            type="button" 
-                                            @click="confirmDelete({{ $p->id }}, '{{ addslashes(($p->invoice?->household?->nama_kepala_keluarga ?? 'KK') . ' - ' . ($p->invoice?->feeType?->nama ?? 'Iuran') . ' (' . $p->formatted_jumlah . ')') }}')" 
-                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-400 transition-all shadow-2xs cursor-pointer" 
-                                            title="Hapus Pembayaran"
-                                        >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
                                         </button>
                                     </div>
@@ -385,7 +379,7 @@
         </div>
 
         {{-- ====================================================================
-             5. MODAL DETAIL / VALIDASI / PENOLAKAN (ALPINE.JS X-SHOW INSTANT OPEN)
+             5. MODAL DETAIL PEMBAYARAN (ALPINE.JS X-SHOW INSTANT OPEN)
              ==================================================================== --}}
         <div 
             x-show="validateModalOpen" 
@@ -424,7 +418,7 @@
                     @click.stop
                 >
                     {{-- Header Modal --}}
-                    <div class="{{ $actionType === 'valid' ? 'bg-emerald-700' : ($actionType === 'ditolak' ? 'bg-rose-700' : 'bg-[#0B3A85]') }} text-white px-5 py-4 flex items-center justify-between">
+                    <div class="bg-[#0B3A85] text-white px-5 py-4 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-white">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -433,14 +427,14 @@
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold">
-                                    {{ $actionType === 'valid' ? 'Konfirmasi Validasi Pembayaran' : ($actionType === 'ditolak' ? 'Tolak Bukti Pembayaran' : 'Rincian Bukti Pembayaran') }}
+                                    Rincian Pembayaran Iuran
                                 </h3>
                                 <p class="text-[11px] text-white/80">
                                     {{ $selectedPayment ? 'ID Pembayaran #' . $selectedPayment->id . ' • ' . ($selectedPayment->invoice?->feeType?->nama ?? 'Iuran') : 'Validasi Pembayaran RT 15' }}
                                 </p>
                             </div>
                         </div>
-                        <button type="button" @click="validateModalOpen = false; $wire.closeValidateModal()" class="text-white/70 hover:text-white transition-colors cursor-pointer">
+                        <button type="button" @click="validateModalOpen = false; $wire.closeValidateModal()" class="text-white/70 hover:text-white transition-colors cursor-pointer" title="Tutup">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -457,15 +451,54 @@
                     <div wire:loading.remove wire:target="openDetail, openApprove, openReject">
                         @if($selectedPayment)
                             <div class="p-5 space-y-4 text-xs">
-                                {{-- Ringkasan --}}
-                                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+                                {{-- Status Banner --}}
+                                <div class="flex items-center justify-between p-3 rounded-xl {{ $selectedPayment->status === 'valid' ? 'bg-emerald-50 border border-emerald-200' : ($selectedPayment->status === 'ditolak' ? 'bg-rose-50 border border-rose-200' : 'bg-amber-50 border border-amber-200') }}">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[11px] font-bold text-slate-600">Status:</span>
+                                        @if($selectedPayment->status === 'valid')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                Valid (Lunas)
+                                            </span>
+                                        @elseif($selectedPayment->status === 'ditolak')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                                <svg class="w-3 h-3 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                Ditolak
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                Menunggu Validasi Pengurus
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="text-[11px] font-mono text-slate-500">
+                                        #{{ $selectedPayment->id }}
+                                    </div>
+                                </div>
+
+                                {{-- Ringkasan Rincian --}}
+                                <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                                     <div class="flex items-center justify-between">
                                         <span class="text-slate-500">Warga / Kepala KK:</span>
-                                        <span class="font-bold text-slate-900">{{ $selectedPayment->invoice?->household?->kepalaKeluarga?->nama ?? '-' }} ({{ $selectedPayment->invoice?->household?->id_kk }})</span>
+                                        <span class="font-bold text-slate-900 text-right">
+                                            {{ $selectedPayment->invoice?->household?->kepalaKeluarga?->nama ?? '-' }}
+                                            <span class="font-mono text-[#0B3A85]">({{ $selectedPayment->invoice?->household?->id_kk ?? '-' }})</span>
+                                        </span>
                                     </div>
+                                    @if($selectedPayment->invoice?->household?->alamat)
+                                        <div class="flex items-center justify-between text-[11px]">
+                                            <span class="text-slate-500">Alamat:</span>
+                                            <span class="text-slate-700 text-right">{{ $selectedPayment->invoice?->household?->alamat }}</span>
+                                        </div>
+                                    @endif
                                     <div class="flex items-center justify-between">
                                         <span class="text-slate-500">Tagihan Iuran:</span>
-                                        <span class="font-semibold text-slate-800">{{ $selectedPayment->invoice?->feeType?->nama }} ({{ $selectedPayment->invoice?->periode_label }})</span>
+                                        <span class="font-semibold text-slate-800 text-right">{{ $selectedPayment->invoice?->feeType?->nama ?? 'Iuran' }} ({{ $selectedPayment->invoice?->periode_label ?? '-' }})</span>
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <span class="text-slate-500">Jumlah Bayar:</span>
@@ -484,7 +517,20 @@
                                 {{-- Lampiran Bukti Foto Transfer jika ada --}}
                                 @if($selectedPayment->bukti_path)
                                     <div>
-                                        <span class="text-[10.5px] font-bold text-slate-600 block mb-1">Foto Bukti Transfer:</span>
+                                        <div class="flex items-center justify-between mb-1.5">
+                                            <span class="text-[11px] font-bold text-slate-700">Foto Bukti Transfer:</span>
+                                            <a 
+                                                href="{{ \Illuminate\Support\Facades\Storage::url($selectedPayment->bukti_path) }}" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                class="text-[11px] font-semibold text-[#0B3A85] hover:underline inline-flex items-center gap-1"
+                                            >
+                                                <span>Buka Foto Asli</span>
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                                </svg>
+                                            </a>
+                                        </div>
                                         <div class="rounded-xl overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center max-h-56">
                                             <img 
                                                 src="{{ \Illuminate\Support\Facades\Storage::url($selectedPayment->bukti_path) }}" 
@@ -495,40 +541,98 @@
                                     </div>
                                 @endif
 
-                                {{-- Form Catatan Validasi (Jika dalam mode validasi atau tolak) --}}
-                                @if($actionType !== 'detail')
+                                {{-- Catatan dari Warga jika ada --}}
+                                @if($selectedPayment->catatan)
                                     <div>
-                                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Catatan Pengurus / Bendahara:</label>
-                                        <textarea 
-                                            wire:model="validationCatatan" 
-                                            rows="2"
-                                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#0B3A85]"
-                                        ></textarea>
-                                    </div>
-                                @else
-                                    @if($selectedPayment->catatan)
-                                        <div>
-                                            <span class="text-[10.5px] font-bold text-slate-600 block mb-0.5">Catatan:</span>
-                                            <p class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700">{{ $selectedPayment->catatan }}</p>
+                                        <span class="text-[11px] font-bold text-slate-700 block mb-1">Catatan dari Warga:</span>
+                                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-xs leading-relaxed">
+                                            {{ $selectedPayment->catatan }}
                                         </div>
-                                    @endif
+                                    </div>
+                                @endif
+
+                                {{-- Catatan Validasi Pengurus Tersimpan jika status 'valid' atau 'ditolak' --}}
+                                @if(in_array($selectedPayment->status, ['valid', 'ditolak']) && $selectedPayment->catatan_validasi)
+                                    <div class="p-3.5 rounded-xl {{ $selectedPayment->status === 'valid' ? 'bg-emerald-50/70 border border-emerald-200' : 'bg-rose-50/70 border border-rose-200' }}">
+                                        <div class="text-[11px] font-bold {{ $selectedPayment->status === 'valid' ? 'text-emerald-800' : 'text-rose-800' }} uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                            @if($selectedPayment->status === 'valid')
+                                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                <span>Catatan Validasi Pengurus</span>
+                                            @else
+                                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                <span>Alasan / Catatan Penolakan</span>
+                                            @endif
+                                        </div>
+                                        <p class="text-xs {{ $selectedPayment->status === 'valid' ? 'text-emerald-900' : 'text-rose-900' }} leading-relaxed">
+                                            {{ $selectedPayment->catatan_validasi }}
+                                        </p>
+                                        <div class="text-[10.5px] {{ $selectedPayment->status === 'valid' ? 'text-emerald-700' : 'text-rose-700' }} font-medium mt-2 flex items-center justify-between">
+                                            <span>Oleh: {{ $selectedPayment->validator?->name ?? 'Pengurus RT' }}</span>
+                                            @if($selectedPayment->tanggal_validasi)
+                                                <span>{{ \Carbon\Carbon::parse($selectedPayment->tanggal_validasi)->format('d M Y, H:i') }} WIB</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
 
-                            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-                                <button type="button" @click="validateModalOpen = false; $wire.closeValidateModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer">
+                            {{-- Modal Footer --}}
+                            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2 flex-wrap">
+                                <div>
+                                    @if($selectedPayment->status === 'pending')
+                                        {{-- Tombol Setujui dan Tolak hanya untuk status pending --}}
+                                        <div class="flex items-center gap-2">
+                                            <button 
+                                                type="button" 
+                                                @click="openActionConfirm({{ $selectedPayment->id }}, '{{ addslashes(($selectedPayment->invoice?->household?->kepalaKeluarga?->nama ?? 'KK') . ' - ' . ($selectedPayment->invoice?->feeType?->nama ?? 'Iuran') . ' (Rp ' . number_format($selectedPayment->jumlah, 0, ',', '.') . ')') }}', 'valid')"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs hover:shadow-md cursor-pointer"
+                                                title="Setujui pembayaran dan nyatakan tagihan lunas"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                <span>Setujui</span>
+                                            </button>
+
+                                            <button 
+                                                type="button" 
+                                                @click="openActionConfirm({{ $selectedPayment->id }}, '{{ addslashes(($selectedPayment->invoice?->household?->kepalaKeluarga?->nama ?? 'KK') . ' - ' . ($selectedPayment->invoice?->feeType?->nama ?? 'Iuran') . ' (Rp ' . number_format($selectedPayment->jumlah, 0, ',', '.') . ')') }}', 'ditolak')"
+                                                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white transition-all shadow-xs hover:shadow-md cursor-pointer"
+                                                title="Tolak bukti pembayaran ini"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                <span>Tolak</span>
+                                            </button>
+                                        </div>
+                                    @elseif(in_array($selectedPayment->status, ['valid', 'ditolak']))
+                                        {{-- Tombol Hapus hanya untuk status final (valid atau ditolak) --}}
+                                        <button 
+                                            type="button" 
+                                            @click="confirmDelete({{ $selectedPayment->id }}, '{{ addslashes(($selectedPayment->invoice?->household?->kepalaKeluarga?->nama ?? 'KK') . ' - ' . ($selectedPayment->invoice?->feeType?->nama ?? 'Iuran') . ' (Rp ' . number_format($selectedPayment->jumlah, 0, ',', '.') . ')') }}')"
+                                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors cursor-pointer"
+                                            title="Hapus rekaman pembayaran ini"
+                                        >
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                            <span>Hapus</span>
+                                        </button>
+                                    @endif
+                                </div>
+
+                                <button 
+                                    type="button" 
+                                    @click="validateModalOpen = false; $wire.closeValidateModal()" 
+                                    class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                                >
                                     Tutup
                                 </button>
-
-                                @if($actionType === 'valid')
-                                    <button type="button" wire:click="processValidation" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
-                                        Setujui & Nyatakan Lunas
-                                    </button>
-                                @elseif($actionType === 'ditolak')
-                                    <button type="button" wire:click="processValidation" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
-                                        Tolak Pembayaran Ini
-                                    </button>
-                                @endif
                             </div>
                         @else
                             <div class="p-6 flex-col space-y-4 animate-pulse">
@@ -543,12 +647,158 @@
         </div>
 
         {{-- ====================================================================
-             5. MODAL KONFIRMASI HAPUS CATATAN PEMBAYARAN
+             6. MODAL KONFIRMASI VALIDASI / TOLAK PEMBAYARAN (ALPINE.JS Z-[60])
+             ==================================================================== --}}
+        <div 
+            x-show="actionModalOpen" 
+            x-cloak 
+            style="display: none;"
+            class="fixed inset-0 z-[60] overflow-y-auto" 
+            aria-labelledby="action-payment-modal-title" 
+            role="dialog" 
+            aria-modal="true"
+        >
+            {{-- Backdrop Blur --}}
+            <div 
+                x-show="actionModalOpen"
+                x-transition:enter="ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer" 
+                style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"
+                @click="closeActionConfirm"
+            ></div>
+
+            {{-- Dialog Container --}}
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div 
+                    x-show="actionModalOpen"
+                    x-transition:enter="ease-out duration-200"
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave="ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full sm:max-w-lg border border-slate-200 p-6 space-y-4"
+                    @click.stop
+                >
+                    {{-- Header dengan Icon Dinamis --}}
+                    <div class="flex items-start gap-3.5">
+                        <div 
+                            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                            :class="actionType === 'valid' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'"
+                        >
+                            {{-- Icon Setujui --}}
+                            <svg x-show="actionType === 'valid'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {{-- Icon Tolak --}}
+                            <svg x-show="actionType === 'ditolak'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 
+                                class="text-sm sm:text-base font-extrabold text-[#0F1F3D]" 
+                                id="action-payment-modal-title"
+                                x-text="actionType === 'valid' ? 'Konfirmasi Persetujuan Pembayaran' : 'Konfirmasi Penolakan Pembayaran'"
+                            ></h3>
+                            <p 
+                                class="text-xs text-slate-500 mt-0.5 leading-relaxed"
+                                x-text="actionType === 'valid' ? 'Pastikan dana telah masuk ke rekening kas RT 15 sebelum menyetujui pembayaran ini. Tagihan warga akan otomatis dinyatakan lunas.' : 'Pembayaran tidak dapat diverifikasi atau tidak valid. Berikan penjelasan kepada warga pelapor.'"
+                            ></p>
+                        </div>
+                    </div>
+
+                    {{-- Info Pembayaran Terpilih --}}
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                        <span class="text-slate-400 block text-[10px] uppercase font-bold tracking-wider mb-0.5">Pembayaran Terpilih</span>
+                        <span class="font-bold text-[#0F1F3D]" x-text="actionPaymentInfo"></span>
+                    </div>
+
+                    {{-- Textarea Catatan / Respon Pengurus --}}
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-700">
+                                <span x-text="actionType === 'valid' ? 'Catatan Validasi / Respon Pengurus' : 'Alasan Penolakan Pembayaran'"></span>
+                                <span class="text-rose-500 font-bold">*</span>
+                            </label>
+                            <span class="text-[10.5px] font-semibold text-rose-500">Wajib diisi</span>
+                        </div>
+                        <textarea 
+                            x-model="actionCatatan" 
+                            rows="3" 
+                            :placeholder="actionType === 'valid' ? 'Tuliskan catatan validasi (misal: Bukti pembayaran valid dan dana telah diterima kas RT)...' : 'Tuliskan alasan penolakan (misal: Bukti transfer tidak valid atau dana belum masuk rekening RT)...'"
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all resize-y"
+                        ></textarea>
+                        
+                        {{-- Validasi & Indikator Karakter --}}
+                        <div class="flex items-center justify-between text-[11px] pt-0.5">
+                            <div>
+                                <span x-show="actionCatatan.trim().length === 0" class="text-rose-500 font-medium flex items-center gap-1">
+                                    <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Catatan wajib diisi dan tidak boleh hanya berisi spasi
+                                </span>
+                                <span x-show="actionCatatan.trim().length > 0" class="text-emerald-600 font-medium flex items-center gap-1">
+                                    <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Catatan siap disimpan
+                                </span>
+                            </div>
+                            <span class="text-slate-400 font-medium" x-text="actionCatatan.trim().length + ' karakter'"></span>
+                        </div>
+                    </div>
+
+                    {{-- Footer Modal --}}
+                    <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                        <button 
+                            type="button" 
+                            @click="closeActionConfirm" 
+                            class="px-4 py-2 rounded-xl text-xs font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button 
+                            type="button" 
+                            @click="submitAction" 
+                            :disabled="actionCatatan.trim().length === 0"
+                            :class="actionCatatan.trim().length === 0 
+                                ? 'opacity-50 cursor-not-allowed bg-slate-300 text-slate-500' 
+                                : (actionType === 'valid' ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer hover:shadow-md' : 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer hover:shadow-md')"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs"
+                        >
+                            <span x-show="actionType === 'valid'" class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Konfirmasi Setujui</span>
+                            </span>
+                            <span x-show="actionType === 'ditolak'" class="inline-flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <span>Konfirmasi Tolak</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ====================================================================
+             7. MODAL KONFIRMASI HAPUS CATATAN PEMBAYARAN (ALPINE.JS Z-[60])
              ==================================================================== --}}
         <div 
             x-show="deleteConfirmModalOpen" 
             x-cloak
-            class="fixed inset-0 z-50 overflow-y-auto" 
+            style="display: none;"
+            class="fixed inset-0 z-[60] overflow-y-auto" 
             aria-labelledby="delete-payment-modal-title" 
             role="dialog" 
             aria-modal="true"

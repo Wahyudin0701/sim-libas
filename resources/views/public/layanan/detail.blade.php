@@ -104,11 +104,6 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         @foreach($service['manfaat'] as $item)
                             <div class="p-5 rounded-2xl bg-bg-soft border border-border-soft hover:border-primary-500/30 transition">
-                                <div class="w-8 h-8 rounded-xl bg-blue-100 text-primary-700 flex items-center justify-center font-bold text-sm mb-3">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                </div>
                                 <h4 class="font-bold text-primary-900 text-base mb-2">{{ $item['judul'] }}</h4>
                                 <p class="text-xs sm:text-sm text-text-muted leading-relaxed">{{ $item['deskripsi'] }}</p>
                             </div>
@@ -171,7 +166,7 @@
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-border-soft">
                         <h4 class="text-sm font-bold text-primary-900 uppercase tracking-wider">Layanan Lainnya</h4>
                         <a href="{{ route('public.layanan.index') }}" class="text-xs font-semibold text-primary-700 hover:text-primary-900">
-                            Semua &gt;
+                            Semua
                         </a>
                     </div>
                     <div class="space-y-3">

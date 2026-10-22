@@ -53,8 +53,9 @@ class PublicAnnouncementTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Uji Coba Pengumuman Detail RT 15');
         $response->assertSee('Ini adalah isi pengumuman lengkap');
-        $response->assertSee('Sasaran: SEMUA');
+        $response->assertDontSee('Sasaran: SEMUA');
         $response->assertSee('📌 Penting');
+        $response->assertSee('Semua Warga RT 15');
         $response->assertSee('Uraian Pengumuman Lengkap');
         $response->assertSee('Beranda');
         $response->assertSee('Pengumuman');

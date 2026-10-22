@@ -205,7 +205,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-700 border border-amber-100 flex items-center justify-center shrink-0">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                 </svg>
                             </div>
@@ -348,65 +348,72 @@
                 </div>
 
                 <!-- Card Kontak Darurat Terpadu Kota Jambi -->
-                <div class="bg-white border border-border-soft rounded-2xl p-6 shadow-sm">
-                    <div class="flex items-center gap-2.5 pb-3 border-b border-border-soft mb-4">
-                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                        <div>
-                            <h4 class="font-bold text-primary-900 text-base">Kontak Darurat Terpadu</h4>
-                            <p class="text-[11px] text-text-muted">Nomor penting wilayah Telanaipura & Kota Jambi</p>
+                <div class="bg-white border border-border-soft rounded-2xl p-4 sm:p-6 shadow-sm">
+                    <div class="flex items-center gap-2.5 pb-3 border-b border-border-soft mb-3 sm:mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-primary-900 text-sm sm:text-base leading-tight">Kontak Darurat Terpadu</h4>
+                            <p class="text-[10px] sm:text-[11px] text-text-muted truncate">Nomor penting wilayah Telanaipura & Kota Jambi</p>
                         </div>
                     </div>
 
-                    <div class="space-y-2.5">
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <div class="text-xs font-bold text-primary-900">Bhabinkamtibmas Telanaipura</div>
-                                <div class="text-[10px] text-text-muted">Polsek Telanaipura</div>
+                    <div class="divide-y divide-slate-100">
+                        <div class="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-primary-900 truncate">Bhabinkamtibmas Telanaipura</div>
+                                <div class="text-[10px] text-text-muted truncate">Polsek Telanaipura</div>
                             </div>
-                            <a href="tel:081366220015" class="text-xs font-bold text-primary-700 bg-blue-50 px-2.5 py-1 rounded-lg hover:bg-primary-700 hover:text-white transition">
-                                0813-6622-0015
+                            <a href="tel:081366220015" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-primary-700 text-primary-700 hover:text-white border border-blue-200/60 text-xs font-bold font-mono transition shadow-2xs group">
+                                <svg class="w-3 h-3 text-primary-600 group-hover:text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                <span>0813-6622-0015</span>
                             </a>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <div class="text-xs font-bold text-primary-900">Babinsa Pematang Sulur</div>
-                                <div class="text-[10px] text-text-muted">Koramil Telanaipura</div>
+                        <div class="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-primary-900 truncate">Babinsa Pematang Sulur</div>
+                                <div class="text-[10px] text-text-muted truncate">Koramil Telanaipura</div>
                             </div>
-                            <a href="tel:085267110015" class="text-xs font-bold text-primary-700 bg-blue-50 px-2.5 py-1 rounded-lg hover:bg-primary-700 hover:text-white transition">
-                                0852-6711-0015
+                            <a href="tel:085267110015" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-primary-700 text-primary-700 hover:text-white border border-blue-200/60 text-xs font-bold font-mono transition shadow-2xs group">
+                                <svg class="w-3 h-3 text-primary-600 group-hover:text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                <span>0852-6711-0015</span>
                             </a>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <div class="text-xs font-bold text-primary-900">Damkar Kota Jambi (Pos Telanaipura)</div>
-                                <div class="text-[10px] text-text-muted">Penanganan Kebakaran & Evakuasi</div>
+                        <div class="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-primary-900 truncate">Damkar Kota Jambi</div>
+                                <div class="text-[10px] text-text-muted truncate">Pos Telanaipura & Evakuasi</div>
                             </div>
-                            <a href="tel:074141113" class="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-lg hover:bg-red-600 hover:text-white transition">
-                                (0741) 41113
+                            <a href="tel:074141113" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200/60 text-xs font-bold font-mono transition shadow-2xs group">
+                                <svg class="w-3 h-3 text-red-500 group-hover:text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                <span>(0741) 41113</span>
                             </a>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <div class="text-xs font-bold text-primary-900">Puskesmas Telanaipura II</div>
-                                <div class="text-[10px] text-text-muted">Pelayanan Kesehatan Warga</div>
+                        <div class="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-primary-900 truncate">Puskesmas Telanaipura II</div>
+                                <div class="text-[10px] text-text-muted truncate">Pelayanan Kesehatan Warga</div>
                             </div>
-                            <a href="tel:074160123" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg hover:bg-emerald-700 hover:text-white transition">
-                                (0741) 60123
+                            <a href="tel:074160123" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-700 text-emerald-700 hover:text-white border border-emerald-200/60 text-xs font-bold font-mono transition shadow-2xs group">
+                                <svg class="w-3 h-3 text-emerald-600 group-hover:text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                <span>(0741) 60123</span>
                             </a>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <div class="text-xs font-bold text-primary-900">Layanan Darurat Kepolisian RI</div>
-                                <div class="text-[10px] text-text-muted">Bebas Pulsa 24 Jam</div>
+                        <div class="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-2">
+                            <div class="min-w-0 flex-1">
+                                <div class="text-xs font-bold text-primary-900 truncate">Layanan Kepolisian RI</div>
+                                <div class="text-[10px] text-text-muted truncate">Bebas Pulsa 24 Jam</div>
                             </div>
-                            <a href="tel:110" class="text-xs font-bold text-slate-800 bg-slate-200 px-3 py-1 rounded-lg hover:bg-slate-800 hover:text-white transition">
-                                110
+                            <a href="tel:110" class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-800 text-slate-800 hover:text-white border border-slate-200 text-xs font-bold font-mono transition shadow-2xs group">
+                                <svg class="w-3 h-3 text-slate-600 group-hover:text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                <span>110</span>
                             </a>
                         </div>
                     </div>

@@ -53,6 +53,7 @@ class ListLetters extends ListRecords
     public bool $isEditingLetter = false;
     public ?int $editing_letter_id = null;
     public ?int $form_resident_id = null;
+    public string $form_resident_query = '';
     public ?int $form_letter_type_id = null;
     public string $form_keperluan = '';
     public string $form_status = 'diajukan';
@@ -133,8 +134,7 @@ class ListLetters extends ListRecords
             SUM(CASE WHEN status = 'diajukan' THEN 1 ELSE 0 END) as diajukan,
             SUM(CASE WHEN status = 'diperiksa' THEN 1 ELSE 0 END) as diperiksa,
             SUM(CASE WHEN status = 'disetujui' THEN 1 ELSE 0 END) as disetujui,
-            SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak,
-            SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) as selesai
+            SUM(CASE WHEN status = 'ditolak' THEN 1 ELSE 0 END) as ditolak
         ")->first();
 
         $totalSemua = (int) ($stats->total ?? 0);
@@ -142,7 +142,6 @@ class ListLetters extends ListRecords
         $totalDiperiksa = (int) ($stats->diperiksa ?? 0);
         $totalDisetujui = (int) ($stats->disetujui ?? 0);
         $totalDitolak = (int) ($stats->ditolak ?? 0);
-        $totalSelesai = (int) ($stats->selesai ?? 0);
 
         $query = Letter::with(['letterType', 'resident.household', 'approver', 'verifier'])
             ->latest('created_at');
@@ -178,8 +177,17 @@ class ListLetters extends ListRecords
         }
 
         $letters = $query->paginate($this->perPage);
-        $residents = Resident::select('id', 'nama', 'id_warga')->orderBy('nama')->get();
+        $residents = Resident::select('id', 'nama', 'id_warga', 'nik_encrypted')->orderBy('nama')->get();
         $letterTypes = LetterType::where('is_active', true)->orderBy('urutan')->get();
+
+        $residentOptions = $residents->map(function ($r) {
+            return [
+                'id' => $r->id,
+                'nama' => $r->nama,
+                'id_warga' => $r->id_warga ?? '',
+                'masked_nik' => $r->masked_nik ?? '-',
+            ];
+        })->values()->toArray();
 
         return [
             'letters' => $letters,
@@ -188,8 +196,8 @@ class ListLetters extends ListRecords
             'totalDiperiksa' => $totalDiperiksa,
             'totalDisetujui' => $totalDisetujui,
             'totalDitolak' => $totalDitolak,
-            'totalSelesai' => $totalSelesai,
             'residents' => $residents,
+            'residentOptions' => $residentOptions,
             'letterTypes' => $letterTypes,
             'search' => $this->search,
             'statusFilter' => $this->statusFilter,
@@ -203,7 +211,18 @@ class ListLetters extends ListRecords
 
     public function openDetailLetter(int $id): void
     {
-        $this->detailLetter = Letter::with(['letterType', 'resident.household', 'approver', 'verifier', 'attachments'])->findOrFail($id);
+        $letter = Letter::with(['letterType', 'resident.household', 'approver', 'verifier', 'attachments'])->findOrFail($id);
+
+        // Jika status masih 'diajukan', otomatis beralih menjadi 'diperiksa' saat detail dibuka
+        if ($letter->status === 'diajukan') {
+            $letter->update([
+                'status' => 'diperiksa',
+                'diverifikasi_oleh' => auth()->id(),
+            ]);
+            $letter->refresh();
+        }
+
+        $this->detailLetter = $letter;
         $this->detailLetterModalOpen = true;
         $this->dispatch('open-detail-letter-modal');
     }
@@ -363,11 +382,22 @@ class ListLetters extends ListRecords
     // MODAL FORM TAMBAH / UBAH SURAT
     // =========================================================================
 
+    public function updatedFormStatus(string $value): void
+    {
+        if ($value === 'diajukan' || $value === 'diperiksa') {
+            $this->form_nomor_surat = '';
+            $this->form_catatan_pengurus = '';
+        } elseif ($value === 'ditolak') {
+            $this->form_nomor_surat = '';
+        }
+    }
+
     public function openCreateLetter(): void
     {
         $this->isEditingLetter = false;
         $this->editing_letter_id = null;
         $this->form_resident_id = null;
+        $this->form_resident_query = '';
         $this->form_letter_type_id = null;
         $this->form_keperluan = '';
         $this->form_status = 'diajukan';
@@ -381,11 +411,12 @@ class ListLetters extends ListRecords
 
     public function openEditLetter(int $id): void
     {
-        $letter = Letter::findOrFail($id);
+        $letter = Letter::with('resident')->findOrFail($id);
 
         $this->isEditingLetter = true;
         $this->editing_letter_id = $letter->id;
         $this->form_resident_id = $letter->resident_id;
+        $this->form_resident_query = $letter->resident ? ($letter->resident->nama . ($letter->resident->id_warga ? " [{$letter->resident->id_warga}]" : '')) : '';
         $this->form_letter_type_id = $letter->letter_type_id;
         $this->form_keperluan = (string) $letter->keperluan;
         $this->form_status = (string) $letter->status;
@@ -399,19 +430,87 @@ class ListLetters extends ListRecords
 
     public function saveLetter(): void
     {
-        $this->validate([
+        // 1. Verifikasi dan Resolusi Warga Pemohon dari Autocomplete / Input Bebas
+        $queryText = trim((string) $this->form_resident_query);
+
+        if (filled($queryText)) {
+            $currentResident = $this->form_resident_id ? Resident::find($this->form_resident_id) : null;
+            $isMatchingCurrent = false;
+
+            if ($currentResident) {
+                $expectedDisplay = $currentResident->nama . ($currentResident->id_warga ? " [{$currentResident->id_warga}]" : '');
+                if (
+                    strcasecmp($currentResident->nama, $queryText) === 0 ||
+                    ($currentResident->id_warga && strcasecmp($currentResident->id_warga, $queryText) === 0) ||
+                    strcasecmp($expectedDisplay, $queryText) === 0
+                ) {
+                    $isMatchingCurrent = true;
+                }
+            }
+
+            if (!$isMatchingCurrent) {
+                // Pengurus mengetik nama atau ID secara manual, cari pencocokan pasti di database
+                $cleanQuery = trim(preg_replace('/\[.*?\]/', '', $queryText));
+                $matchedResident = Resident::where(function ($q) use ($queryText, $cleanQuery) {
+                    $q->where('id_warga', $queryText)
+                      ->orWhere('id_warga', $cleanQuery)
+                      ->orWhere('nama', $queryText)
+                      ->orWhere('nama', $cleanQuery);
+                })->first();
+
+                if ($matchedResident) {
+                    $this->form_resident_id = $matchedResident->id;
+                    $this->form_resident_query = $matchedResident->nama . ($matchedResident->id_warga ? " [{$matchedResident->id_warga}]" : '');
+                } else {
+                    $this->addError('form_resident_id', 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.');
+                    return;
+                }
+            }
+        } elseif (!$this->form_resident_id) {
+            $this->addError('form_resident_id', 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.');
+            return;
+        }
+
+        // Pastikan warga benar-benar terdaftar di database
+        if (!$this->form_resident_id || !Resident::where('id', $this->form_resident_id)->exists()) {
+            $this->addError('form_resident_id', 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.');
+            return;
+        }
+
+        $rules = [
             'form_resident_id' => ['required', 'exists:residents,id'],
             'form_letter_type_id' => ['required', 'exists:letter_types,id'],
             'form_keperluan' => ['required', 'string', 'min:5', 'max:1000'],
-            'form_status' => ['required', 'in:diajukan,diperiksa,disetujui,ditolak,selesai'],
+            'form_status' => ['required', 'in:diajukan,diperiksa,disetujui,ditolak'],
             'form_nomor_surat' => ['nullable', 'string', 'max:100'],
             'form_catatan_pengurus' => ['nullable', 'string', 'max:1000'],
-        ], [
-            'form_resident_id.required' => 'Warga pemohon surat wajib dipilih.',
+        ];
+
+        if ($this->form_status === 'disetujui') {
+            $rules['form_nomor_surat'] = ['required', 'string', 'min:3', 'max:100'];
+        } elseif ($this->form_status === 'ditolak') {
+            $rules['form_catatan_pengurus'] = ['required', 'string', 'min:3', 'max:1000'];
+        }
+
+        $this->validate($rules, [
+            'form_resident_id.required' => 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.',
+            'form_resident_id.exists' => 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.',
             'form_letter_type_id.required' => 'Jenis surat pengantar wajib dipilih.',
             'form_keperluan.required' => 'Keperluan permohonan surat wajib diisi.',
             'form_keperluan.min' => 'Keperluan permohonan minimal 5 karakter.',
+            'form_nomor_surat.required' => 'Nomor resmi surat wajib diisi ketika permohonan disetujui.',
+            'form_nomor_surat.min' => 'Nomor resmi surat minimal 3 karakter.',
+            'form_catatan_pengurus.required' => 'Catatan / alasan penolakan wajib diisi ketika permohonan ditolak.',
+            'form_catatan_pengurus.min' => 'Catatan / alasan penolakan minimal 3 karakter.',
         ]);
+
+        // Aturan data berdasarkan status: diajukan & diperiksa tidak menggunakan nomor surat & catatan pengurus
+        if ($this->form_status === 'diajukan' || $this->form_status === 'diperiksa') {
+            $this->form_nomor_surat = '';
+            $this->form_catatan_pengurus = '';
+        } elseif ($this->form_status === 'ditolak') {
+            $this->form_nomor_surat = '';
+        }
 
         if ($this->isEditingLetter && $this->editing_letter_id) {
             $letter = Letter::findOrFail($this->editing_letter_id);
@@ -424,9 +523,18 @@ class ListLetters extends ListRecords
                 'catatan_pengurus' => $this->form_catatan_pengurus ?: null,
             ];
 
+            if ($this->form_status === 'diperiksa' && empty($letter->diverifikasi_oleh)) {
+                $updateData['diverifikasi_oleh'] = auth()->id();
+            }
+
             if ($this->form_status === 'disetujui' && empty($letter->tanggal_disetujui)) {
                 $updateData['disetujui_oleh'] = auth()->id();
                 $updateData['tanggal_disetujui'] = now();
+            }
+
+            if ($this->form_status === 'ditolak') {
+                $updateData['alasan_tolak'] = $this->form_catatan_pengurus ?: $letter->alasan_tolak;
+                $updateData['disetujui_oleh'] = auth()->id();
             }
 
             $oldStatus = $letter->status;
@@ -453,9 +561,18 @@ class ListLetters extends ListRecords
                 'qr_token' => (string) Str::uuid(),
             ];
 
+            if ($this->form_status === 'diperiksa') {
+                $createData['diverifikasi_oleh'] = auth()->id();
+            }
+
             if ($this->form_status === 'disetujui') {
                 $createData['disetujui_oleh'] = auth()->id();
                 $createData['tanggal_disetujui'] = now();
+            }
+
+            if ($this->form_status === 'ditolak') {
+                $createData['alasan_tolak'] = $this->form_catatan_pengurus ?: null;
+                $createData['disetujui_oleh'] = auth()->id();
             }
 
             Letter::create($createData);
@@ -563,7 +680,7 @@ class ListLetters extends ListRecords
             foreach ($query->cursor() as $row) {
                 fputcsv($file, [
                     $index++,
-                    $row->nomor_surat ?? '(Belum Terbit)',
+                    $row->nomor_surat ?? '-',
                     $row->letterType?->nama ?? '-',
                     $row->letterType?->kode ?? '-',
                     $row->resident?->nama ?? '-',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Model PatrolMember untuk anggota warga yang ditugaskan pada suatu jadwal ronda.
+ * Model PatrolMember untuk personil/petugas tetap jadwal ronda mingguan RT 15.
  */
 class PatrolMember extends Model
 {
@@ -28,34 +28,22 @@ class PatrolMember extends Model
     protected $fillable = [
         'patrol_schedule_id',
         'resident_id',
-        'is_pengganti',
+        'peran',
     ];
 
     /**
-     * Konfigurasi tipe data atribut.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'is_pengganti' => 'boolean',
-        ];
-    }
-
-    /**
-     * Relasi ke jadwal ronda (PatrolSchedule).
+     * Relasi ke jadwal ronda master (PatrolSchedule).
      */
     public function patrolSchedule(): BelongsTo
     {
-        return $this->belongsTo(PatrolSchedule::class);
+        return $this->belongsTo(PatrolSchedule::class, 'patrol_schedule_id');
     }
 
     /**
-     * Relasi ke data warga (Resident).
+     * Relasi ke data warga (Resident) yang bertugas.
      */
     public function resident(): BelongsTo
     {
-        return $this->belongsTo(Resident::class);
+        return $this->belongsTo(Resident::class, 'resident_id');
     }
 }

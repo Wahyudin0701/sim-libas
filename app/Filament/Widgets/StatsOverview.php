@@ -81,7 +81,7 @@ class StatsOverview extends Widget
         // 2. Data Surat Pengantar
         $suratBerjalan = $canLetters ? Letter::whereIn('status', ['diajukan', 'diperiksa'])->count() : 0;
         $suratDiajukan = $canLetters ? Letter::where('status', 'diajukan')->count() : 0;
-        $suratSelesai = $canLetters ? Letter::whereIn('status', ['disetujui', 'selesai'])->count() : 0;
+        $suratSelesai = $canLetters ? Letter::where('status', 'disetujui')->count() : 0;
         $recentLetters = $canLetters ? Letter::with(['resident', 'letterType'])->latest('created_at')->take(4)->get() : collect();
         $lettersNeedingApproval = $canLetters ? Letter::whereIn('status', ['diajukan', 'diperiksa'])->with(['resident', 'letterType'])->latest('created_at')->take(4)->get() : collect();
 
@@ -127,11 +127,12 @@ class StatsOverview extends Widget
                       });
                 })->count() 
             : 0;
+        $todayHariKe = now()->dayOfWeekIso;
         $todayPatrolSchedule = $canKeamanan 
-            ? PatrolSchedule::whereDate('tanggal', today())->with(['members.resident'])->first() 
+            ? PatrolSchedule::where('hari_ke', $todayHariKe)->with(['members.resident'])->first() 
             : null;
         $recentGuestReports = $canKeamanan ? GuestReport::latest('created_at')->take(4)->get() : collect();
-        $recentPatrolSchedules = $canKeamanan ? PatrolSchedule::with(['members.resident'])->latest('tanggal')->take(4)->get() : collect();
+        $recentPatrolSchedules = $canKeamanan ? PatrolSchedule::with(['members.resident'])->orderBy('hari_ke')->take(4)->get() : collect();
 
         // 8. Data Khusus Admin Sistem
         $totalUsers = $isSuperAdmin ? User::count() : 0;

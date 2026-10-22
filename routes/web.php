@@ -22,7 +22,10 @@ Route::get('/layanan', [PublicPortalController::class, 'layananIndex'])->name('p
 Route::get('/layanan/{slug}', [PublicPortalController::class, 'layananDetail'])->name('public.layanan.detail');
 Route::get('/katalog-umkm', [PublicPortalController::class, 'umkm'])->name('public.umkm');
 Route::get('/katalog-umkm/{id}', [PublicPortalController::class, 'umkmDetail'])->name('public.umkm.detail');
+Route::get('/pengumuman', [PublicPortalController::class, 'pengumumanIndex'])->name('public.pengumuman.index');
 Route::get('/pengumuman/{id}', [PublicPortalController::class, 'pengumumanDetail'])->name('public.pengumuman.detail');
+Route::get('/agenda', [PublicPortalController::class, 'agendaIndex'])->name('public.agenda.index');
+Route::get('/agenda/{id}', [PublicPortalController::class, 'agendaDetail'])->name('public.agenda.detail');
 Route::get('/bank-sampah', [PublicPortalController::class, 'bankSampah'])->name('public.bank-sampah');
 Route::get('/kontak', [PublicPortalController::class, 'contact'])->name('public.contact');
 

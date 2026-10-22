@@ -145,7 +145,7 @@ class ListPayments extends ListRecords
     }
 
     // =========================================================================
-    // MODAL VALIDASI / TOLAK PEMBAYARAN
+    // MODAL VALIDASI / TOLAK / DETAIL PEMBAYARAN
     // =========================================================================
     public function openApprove(int $id): void
     {
@@ -167,6 +167,7 @@ class ListPayments extends ListRecords
     {
         $this->selectedPayment = Payment::with(['invoice.household.kepalaKeluarga', 'invoice.feeType', 'validator'])->findOrFail($id);
         $this->actionType = 'detail';
+        $this->validationCatatan = '';
         $this->validateModalOpen = true;
     }
 
@@ -174,52 +175,121 @@ class ListPayments extends ListRecords
     {
         $this->validateModalOpen = false;
         $this->selectedPayment = null;
+        $this->validationCatatan = '';
     }
 
-    public function processValidation(): void
+    public function approvePayment(int $id, ?string $catatan = null): void
     {
-        if (! $this->selectedPayment) {
+        $finalCatatan = trim((string) ($catatan ?? $this->validationCatatan));
+
+        if (empty($finalCatatan)) {
+            Notification::make()
+                ->title('Catatan Validasi Wajib Diisi')
+                ->body('Mohon sertakan catatan validasi sebelum menyetujui pembayaran.')
+                ->danger()
+                ->send();
             return;
         }
 
-        if ($this->actionType === 'valid') {
-            $this->selectedPayment->update([
-                'status' => 'valid',
-                'divalidasi_oleh' => Auth::id() ?? 1,
-                'tanggal_validasi' => Carbon::now(),
-                'catatan' => $this->validationCatatan,
-            ]);
+        $payment = Payment::with(['invoice.household.kepalaKeluarga', 'invoice.feeType'])->findOrFail($id);
 
-            // Update tagihan menjadi lunas
-            $this->selectedPayment->invoice?->update(['status' => 'lunas']);
-
-            // Kirim notifikasi sistem ke warga (KK)
-            NotificationService::notifyPaymentValidated($this->selectedPayment);
-
+        // Cegah pembayaran yang sudah disetujui atau ditolak agar tidak divalidasi ulang
+        if (in_array($payment->status, ['valid', 'ditolak'])) {
             Notification::make()
-                ->title('Pembayaran berhasil divalidasi dan tagihan dinyatakan Lunas')
-                ->success()
-                ->send();
-        } elseif ($this->actionType === 'ditolak') {
-            $this->selectedPayment->update([
-                'status' => 'ditolak',
-                'divalidasi_oleh' => Auth::id() ?? 1,
-                'tanggal_validasi' => Carbon::now(),
-                'catatan' => $this->validationCatatan,
-            ]);
-
-            // Jika sebelumnya lunas, kembalikan ke belum_bayar
-            if ($this->selectedPayment->invoice?->status === 'lunas') {
-                $this->selectedPayment->invoice?->update(['status' => 'belum_bayar']);
-            }
-
-            // Kirim notifikasi sistem ke warga (KK)
-            NotificationService::notifyPaymentRejected($this->selectedPayment, $this->validationCatatan);
-
-            Notification::make()
-                ->title('Pembayaran berhasil ditolak dengan catatan')
+                ->title('Pembayaran Sudah Divalidasi')
+                ->body('Status pembayaran ini sudah final dan tidak dapat divalidasi ulang.')
                 ->warning()
                 ->send();
+            return;
+        }
+
+        $payment->update([
+            'status' => 'valid',
+            'divalidasi_oleh' => Auth::id() ?? 1,
+            'tanggal_validasi' => Carbon::now(),
+            'catatan_validasi' => $finalCatatan,
+        ]);
+
+        // Update tagihan menjadi lunas
+        $payment->invoice?->update(['status' => 'lunas']);
+
+        // Kirim notifikasi sistem ke warga (KK)
+        NotificationService::notifyPaymentValidated($payment);
+
+        Notification::make()
+            ->title('Pembayaran Berhasil Disetujui')
+            ->body("Pembayaran sebesar Rp " . number_format($payment->jumlah, 0, ',', '.') . " telah diverifikasi valid dan tagihan dinyatakan Lunas.")
+            ->success()
+            ->send();
+
+        $this->selectedPayment = $payment->fresh(['invoice.household.kepalaKeluarga', 'invoice.feeType', 'validator']);
+        $this->actionType = 'detail';
+    }
+
+    public function rejectPayment(int $id, ?string $catatan = null): void
+    {
+        $finalCatatan = trim((string) ($catatan ?? $this->validationCatatan));
+
+        if (empty($finalCatatan)) {
+            Notification::make()
+                ->title('Alasan Penolakan Wajib Diisi')
+                ->body('Mohon sertakan alasan penolakan sebelum menolak pembayaran.')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $payment = Payment::with(['invoice.household.kepalaKeluarga', 'invoice.feeType'])->findOrFail($id);
+
+        // Cegah pembayaran yang sudah disetujui atau ditolak agar tidak divalidasi ulang
+        if (in_array($payment->status, ['valid', 'ditolak'])) {
+            Notification::make()
+                ->title('Pembayaran Sudah Divalidasi')
+                ->body('Status pembayaran ini sudah final dan tidak dapat divalidasi ulang.')
+                ->warning()
+                ->send();
+            return;
+        }
+
+        $payment->update([
+            'status' => 'ditolak',
+            'divalidasi_oleh' => Auth::id() ?? 1,
+            'tanggal_validasi' => Carbon::now(),
+            'catatan_validasi' => $finalCatatan,
+        ]);
+
+        // Jika sebelumnya lunas, kembalikan ke belum_bayar
+        if ($payment->invoice?->status === 'lunas') {
+            $payment->invoice?->update(['status' => 'belum_bayar']);
+        }
+
+        // Kirim notifikasi sistem ke warga (KK)
+        NotificationService::notifyPaymentRejected($payment, $finalCatatan);
+
+        Notification::make()
+            ->title('Pembayaran Ditolak')
+            ->body("Bukti pembayaran telah ditolak dengan catatan.")
+            ->warning()
+            ->send();
+
+        $this->selectedPayment = $payment->fresh(['invoice.household.kepalaKeluarga', 'invoice.feeType', 'validator']);
+        $this->actionType = 'detail';
+    }
+
+    public function processValidation(?int $id = null, ?string $type = null, ?string $catatan = null): void
+    {
+        $targetId = $id ?? $this->selectedPayment?->id;
+        if (! $targetId) {
+            return;
+        }
+
+        $action = $type ?? $this->actionType;
+        $note = $catatan ?? $this->validationCatatan;
+
+        if ($action === 'valid') {
+            $this->approvePayment($targetId, $note);
+        } else {
+            $this->rejectPayment($targetId, $note);
         }
 
         $this->validateModalOpen = false;
@@ -229,6 +299,17 @@ class ListPayments extends ListRecords
     public function deletePayment(int $id): void
     {
         $p = Payment::findOrFail($id);
+
+        // Validasi: Tombol Hapus hanya tersedia untuk status akhir (valid atau ditolak)
+        if (! in_array($p->status, ['valid', 'ditolak'])) {
+            Notification::make()
+                ->title('Penghapusan Ditolak')
+                ->body('Pembayaran yang masih menunggu validasi tidak dapat dihapus.')
+                ->danger()
+                ->send();
+            return;
+        }
+
         $inv = $p->invoice;
         $p->delete();
 
@@ -238,6 +319,9 @@ class ListPayments extends ListRecords
                 $inv->update(['status' => 'belum_bayar']);
             }
         }
+
+        $this->validateModalOpen = false;
+        $this->selectedPayment = null;
 
         Notification::make()
             ->title('Catatan pembayaran berhasil dihapus')

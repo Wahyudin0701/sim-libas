@@ -8,6 +8,8 @@ use App\Models\Event;
 use App\Models\EventAttendance;
 use App\Models\GuestReport;
 use App\Models\Household;
+use App\Models\PatrolExecution;
+use App\Models\PatrolExecutionMember;
 use App\Models\PatrolMember;
 use App\Models\PatrolSchedule;
 use App\Models\Resident;
@@ -319,66 +321,151 @@ class CommunicationAndSecuritySeeder extends Seeder
             }
         }
 
-        // 5. Jadwal Ronda Malam (PatrolSchedule & PatrolMember - 6 jadwal)
-        $schedules = [
+        // 5. Master Jadwal Ronda Mingguan 7 Hari Tetap (Senin s.d. Minggu)
+        $masterSchedules = [
             [
-                'tanggal' => Carbon::now()->startOfWeek()->format('Y-m-d'),
+                'hari_ke' => 1,
                 'regu' => 'Regu A - Garuda (Senin Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Patroli keliling setiap 1 jam sekali dan pencatatan portal masuk tamu.',
             ],
             [
-                'tanggal' => Carbon::now()->startOfWeek()->addDay()->format('Y-m-d'),
+                'hari_ke' => 2,
                 'regu' => 'Regu B - Rajawali (Selasa Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Kondisi lingkungan aman kondusif, cuaca cerah.',
             ],
             [
-                'tanggal' => Carbon::now()->startOfWeek()->addDays(2)->format('Y-m-d'),
+                'hari_ke' => 3,
                 'regu' => 'Regu C - Elang (Rabu Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Kunci portal dipegang ketua regu, senter baterai terisi penuh.',
             ],
             [
-                'tanggal' => Carbon::now()->startOfWeek()->addDays(3)->format('Y-m-d'),
+                'hari_ke' => 4,
                 'regu' => 'Regu D - Harimau (Kamis Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Pemeriksaan rutin pintu gerbang blok perumahan dan pos ronda.',
             ],
             [
-                'tanggal' => Carbon::now()->startOfWeek()->addDays(4)->format('Y-m-d'),
+                'hari_ke' => 5,
                 'regu' => 'Regu E - Banteng (Jumat Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Antisipasi peningkatan arus keluar masuk kendaraan tamu akhir pekan.',
             ],
             [
-                'tanggal' => Carbon::now()->startOfWeek()->addDays(5)->format('Y-m-d'),
+                'hari_ke' => 6,
                 'regu' => 'Regu F - Singa (Sabtu Malam)',
-                'waktu_mulai' => '22:00',
-                'waktu_selesai' => '04:00',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
                 'catatan' => 'Jaga malam akhir pekan dan monitoring berkala posko keamanan.',
+            ],
+            [
+                'hari_ke' => 7,
+                'regu' => 'Regu G - Merpati (Minggu Malam)',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
+                'is_aktif' => true,
+                'catatan' => 'Ronda awal pekan dan pemantauan lampu penerangan jalan.',
             ],
         ];
 
-        foreach ($schedules as $idx => $s) {
+        $scheduleModels = [];
+        foreach ($masterSchedules as $idx => $sData) {
             $schedule = PatrolSchedule::firstOrCreate(
-                ['tanggal' => $s['tanggal'], 'regu' => $s['regu']],
-                $s
+                ['hari_ke' => $sData['hari_ke']],
+                $sData
             );
+            $scheduleModels[$sData['hari_ke']] = $schedule;
 
             if ($residents->isNotEmpty() && $schedule->members()->count() === 0) {
-                // Ambil 3 resident bergantian untuk tiap regu
+                // Plot 3 personil tetap untuk master jadwal
                 $memberResidents = $residents->slice(($idx * 2) % max(1, $residents->count() - 2), 3);
-                foreach ($memberResidents as $res) {
-                    PatrolMember::create([
+                foreach ($memberResidents as $mIdx => $res) {
+                    PatrolMember::firstOrCreate([
                         'patrol_schedule_id' => $schedule->id,
                         'resident_id' => $res->id,
+                    ], [
+                        'peran' => $mIdx === 0 ? 'ketua_regu' : 'anggota',
+                    ]);
+                }
+            }
+        }
+
+        // 6. Riwayat Pelaksanaan & Presensi Ronda Aktual (PatrolExecution & PatrolExecutionMember)
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $executions = [
+            [
+                'hari_ke' => 1,
+                'tanggal' => $startOfWeek->copy()->format('Y-m-d'),
+                'status' => 'selesai',
+                'laporan_kejadian' => 'Patroli malam berlangsung aman kondusif. Portal gang ditutup pukul 23:00 WIB.',
+            ],
+            [
+                'hari_ke' => 2,
+                'tanggal' => $startOfWeek->copy()->addDay()->format('Y-m-d'),
+                'status' => 'selesai',
+                'laporan_kejadian' => 'Pemeriksaan rutin area blok A dan B aman terkendali, cuaca cerah berawan.',
+            ],
+            [
+                'hari_ke' => 3,
+                'tanggal' => $startOfWeek->copy()->addDays(2)->format('Y-m-d'),
+                'status' => 'selesai',
+                'laporan_kejadian' => 'Situasi kamtibmas kondusif, pencatatan tamu menginap berjalan tertib.',
+            ],
+            [
+                'hari_ke' => 4,
+                'tanggal' => $startOfWeek->copy()->addDays(3)->format('Y-m-d'),
+                'status' => 'berlangsung',
+                'laporan_kejadian' => 'Patroli malam sedang berlangsung, pos ronda aktif.',
+            ],
+        ];
+
+        foreach ($executions as $execData) {
+            $targetSchedule = $scheduleModels[$execData['hari_ke']] ?? null;
+            if (!$targetSchedule) {
+                continue;
+            }
+
+            $execution = PatrolExecution::firstOrCreate(
+                ['tanggal' => $execData['tanggal']],
+                [
+                    'patrol_schedule_id' => $targetSchedule->id,
+                    'status' => $execData['status'],
+                    'laporan_kejadian' => $execData['laporan_kejadian'],
+                ]
+            );
+
+            if ($residents->isNotEmpty() && $execution->members()->count() === 0) {
+                $schedMembers = $targetSchedule->members()->with('resident')->get();
+                foreach ($schedMembers as $mIdx => $sMember) {
+                    $statusKehadiran = $execution->status === 'selesai' ? ($mIdx === 2 ? 'izin' : 'hadir') : 'hadir';
+                    PatrolExecutionMember::firstOrCreate([
+                        'patrol_execution_id' => $execution->id,
+                        'resident_id' => $sMember->resident_id,
+                    ], [
+                        'status_kehadiran' => $statusKehadiran,
+                        'waktu_absen' => $statusKehadiran === 'hadir' ? Carbon::parse($execution->tanggal)->setTime(22, 10 + ($mIdx * 5)) : null,
                         'is_pengganti' => false,
+                        'keterangan' => $statusKehadiran === 'izin' ? 'Izin dinas luar kota' : null,
                     ]);
                 }
             }

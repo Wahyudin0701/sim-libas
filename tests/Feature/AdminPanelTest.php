@@ -3,7 +3,14 @@
 namespace Tests\Feature;
 
 use App\Filament\Widgets\StatsOverview;
+use App\Models\FeeType;
 use App\Models\Household;
+use App\Models\Invoice;
+use App\Models\PatrolExecution;
+use App\Models\PatrolExecutionMember;
+use App\Models\PatrolMember;
+use App\Models\PatrolSchedule;
+use App\Models\Payment;
 use App\Models\Resident;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -992,16 +999,24 @@ class AdminPanelTest extends TestCase
         $filteredResponse->assertSee('value="permohonan"', false);
 
         // 2. Uji komponen Livewire ListLetters
+        $this->assertEquals('diajukan', $letter->fresh()->status);
+
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
             ->assertSee('LAYANAN ADMINISTRASI RT 15')
             ->assertSee($letter->keperluan)
-            // Uji modal detail
+            // Uji modal detail: status otomatis berubah menjadi 'diperiksa' dan diverifikasi_oleh tercatat
             ->call('openDetailLetter', $letter->id)
             ->assertSet('detailLetterModalOpen', true)
             ->call('closeDetailLetter')
-            ->assertSet('detailLetterModalOpen', false)
-            // Uji modal persetujuan surat
+            ->assertSet('detailLetterModalOpen', false);
+
+        $this->assertEquals('diperiksa', $letter->fresh()->status);
+        $this->assertEquals($ketuaRt->id, $letter->fresh()->diverifikasi_oleh);
+
+        // Uji modal persetujuan surat
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
             ->call('openApproveLetter', $letter->id)
             ->assertSet('approveLetterModalOpen', true)
             ->call('confirmApproveLetter')
@@ -1010,6 +1025,15 @@ class AdminPanelTest extends TestCase
         $this->assertEquals('disetujui', $letter->fresh()->status);
         $this->assertNotNull($letter->fresh()->nomor_surat);
         $this->assertNotNull($letter->fresh()->tanggal_disetujui);
+
+        // Uji bahwa status 'disetujui' bersifat terminal dan tidak berubah kembali saat modal detail dibuka
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openDetailLetter', $letter->id)
+            ->assertSet('detailLetterModalOpen', true)
+            ->call('closeDetailLetter');
+
+        $this->assertEquals('disetujui', $letter->fresh()->status);
 
         // 3. Uji penolakan surat
         $letterToReject = \App\Models\Letter::create([
@@ -1031,7 +1055,125 @@ class AdminPanelTest extends TestCase
         $this->assertEquals('ditolak', $letterToReject->fresh()->status);
         $this->assertEquals('Lampiran foto KK buram dan tidak terbaca jelas.', $letterToReject->fresh()->alasan_tolak);
 
-        // 4. Uji ekspor CSV
+        // Uji bahwa status 'ditolak' bersifat terminal dan tidak berubah saat modal detail dibuka
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openDetailLetter', $letterToReject->id)
+            ->assertSet('detailLetterModalOpen', true)
+            ->call('closeDetailLetter');
+
+        $this->assertEquals('ditolak', $letterToReject->fresh()->status);
+
+        // 4. Uji aturan form surat pengantar baru (status diajukan vs ditolak)
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openCreateLetter')
+            ->assertSet('letterModalOpen', true)
+            ->assertSet('form_status', 'diajukan')
+            // Buat dengan status diajukan (nomor surat dan catatan harus dinulledkan)
+            ->set('form_resident_id', $resident->id)
+            ->set('form_letter_type_id', $type->id)
+            ->set('form_keperluan', 'Permohonan surat pengantar baru via form modal')
+            ->set('form_nomor_surat', 'IGNORED_NOMOR')
+            ->set('form_catatan_pengurus', 'IGNORED_CATATAN')
+            ->call('saveLetter')
+            ->assertHasNoErrors()
+            ->assertSet('letterModalOpen', false);
+
+        $createdDiajukan = \App\Models\Letter::where('keperluan', 'Permohonan surat pengantar baru via form modal')->first();
+        $this->assertNotNull($createdDiajukan);
+        $this->assertEquals('diajukan', $createdDiajukan->status);
+        $this->assertNull($createdDiajukan->nomor_surat);
+        $this->assertNull($createdDiajukan->catatan_pengurus);
+
+        // Buat dengan status diperiksa (nomor surat dan catatan harus dinulledkan, verifikator tercatat)
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openCreateLetter')
+            ->set('form_resident_id', $resident->id)
+            ->set('form_letter_type_id', $type->id)
+            ->set('form_keperluan', 'Permohonan surat pengantar berstatus diperiksa via modal')
+            ->set('form_status', 'diperiksa')
+            ->set('form_nomor_surat', 'IGNORED_NOMOR_DIPERIKSA')
+            ->set('form_catatan_pengurus', 'IGNORED_CATATAN_DIPERIKSA')
+            ->call('saveLetter')
+            ->assertHasNoErrors()
+            ->assertSet('letterModalOpen', false);
+
+        $createdDiperiksa = \App\Models\Letter::where('keperluan', 'Permohonan surat pengantar berstatus diperiksa via modal')->first();
+        $this->assertNotNull($createdDiperiksa);
+        $this->assertEquals('diperiksa', $createdDiperiksa->status);
+        $this->assertNull($createdDiperiksa->nomor_surat);
+        $this->assertNull($createdDiperiksa->catatan_pengurus);
+        $this->assertEquals($ketuaRt->id, $createdDiperiksa->diverifikasi_oleh);
+
+        // Buat dengan status disetujui tanpa nomor surat -> error wajib diisi
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openCreateLetter')
+            ->set('form_resident_id', $resident->id)
+            ->set('form_letter_type_id', $type->id)
+            ->set('form_keperluan', 'Permohonan surat langsung disetujui tanpa nomor surat')
+            ->set('form_status', 'disetujui')
+            ->set('form_nomor_surat', '')
+            ->call('saveLetter')
+            ->assertHasErrors(['form_nomor_surat'])
+            // Isi nomor resmi surat -> sukses tersimpan
+            ->set('form_nomor_surat', '470/015/RT15/X/2026')
+            ->call('saveLetter')
+            ->assertHasNoErrors()
+            ->assertSet('letterModalOpen', false);
+
+        $createdDisetujui = \App\Models\Letter::where('keperluan', 'Permohonan surat langsung disetujui tanpa nomor surat')->first();
+        $this->assertNotNull($createdDisetujui);
+        $this->assertEquals('disetujui', $createdDisetujui->status);
+        $this->assertEquals('470/015/RT15/X/2026', $createdDisetujui->nomor_surat);
+        $this->assertNotNull($createdDisetujui->tanggal_disetujui);
+        $this->assertEquals($ketuaRt->id, $createdDisetujui->disetujui_oleh);
+
+        // Buat dengan status ditolak tanpa catatan -> error
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openCreateLetter')
+            ->set('form_resident_id', $resident->id)
+            ->set('form_letter_type_id', $type->id)
+            ->set('form_keperluan', 'Permohonan surat ditolak langsung dari form')
+            ->set('form_status', 'ditolak')
+            ->set('form_catatan_pengurus', '')
+            ->call('saveLetter')
+            ->assertHasErrors(['form_catatan_pengurus'])
+            // Isi catatan penolakan -> berhasil disimpan sebagai alasan_tolak & tanpa nomor surat
+            ->set('form_catatan_pengurus', 'Berkas KTP tidak valid')
+            ->set('form_nomor_surat', 'TIDAK_BOLEH_ADA_NOMOR')
+            ->call('saveLetter')
+            ->assertHasNoErrors();
+
+        $createdDitolak = \App\Models\Letter::where('keperluan', 'Permohonan surat ditolak langsung dari form')->first();
+        $this->assertNotNull($createdDitolak);
+        $this->assertEquals('ditolak', $createdDitolak->status);
+        $this->assertNull($createdDitolak->nomor_surat);
+        $this->assertEquals('Berkas KTP tidak valid', $createdDitolak->alasan_tolak);
+
+        // 5. Uji autocomplete & validasi keberadaan warga pada form surat baru
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
+            ->call('openCreateLetter')
+            // Coba submit nama warga fiktif / tidak terdaftar
+            ->set('form_resident_query', 'Warga Fiktif 9999')
+            ->set('form_letter_type_id', $type->id)
+            ->set('form_keperluan', 'Uji validasi warga tidak terdaftar')
+            ->call('saveLetter')
+            ->assertHasErrors(['form_resident_id' => 'Warga tidak ditemukan. Silakan pilih warga yang terdaftar.'])
+            // Ketik ID Warga valid secara langsung
+            ->set('form_resident_query', $resident->id_warga)
+            ->call('saveLetter')
+            ->assertHasNoErrors();
+
+        $createdViaQuery = \App\Models\Letter::where('keperluan', 'Uji validasi warga tidak terdaftar')->first();
+        $this->assertNotNull($createdViaQuery);
+        $this->assertEquals($resident->id, $createdViaQuery->resident_id);
+
+        // 6. Uji ekspor CSV
         \Livewire\Livewire::actingAs($ketuaRt)
             ->test(\App\Filament\Resources\Letters\Pages\ListLetters::class)
             ->call('export')
@@ -1324,6 +1466,137 @@ class AdminPanelTest extends TestCase
     }
 
     /**
+     * Pengujian konsistensi alur Validasi Pembayaran dengan Pengaduan Masyarakat:
+     * - Record pending ditandai oranye muda
+     * - Aksi daftar hanya Lihat Detail (ikon mata)
+     * - Popup detail memuat informasi lengkap & catatan tersimpan
+     * - Catatan wajib diisi saat Setujui & Tolak (ditolak jika kosong/spasi saja)
+     * - Pembayaran valid/ditolak tidak dapat divalidasi ulang
+     * - Tombol Hapus hanya untuk status final (valid/ditolak), pending dicegah untuk dihapus
+     * - Konsistensi kas/tagihan saat pembayaran dihapus
+     */
+    public function test_payment_validation_workflow_consistency_with_complaints(): void
+    {
+        $bendahara = User::where('email', 'bendahara@simlibas.com')->first();
+        $this->assertNotNull($bendahara);
+
+        // Buat invoice & payment dummy untuk pengujian
+        $invoice = \App\Models\Invoice::firstOrCreate(
+            [
+                'household_id' => \App\Models\Household::first()->id,
+                'fee_type_id' => \App\Models\FeeType::first()->id,
+                'periode_bulan' => 12,
+                'periode_tahun' => 2030,
+            ],
+            [
+                'jumlah' => 50000,
+                'status' => 'belum_bayar',
+                'tanggal_jatuh_tempo' => now()->addDays(7),
+            ]
+        );
+        $invoice->update(['status' => 'belum_bayar']);
+
+        $payment = \App\Models\Payment::create([
+            'invoice_id' => $invoice->id,
+            'jumlah' => 50000,
+            'metode' => 'transfer',
+            'tanggal_bayar' => now(),
+            'status' => 'pending',
+            'catatan' => 'Transfer via Mandiri dari warga',
+        ]);
+
+        // 1. Tampilan daftar: pastikan record pending ada class border-l-amber-500 atau bg-amber-50/70
+        $response = $this->actingAs($bendahara)->get('/admin/payments');
+        $response->assertStatus(200);
+        $response->assertSee('border-l-amber-500');
+        $response->assertSee('Lihat Detail & Validasi Pembayaran', false);
+
+        // 2. Cegah penghapusan status pending
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('deletePayment', $payment->id);
+
+        $this->assertNull($payment->fresh()->deleted_at);
+        $this->assertEquals('pending', $payment->fresh()->status);
+
+        // 3. Validasi catatan wajib saat approve (spasi saja atau kosong harus ditolak)
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('openDetail', $payment->id)
+            ->assertSet('validateModalOpen', true)
+            ->call('approvePayment', $payment->id, '   ');
+
+        $this->assertEquals('pending', $payment->fresh()->status);
+        $this->assertEquals('belum_bayar', $invoice->fresh()->status);
+
+        // 4. Validasi catatan wajib saat reject (spasi saja atau kosong harus ditolak)
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('rejectPayment', $payment->id, '');
+
+        $this->assertEquals('pending', $payment->fresh()->status);
+        $this->assertEquals('belum_bayar', $invoice->fresh()->status);
+
+        // 5. Sukses approve dengan catatan
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('approvePayment', $payment->id, 'Bukti transfer valid dan dana telah masuk ke rekening RT 15.')
+            ->assertSet('selectedPayment.status', 'valid')
+            ->assertSet('selectedPayment.catatan_validasi', 'Bukti transfer valid dan dana telah masuk ke rekening RT 15.');
+
+        $payment = $payment->fresh();
+        $this->assertEquals('valid', $payment->status);
+        $this->assertEquals('Bukti transfer valid dan dana telah masuk ke rekening RT 15.', $payment->catatan_validasi);
+        $this->assertEquals($bendahara->id, $payment->divalidasi_oleh);
+        $this->assertNotNull($payment->tanggal_validasi);
+        $this->assertEquals('lunas', $invoice->fresh()->status);
+
+        // 6. Cegah validasi ulang pada status yang sudah valid
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('approvePayment', $payment->id, 'Coba approve ulang')
+            ->call('rejectPayment', $payment->id, 'Coba reject pembayaran valid');
+
+        $this->assertEquals('valid', $payment->fresh()->status);
+
+        // 7. Hapus pembayaran berstatus valid -> invoice revert ke belum_bayar jika tidak ada pembayaran valid lain
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('deletePayment', $payment->id)
+            ->assertSet('validateModalOpen', false)
+            ->assertSet('selectedPayment', null);
+
+        $this->assertNotNull($payment->fresh()->deleted_at);
+        $this->assertEquals('belum_bayar', $invoice->fresh()->status);
+
+        // 8. Uji reject payment dengan catatan
+        $payment2 = \App\Models\Payment::create([
+            'invoice_id' => $invoice->id,
+            'jumlah' => 50000,
+            'metode' => 'transfer',
+            'tanggal_bayar' => now(),
+            'status' => 'pending',
+            'catatan' => 'Bukti buram',
+        ]);
+
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('rejectPayment', $payment2->id, 'Foto struk buram dan nominal tidak terbaca. Mohon upload ulang.');
+
+        $payment2 = $payment2->fresh();
+        $this->assertEquals('ditolak', $payment2->status);
+        $this->assertEquals('Foto struk buram dan nominal tidak terbaca. Mohon upload ulang.', $payment2->catatan_validasi);
+        $this->assertEquals('belum_bayar', $invoice->fresh()->status);
+
+        // 9. Hapus pembayaran berstatus ditolak
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\Payments\Pages\ListPayments::class)
+            ->call('deletePayment', $payment2->id);
+
+        $this->assertNotNull($payment2->fresh()->deleted_at);
+    }
+
+    /**
      * Pengujian fitur Master Jenis Iuran: Header Deep Navy, search bar SSR & reset filter, toggle active, modal CRUD, dan CSV export.
      */
     public function test_fee_types_list_search_and_management(): void
@@ -1375,6 +1648,16 @@ class AdminPanelTest extends TestCase
             ->call('toggleActive', $createdFt->id);
 
         $this->assertFalse((bool) $createdFt->fresh()->is_active);
+
+        // Uji Detail Modal
+        \Livewire\Livewire::actingAs($bendahara)
+            ->test(\App\Filament\Resources\FeeTypes\Pages\ListFeeTypes::class)
+            ->call('openDetail', $createdFt->id)
+            ->assertSet('detailModalOpen', true)
+            ->assertSet('selectedFeeType.id', $createdFt->id)
+            ->call('closeDetail')
+            ->assertSet('detailModalOpen', false)
+            ->assertSet('selectedFeeType', null);
 
         // Uji Ekspor CSV
         \Livewire\Livewire::actingAs($bendahara)
@@ -1559,6 +1842,111 @@ class AdminPanelTest extends TestCase
     }
 
     /**
+     * Pengujian Alur Status Pengaduan Warga:
+     * - Diterima -> Diproses otomatis saat detail dibuka
+     * - Selesai & Ditolak melalui aksi detail modal
+     * - Hapus data pengaduan dengan soft delete
+     */
+    public function test_complaint_status_transition_and_actions_workflow(): void
+    {
+        $ketuaRt = User::where('email', 'rt@simlibas.com')->first();
+        $citizen = User::where('email', 'budi@simlibas.com')->first() ?? User::factory()->create();
+
+        // 1. Buat pengaduan baru berstatus 'diterima'
+        $complaint = \App\Models\Complaint::create([
+            'user_id' => $citizen->id,
+            'kategori' => 'kebersihan',
+            'judul' => 'Pengujian Alur Status Pengaduan',
+            'deskripsi' => 'Pengaduan uji coba otomatisasi transisi status',
+            'lokasi' => 'Blok C No. 10',
+            'status' => 'diterima',
+        ]);
+
+        $this->assertEquals('diterima', $complaint->status);
+
+        // 2. Buka detail pengaduan: status harus otomatis berubah menjadi 'diproses'
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint->id)
+            ->assertSet('detailModalOpen', true);
+
+        $complaint->refresh();
+        $this->assertEquals('diproses', $complaint->status);
+
+        // 3. Pengurus mencoba menyelesaikan pengaduan tanpa catatan (wajib diisi): status tetap 'diproses'
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint->id)
+            ->call('resolveComplaint', $complaint->id, '   ');
+
+        $complaint->refresh();
+        $this->assertEquals('diproses', $complaint->status);
+
+        // 3b. Pengurus menyelesaikan pengaduan dengan catatan valid (Selesai)
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint->id)
+            ->call('resolveComplaint', $complaint->id, 'Sampah sudah diangkut oleh tim kebersihan');
+
+        $complaint->refresh();
+        $this->assertEquals('selesai', $complaint->status);
+        $this->assertNotNull($complaint->tanggal_selesai);
+        $this->assertEquals('Sampah sudah diangkut oleh tim kebersihan', $complaint->catatan_penanganan);
+
+        // 4. Buka kembali detail status 'selesai': status TIDAK berubah
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint->id);
+
+        $complaint->refresh();
+        $this->assertEquals('selesai', $complaint->status);
+
+        // 5. Buat pengaduan kedua untuk pengujian tolak dan hapus
+        $complaint2 = \App\Models\Complaint::create([
+            'user_id' => $citizen->id,
+            'kategori' => 'kebisingan',
+            'judul' => 'Pengaduan Musik Keras',
+            'deskripsi' => 'Musik keras malam hari',
+            'lokasi' => 'Blok D No. 5',
+            'status' => 'diterima',
+        ]);
+
+        // Buka detail -> beralih ke 'diproses'
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint2->id);
+
+        $complaint2->refresh();
+        $this->assertEquals('diproses', $complaint2->status);
+
+        // Tolak dengan catatan kosong: status tetap 'diproses'
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint2->id)
+            ->call('rejectComplaint', $complaint2->id, '');
+
+        $complaint2->refresh();
+        $this->assertEquals('diproses', $complaint2->status);
+
+        // Tolak dengan catatan valid
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('openDetail', $complaint2->id)
+            ->call('rejectComplaint', $complaint2->id, 'Laporan tidak sesuai fakta lapangan');
+
+        $complaint2->refresh();
+        $this->assertEquals('ditolak', $complaint2->status);
+        $this->assertEquals('Laporan tidak sesuai fakta lapangan', $complaint2->catatan_penanganan);
+
+        // Hapus pengaduan
+        \Livewire\Livewire::actingAs($ketuaRt)
+            ->test(\App\Filament\Resources\Complaints\Pages\ListComplaints::class)
+            ->call('deleteComplaint', $complaint2->id);
+
+        $this->assertSoftDeleted('complaints', ['id' => $complaint2->id]);
+    }
+
+    /**
      * Pengujian Agenda Kegiatan: Header Deep Navy, search bar SSR & dynamic reset, tambah agenda, dan CSV export.
      */
     public function test_events_list_stats_search_and_management(): void
@@ -1689,7 +2077,6 @@ class AdminPanelTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('KEAMANAN LINGKUNGAN RT 15');
         $response->assertSee('Jadwal Ronda Malam');
-        $response->assertSee('Tambah Jadwal Ronda');
         $response->assertSee('name="search"', false);
         $response->assertDontSee('Reset Filter');
 
@@ -1699,41 +2086,138 @@ class AdminPanelTest extends TestCase
         $filteredResponse->assertSee('Reset Filter');
         $filteredResponse->assertSee('value="garuda"', false);
 
-        // 2. Uji Komponen Livewire ListPatrolSchedules oleh Koordinator Keamanan
-        \Livewire\Livewire::actingAs($koorKeamanan)
-            ->test(\App\Filament\Resources\PatrolSchedules\Pages\ListPatrolSchedules::class)
-            ->call('openCreate')
-            ->assertSet('formModalOpen', true)
-            ->set('form_tanggal', now()->addDays(1)->format('Y-m-d'))
-            ->set('form_regu', 'Regu 4 (Rajawali)')
-            ->set('form_waktu_mulai', '23:00')
+        // 2. Uji Komponen Livewire: Master Jadwal Mingguan Tetap Tepat 7 Baris (Senin s.d. Minggu)
+        $livewireTest = \Livewire\Livewire::actingAs($koorKeamanan)
+            ->test(\App\Filament\Resources\PatrolSchedules\Pages\ListPatrolSchedules::class);
+
+        $schedules = $livewireTest->viewData('schedules');
+        $this->assertCount(7, $schedules);
+        $this->assertEquals(1, $schedules[0]->hari_ke); // Senin
+        $this->assertEquals(2, $schedules[1]->hari_ke); // Selasa
+        $this->assertEquals(3, $schedules[2]->hari_ke); // Rabu
+        $this->assertEquals(4, $schedules[3]->hari_ke); // Kamis
+        $this->assertEquals(5, $schedules[4]->hari_ke); // Jumat
+        $this->assertEquals(6, $schedules[5]->hari_ke); // Sabtu
+        $this->assertEquals(7, $schedules[6]->hari_ke); // Minggu
+        $this->assertEquals((int) now()->dayOfWeekIso, $livewireTest->viewData('todayHariKe'));
+
+        // 3. Uji Pengelolaan Master Jadwal Ronda (Edit Master Jadwal Hari Senin)
+        $mondaySchedule = $schedules[0];
+        $livewireTest
+            ->call('openEditMaster', $mondaySchedule->id)
+            ->assertSet('editMasterModalOpen', true)
+            ->assertSet('form_hari_ke', 1)
+            ->assertSet('form_nama_hari', 'Senin')
+            ->set('form_regu', 'Regu Garuda Utama RT 15')
+            ->set('form_waktu_mulai', '22:00')
             ->set('form_waktu_selesai', '04:00')
-            ->set('form_catatan', 'Piket pos ronda timur dan patroli portal gang.')
+            ->set('form_pos_lokasi', 'Pos Utama Blok A')
+            ->set('form_catatan', 'Piket pos ronda dan patroli portal gang.')
             ->set('form_resident_ids', [(string) $resident->id])
-            ->call('saveSchedule')
-            ->assertSet('formModalOpen', false);
+            ->set('form_ketua_resident_id', $resident->id)
+            ->call('saveMasterSchedule')
+            ->assertSet('editMasterModalOpen', false)
+            ->assertHasNoErrors();
 
         $this->assertDatabaseHas('patrol_schedules', [
-            'regu' => 'Regu 4 (Rajawali)',
+            'id' => $mondaySchedule->id,
+            'hari_ke' => 1,
+            'regu' => 'Regu Garuda Utama RT 15',
+            'pos_lokasi' => 'Pos Utama Blok A',
         ]);
 
-        $schedule = \App\Models\PatrolSchedule::where('regu', 'Regu 4 (Rajawali)')->first();
         $this->assertDatabaseHas('patrol_members', [
-            'patrol_schedule_id' => $schedule->id,
+            'patrol_schedule_id' => $mondaySchedule->id,
             'resident_id' => $resident->id,
+            'peran' => 'ketua_regu',
         ]);
 
-        // Uji Detail Modal
-        \Livewire\Livewire::actingAs($koorKeamanan)
-            ->test(\App\Filament\Resources\PatrolSchedules\Pages\ListPatrolSchedules::class)
-            ->call('openDetail', $schedule->id)
-            ->assertSet('detailModalOpen', true)
-            ->call('closeDetail')
-            ->assertSet('detailModalOpen', false);
+        // 4. Uji Presensi & Laporan Pelaksanaan Ronda Aktual Bertanggal
+        $assignedResIds = [$resident->id];
+        $replacementResident = Resident::whereNotIn('id', $assignedResIds)->first();
+        $this->assertNotNull($replacementResident);
 
-        // Uji Ekspor CSV
-        \Livewire\Livewire::actingAs($koorKeamanan)
-            ->test(\App\Filament\Resources\PatrolSchedules\Pages\ListPatrolSchedules::class)
+        $livewireTest
+            ->call('openPresensi', $mondaySchedule->id, '2026-10-26')
+            ->assertSet('detailModalOpen', true)
+            ->assertSet('selectedScheduleId', $mondaySchedule->id)
+            ->assertSet('detail_tanggal', '2026-10-26')
+            // Uji Tandai Semua Hadir
+            ->call('markAllHadir')
+            // Ubah personil menjadi izin dengan keterangan
+            ->call('setMemberStatus', 0, 'izin')
+            ->set('presensi_members.0.keterangan', 'Izin dinas luar kota')
+            // Tambah personil pengganti
+            ->set('new_resident_id', $replacementResident->id)
+            ->set('new_status_kehadiran', 'hadir')
+            ->set('new_is_pengganti', true)
+            ->set('new_menggantikan_resident_id', $resident->id)
+            ->set('new_keterangan', 'Menggantikan dinas luar kota')
+            ->call('addMemberToSchedule')
+            // Set status pelaksanaan selesai dan simpan laporan kejadian
+            ->set('detail_status', 'selesai')
+            ->set('detail_laporan_kejadian', 'Patroli malam berjalan lancar dan aman terkendali.')
+            ->call('savePresensiAndReport')
+            ->assertSet('detailModalOpen', false)
+            ->assertHasNoErrors();
+
+        // Verifikasi hasil tersimpan di database patrol_executions dan patrol_execution_members
+        $exec = PatrolExecution::where('patrol_schedule_id', $mondaySchedule->id)
+            ->whereDate('tanggal', '2026-10-26')
+            ->first();
+        $this->assertNotNull($exec);
+        $this->assertEquals('selesai', $exec->status);
+        $this->assertEquals('Patroli malam berjalan lancar dan aman terkendali.', $exec->laporan_kejadian);
+
+        $this->assertDatabaseHas('patrol_execution_members', [
+            'patrol_execution_id' => $exec->id,
+            'resident_id' => $replacementResident->id,
+            'is_pengganti' => true,
+            'status_kehadiran' => 'hadir',
+        ]);
+
+        // 5. Uji Pembatalan Jadwal (status dibatalkan wajib sertakan alasan)
+        $livewireTest
+            ->call('openPresensi', $mondaySchedule->id, '2026-11-02')
+            ->set('detail_status', 'dibatalkan')
+            ->set('detail_alasan_batal', '')
+            ->call('savePresensiAndReport')
+            ->assertHasErrors(['detail_alasan_batal'])
+            ->set('detail_alasan_batal', 'Cuaca hujan badai petir lebat')
+            ->call('savePresensiAndReport')
+            ->assertSet('detailModalOpen', false)
+            ->assertHasNoErrors();
+
+        $cancelledExec = PatrolExecution::where('patrol_schedule_id', $mondaySchedule->id)
+            ->whereDate('tanggal', '2026-11-02')
+            ->first();
+        $this->assertNotNull($cancelledExec);
+        $this->assertEquals('dibatalkan', $cancelledExec->status);
+        $this->assertEquals('Cuaca hujan badai petir lebat', $cancelledExec->alasan_batal);
+
+        // 6. Uji Integritas Riwayat: Perubahan konfigurasi master tidak merusak riwayat pelaksanaan sebelumnya
+        $livewireTest
+            ->call('openEditMaster', $mondaySchedule->id)
+            ->set('form_regu', 'Regu Garuda Generasi 2')
+            ->call('saveMasterSchedule')
+            ->assertHasNoErrors();
+
+        // Pastikan riwayat pelaksanaan terdahulu tetap ada dan tidak berubah
+        $pastExec = PatrolExecution::where('patrol_schedule_id', $mondaySchedule->id)
+            ->whereDate('tanggal', '2026-10-26')
+            ->first();
+        $this->assertNotNull($pastExec);
+        $this->assertEquals('selesai', $pastExec->status);
+
+        // 7. Uji Riwayat Modal
+        $livewireTest
+            ->call('openHistory', $mondaySchedule->id)
+            ->assertSet('historyModalOpen', true)
+            ->call('closeHistory')
+            ->assertSet('historyModalOpen', false);
+
+        // 8. Uji Ekspor CSV Master Jadwal 7 Hari
+        $livewireTest
             ->call('export')
             ->assertFileDownloaded();
     }

@@ -33,6 +33,7 @@ class ListComplaints extends ListRecords
     // State Modal Detail
     public bool $detailModalOpen = false;
     public ?Complaint $selectedComplaint = null;
+    public string $detailCatatan = '';
 
     // State Modal Tangani / Update Status
     public bool $handlingModalOpen = false;
@@ -105,16 +106,94 @@ class ListComplaints extends ListRecords
 
     public function openDetail(int $id): void
     {
-        $this->selectedComplaint = Complaint::with(['pelapor', 'penanggungJawab'])->find($id);
-        if ($this->selectedComplaint) {
-            $this->detailModalOpen = true;
+        $complaint = Complaint::with(['pelapor', 'penanggungJawab'])->findOrFail($id);
+
+        // Jika status masih 'diterima', otomatis beralih menjadi 'diproses' saat detail dibuka
+        if ($complaint->status === 'diterima') {
+            $complaint->update([
+                'status' => 'diproses',
+                'penanggung_jawab_id' => $complaint->penanggung_jawab_id ?? Auth::id(),
+            ]);
+            $complaint->refresh();
+
+            // Kirim notifikasi sistem ke warga pelapor
+            NotificationService::notifyComplaintUpdated($complaint);
         }
+
+        $this->selectedComplaint = $complaint;
+        $this->detailCatatan = (string) ($complaint->catatan_penanganan ?? '');
+        $this->detailModalOpen = true;
     }
 
     public function closeDetail(): void
     {
         $this->detailModalOpen = false;
         $this->selectedComplaint = null;
+        $this->detailCatatan = '';
+    }
+
+    public function resolveComplaint(int $id, ?string $catatan = null): void
+    {
+        $finalCatatan = trim((string) ($catatan ?? $this->detailCatatan));
+
+        if (empty($finalCatatan)) {
+            Notification::make()
+                ->title('Catatan Wajib Diisi')
+                ->body('Mohon sertakan catatan tindak lanjut sebelum menyelesaikan pengaduan.')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $complaint->status = 'selesai';
+        $complaint->tanggal_selesai = now();
+        $complaint->penanggung_jawab_id = $complaint->penanggung_jawab_id ?? Auth::id();
+        $complaint->catatan_penanganan = $finalCatatan;
+        $complaint->save();
+
+        NotificationService::notifyComplaintUpdated($complaint);
+
+        Notification::make()
+            ->title('Pengaduan Diselesaikan')
+            ->body("Pengaduan '{$complaint->judul}' berhasil ditandai selesai.")
+            ->success()
+            ->send();
+
+        $this->selectedComplaint = $complaint->fresh(['pelapor', 'penanggungJawab']);
+        $this->detailCatatan = $finalCatatan;
+    }
+
+    public function rejectComplaint(int $id, ?string $catatan = null): void
+    {
+        $finalCatatan = trim((string) ($catatan ?? $this->detailCatatan));
+
+        if (empty($finalCatatan)) {
+            Notification::make()
+                ->title('Alasan Wajib Diisi')
+                ->body('Mohon sertakan alasan penolakan sebelum menolak pengaduan.')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $complaint->status = 'ditolak';
+        $complaint->tanggal_selesai = null;
+        $complaint->penanggung_jawab_id = $complaint->penanggung_jawab_id ?? Auth::id();
+        $complaint->catatan_penanganan = $finalCatatan;
+        $complaint->save();
+
+        NotificationService::notifyComplaintUpdated($complaint);
+
+        Notification::make()
+            ->title('Pengaduan Ditolak')
+            ->body("Pengaduan '{$complaint->judul}' telah ditolak.")
+            ->warning()
+            ->send();
+
+        $this->selectedComplaint = $complaint->fresh(['pelapor', 'penanggungJawab']);
+        $this->detailCatatan = $finalCatatan;
     }
 
     public function openHandling(int $id): void
@@ -171,6 +250,10 @@ class ListComplaints extends ListRecords
     {
         $item = Complaint::findOrFail($id);
         $item->delete();
+
+        if ($this->selectedComplaint && $this->selectedComplaint->id === $id) {
+            $this->closeDetail();
+        }
 
         Notification::make()
             ->title('Pengaduan Berhasil Dihapus')

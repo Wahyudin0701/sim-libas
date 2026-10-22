@@ -51,7 +51,7 @@
                     type="button" 
                     @click="formModalOpen = true"
                     wire:click="openEdit" 
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0B3A85] hover:bg-[#07275E] text-white text-xs font-bold transition-all duration-150 shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl bg-[#0B3A85] hover:bg-[#07275E] text-white text-xs font-bold transition-all duration-150 shadow-xs hover:shadow-md cursor-pointer"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -64,65 +64,65 @@
         {{-- ====================================================================
              2. KPI OVERVIEW CARDS (4 KARTU STATISTIK & STATUS SISTEM)
              ==================================================================== --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             {{-- Kartu 1: Wilayah Administrasi --}}
-            <div class="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#0B3A85]/10 text-[#0B3A85] flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#0B3A85]/10 text-[#0B3A85] flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Wilayah Administrasi</span>
-                    <h4 class="text-sm font-extrabold text-[#0F1F3D] truncate">{{ $primarySetting->nama_rt ?? 'RT 15 Pematang Sulur' }}</h4>
-                    <p class="text-[10.5px] text-slate-500 truncate mt-0.5">Kel. {{ $primarySetting->kelurahan ?? 'Pematang Sulur' }}, {{ $primarySetting->kecamatan ?? 'Telanaipura' }}</p>
+                    <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Wilayah Administrasi</span>
+                    <h4 class="text-xs sm:text-sm font-extrabold text-[#0F1F3D] truncate">{{ $primarySetting->nama_rt ?? 'RT 15 Pematang Sulur' }}</h4>
+                    <p class="text-[10px] sm:text-[10.5px] text-slate-500 truncate mt-0.5">Kel. {{ $primarySetting->kelurahan ?? 'Pematang Sulur' }}</p>
                 </div>
             </div>
 
             {{-- Kartu 2: Ketua RT & Pimpinan --}}
-            <div class="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#1B7A3A]/10 text-[#1B7A3A] flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#1B7A3A]/10 text-[#1B7A3A] flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Ketua RT 15</span>
-                    <h4 class="text-sm font-extrabold text-[#0F1F3D] truncate">{{ $primarySetting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman, S.E.' }}</h4>
-                    <p class="text-[10.5px] text-emerald-600 font-semibold truncate mt-0.5">Pimpinan Masa Bakti Aktif</p>
+                    <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Ketua RT 15</span>
+                    <h4 class="text-xs sm:text-sm font-extrabold text-[#0F1F3D] truncate">{{ $primarySetting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman, S.E.' }}</h4>
+                    <p class="text-[10px] sm:text-[10.5px] text-emerald-600 font-semibold truncate mt-0.5">Pimpinan Aktif</p>
                 </div>
             </div>
 
             {{-- Kartu 3: Kontak Resmi --}}
-            <div class="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#19A7E8]/10 text-[#19A7E8] flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#19A7E8]/10 text-[#19A7E8] flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Kontak & WhatsApp</span>
-                    <h4 class="text-sm font-mono font-bold text-[#0F1F3D] truncate">{{ $primarySetting->telepon ?? '0812-7400-1515' }}</h4>
-                    <p class="text-[10.5px] text-slate-500 truncate mt-0.5">{{ $primarySetting->email ?? 'rt15pematangsulur@gmail.com' }}</p>
+                    <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Kontak & WhatsApp</span>
+                    <h4 class="text-xs sm:text-sm font-mono font-bold text-[#0F1F3D] truncate">{{ $primarySetting->telepon ?? '0812-7400-1515' }}</h4>
+                    <p class="text-[10px] sm:text-[10.5px] text-slate-500 truncate mt-0.5">WhatsApp RT</p>
                 </div>
             </div>
 
             {{-- Kartu 4: Legalitas Persuratan --}}
-            <div class="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-[#F2A900]/10 text-[#B45309] flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-xl p-3 sm:p-3.5 border border-[#E2E8F0] shadow-2xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#F2A900]/10 text-[#B45309] flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Legalitas Persuratan</span>
-                    <h4 class="text-sm font-extrabold text-[#0F1F3D] truncate">Format Surat Digital</h4>
-                    <div class="flex items-center gap-1.5 mt-0.5">
-                        <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9.5px] font-bold {{ $primarySetting->tanda_tangan_path ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' }}">
+                    <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">Legalitas Persuratan</span>
+                    <h4 class="text-xs sm:text-sm font-extrabold text-[#0F1F3D] truncate">Format Surat</h4>
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <span class="inline-flex items-center px-1 sm:px-1.5 py-0.2 rounded text-[8.5px] sm:text-[9.5px] font-bold {{ $primarySetting->tanda_tangan_path ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' }}">
                             TTD {{ $primarySetting->tanda_tangan_path ? '✓' : '✗' }}
                         </span>
-                        <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9.5px] font-bold {{ $primarySetting->stempel_path ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' }}">
-                            Stempel {{ $primarySetting->stempel_path ? '✓' : '✗' }}
+                        <span class="inline-flex items-center px-1 sm:px-1.5 py-0.2 rounded text-[8.5px] sm:text-[9.5px] font-bold {{ $primarySetting->stempel_path ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' }}">
+                            Cap {{ $primarySetting->stempel_path ? '✓' : '✗' }}
                         </span>
                     </div>
                 </div>
@@ -132,19 +132,19 @@
         {{-- ====================================================================
              3. TABEL PENGATURAN SISTEM (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[1050px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[1050px] text-left border-collapse">
                     {{-- Header Tabel Deep Navy Standar SIM-LiBas --}}
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[220px] whitespace-nowrap">IDENTITAS WILAYAH RT</th>
-                            <th class="py-2.5 px-3 min-w-[180px] whitespace-nowrap">KETUA RT</th>
-                            <th class="py-2.5 px-3 min-w-[200px]">ALAMAT DOMISILI / SEKRETARIAT</th>
-                            <th class="py-2.5 px-3 min-w-[180px] whitespace-nowrap">NO. TELEPON / WA & EMAIL</th>
-                            <th class="py-2.5 px-3 min-w-[190px] whitespace-nowrap">FORMAT SURAT & LEGALITAS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[110px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-12 min-w-[48px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-3 sm:px-4 min-w-[140px] md:min-w-[220px]">IDENTITAS WILAYAH RT</th>
+                            <th class="py-2.5 px-3 sm:px-4 min-w-[130px] md:min-w-[180px]">KETUA RT</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[200px]">ALAMAT DOMISILI / SEKRETARIAT</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[180px] whitespace-nowrap">NO. TELEPON / WA & EMAIL</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 min-w-[190px] whitespace-nowrap">FORMAT SURAT & LEGALITAS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center w-16 sm:w-20 md:min-w-[110px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -152,34 +152,34 @@
                         @forelse($settings as $index => $item)
                             <tr class="hover:bg-[#F8FAFC] transition-colors">
                                 {{-- 1. NO --}}
-                                <td class="py-3 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $settings->firstItem() ? ($settings->firstItem() + $index) : ($index + 1) }}
                                 </td>
 
                                 {{-- 2. IDENTITAS WILAYAH RT --}}
-                                <td class="py-3 px-3 min-w-[220px]">
-                                    <div class="font-bold text-sm text-[#0F1F3D] hover:text-[#0B3A85] cursor-pointer transition-colors" wire:click="openDetail({{ $item->id }})">
+                                <td class="py-3 px-3 sm:px-4">
+                                    <div class="font-bold text-xs sm:text-sm text-[#0F1F3D] hover:text-[#0B3A85] cursor-pointer transition-colors" wire:click="openDetail({{ $item->id }})">
                                         {{ $item->nama_rt }}
                                     </div>
-                                    <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
+                                    <div class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
                                         <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         </svg>
                                         <span>Kel. {{ $item->kelurahan }}, Kec. {{ $item->kecamatan }}</span>
                                     </div>
-                                    <div class="text-[10px] text-slate-400 mt-0.5">
+                                    <div class="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5">
                                         {{ $item->kota }}, {{ $item->provinsi }} {{ $item->kode_pos ? "({$item->kode_pos})" : '' }}
                                     </div>
                                 </td>
 
                                 {{-- 3. KETUA RT --}}
-                                <td class="py-3 px-3 min-w-[180px]">
+                                <td class="py-3 px-3 sm:px-4">
                                     <div class="font-bold text-xs sm:text-[13px] text-slate-800">
                                         {{ $item->nama_ketua_rt }}
                                     </div>
                                     <div class="mt-1">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                             Pimpinan RT 15
                                         </span>
@@ -187,14 +187,14 @@
                                 </td>
 
                                 {{-- 4. ALAMAT SEKRETARIAT --}}
-                                <td class="py-3 px-3 min-w-[200px]">
+                                <td class="hidden md:table-cell py-3 px-3 min-w-[200px]">
                                     <div class="text-xs text-slate-700 leading-relaxed line-clamp-2" title="{{ $item->alamat }}">
                                         {{ $item->alamat ?: '-' }}
                                     </div>
                                 </td>
 
                                 {{-- 5. NO. TELEPON / WA & EMAIL (SELARAS DENGAN HALAMAN LAIN) --}}
-                                <td class="py-3 px-3 min-w-[180px] whitespace-nowrap">
+                                <td class="hidden md:table-cell py-3 px-3 min-w-[180px] whitespace-nowrap">
                                     @php
                                         $cleanWa = preg_replace('/[^0-9]/', '', (string) $item->telepon);
                                         if (str_starts_with($cleanWa, '0')) {
@@ -231,7 +231,7 @@
                                 </td>
 
                                 {{-- 6. FORMAT SURAT & LEGALITAS --}}
-                                <td class="py-3 px-3 min-w-[190px]">
+                                <td class="hidden md:table-cell py-3 px-3 min-w-[190px]">
                                     <div class="font-mono text-[11px] text-[#0B3A85] font-semibold bg-blue-50/70 border border-blue-100 px-2 py-0.5 rounded truncate max-w-[210px]" title="{{ $item->format_nomor_surat }}">
                                         {{ $item->format_nomor_surat }}
                                     </div>
@@ -261,8 +261,8 @@
                                 </td>
 
                                 {{-- 7. AKSI (LIHAT DETAIL & EDIT) --}}
-                                <td class="py-3 px-3 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1.5">
+                                <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5">
                                         {{-- 1. Lihat Detail (Mata #0B3A85) --}}
                                         <button 
                                             type="button" 

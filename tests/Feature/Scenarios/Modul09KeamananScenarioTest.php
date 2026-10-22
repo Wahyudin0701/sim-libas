@@ -63,19 +63,24 @@ class Modul09KeamananScenarioTest extends TestCase
      */
     public function test_tc_120_koor_keamanan_membuat_jadwal_ronda(): void
     {
+        // Hapus hari_ke 1 jika sudah ada dari seeder agar dapat dibuat melalui form
+        PatrolSchedule::where('hari_ke', 1)->delete();
+
         Livewire::actingAs($this->koorKeamanan)
             ->test(CreatePatrolSchedule::class)
             ->fillForm([
-                'tanggal' => now()->addDays(2)->format('Y-m-d'),
+                'hari_ke' => 1,
                 'regu' => 'Regu Garuda Jaya',
                 'waktu_mulai' => '22:00:00',
                 'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Utama RT 15',
                 'catatan' => 'Fokus patroli pada lorong tembus blok C',
             ])
             ->call('create')
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('patrol_schedules', [
+            'hari_ke' => 1,
             'regu' => 'Regu Garuda Jaya',
             'catatan' => 'Fokus patroli pada lorong tembus blok C',
         ]);
@@ -97,27 +102,31 @@ class Modul09KeamananScenarioTest extends TestCase
      */
     public function test_tc_122_menautkan_anggota_regu_ke_jadwal_ronda(): void
     {
-        $schedule = PatrolSchedule::create([
-            'tanggal' => now()->addDays(3)->format('Y-m-d'),
-            'regu' => 'Regu Rajawali',
-            'waktu_mulai' => '22:00:00',
-            'waktu_selesai' => '04:00:00',
-            'catatan' => 'Ronda gabungan',
-        ]);
+        $schedule = PatrolSchedule::updateOrCreate(
+            ['hari_ke' => 2],
+            [
+                'regu' => 'Regu Rajawali',
+                'waktu_mulai' => '22:00:00',
+                'waktu_selesai' => '04:00:00',
+                'pos_lokasi' => 'Pos Ronda Barat',
+                'catatan' => 'Ronda gabungan',
+                'is_aktif' => true,
+            ]
+        );
 
         $patrolMember = PatrolMember::create([
             'patrol_schedule_id' => $schedule->id,
             'resident_id' => $this->residentA->id,
-            'is_pengganti' => false,
+            'peran' => 'anggota',
         ]);
 
         $this->assertDatabaseHas('patrol_members', [
             'patrol_schedule_id' => $schedule->id,
             'resident_id' => $this->residentA->id,
-            'is_pengganti' => false,
+            'peran' => 'anggota',
         ]);
 
-        $this->assertEquals($this->residentA->id, $schedule->members->first()->resident_id);
+        $this->assertTrue($schedule->refresh()->members->pluck('resident_id')->contains($this->residentA->id));
     }
 
     /**

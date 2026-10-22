@@ -4,8 +4,9 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../../app/**/*.php';
 
-:root {
+@theme {
     --color-primary-900: #0B2F6B;
     --color-primary-700: #0B3A85;
     --color-primary-500: #1C7ED6;
@@ -14,12 +15,21 @@
     --color-green-500: #6DB33F;
     --color-gold-500: #F2A900;
     --color-gold-700: #C98A00;
-    --color-bg: #F5F8FC;
+    --color-bg-soft: #F5F8FC;
     --color-surface: #FFFFFF;
-    --color-border: #DDE5F0;
-    --color-text: #0F1F3D;
+    --color-border-soft: #DDE5F0;
+    --color-text-main: #0F1F3D;
     --color-text-muted: #5B6B82;
     --color-danger: #D64545;
+
+    --font-sans: 'Plus Jakarta Sans', Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+    --color-bg: #F5F8FC;
+    --color-border: #DDE5F0;
+    --color-text: #0F1F3D;
+    --navbar-height: 4rem;
 }
 
 body {
@@ -123,13 +133,31 @@ body.overflow-hidden nav.fixed {
 }
 
 /* Sembunyikan scrollbar tapi tetap bisa di-scroll secara horizontal/vertikal */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
+.no-scrollbar::-webkit-scrollbar,
+[role="dialog"] *::-webkit-scrollbar,
+[role="dialog"]::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
-.no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+.no-scrollbar,
+[role="dialog"] *,
+[role="dialog"] {
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
+}
+
+/* Helper tambahan untuk Layout Publik & Responsivitas */
+html {
+    scroll-behavior: smooth;
+}
+
+#mobile-menu {
+    background-color: #FFFFFF !important;
+}
+
+.hero-fullscreen {
+    min-height: calc(100vh - var(--navbar-height, 4rem));
+    min-height: calc(100dvh - var(--navbar-height, 4rem));
 }
 

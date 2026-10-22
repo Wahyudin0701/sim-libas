@@ -2,6 +2,7 @@
     <div 
         x-data="{
             feeTypeModalOpen: @entangle('feeTypeModalOpen'),
+            detailModalOpen: @entangle('detailModalOpen'),
             deleteConfirmModalOpen: false,
             deleteFeeTypeId: null,
             deleteFeeTypeName: '',
@@ -25,6 +26,7 @@
         }"
         @keydown.escape.window="
             closeDeleteConfirm();
+            if (detailModalOpen) { detailModalOpen = false; $wire.closeDetail(); }
             if (feeTypeModalOpen) { feeTypeModalOpen = false; $wire.closeFormModal(); }
         "
         class="space-y-4"
@@ -98,7 +100,7 @@
                         name="search"
                         value="{{ request('search') }}"
                         wire:model.live.debounce.300ms="search" 
-                        placeholder="Cari nama jenis iuran, deskripsi, nominal, atau periode..." 
+                        placeholder="Cari ... " 
                         class="w-full pl-10 pr-10 py-2.5 bg-white border border-[#DDE5F0] rounded-xl text-xs sm:text-sm text-[#0F1F3D] placeholder-[#94A3B8] focus:outline-none focus:border-[#0B3A85] focus:ring-2 focus:ring-[#0B3A85]/10 shadow-2xs transition-all"
                         autocomplete="off"
                     >
@@ -137,7 +139,7 @@
         {{-- ====================================================================
              3. TABEL DATA MASTER JENIS IURAN (HEADER DEEP NAVY #0B3A85)
              ==================================================================== --}}
-        <div class="relative bg-white rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
+        <div class="relative bg-white rounded-none md:rounded-xl shadow-2xs border border-[#E2E8F0] overflow-hidden">
             {{-- Standard Loading Indicator --}}
             <x-table-loading-indicator 
                 target="search, previousPage, nextPage, gotoPage" 
@@ -145,16 +147,16 @@
             />
 
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[900px] text-left border-collapse">
+                <table class="w-full min-w-full md:min-w-[900px] text-left border-collapse">
                     <thead>
                         <tr class="bg-[#0B3A85] text-white text-[10.5px] font-bold uppercase tracking-wider">
-                            <th class="py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
-                            <th class="py-2.5 px-3 min-w-[260px]">NAMA JENIS IURAN & DESKRIPSI</th>
-                            <th class="py-2.5 px-3 text-right min-w-[150px] whitespace-nowrap">BESARAN NOMINAL</th>
-                            <th class="py-2.5 px-3 text-center min-w-[120px] whitespace-nowrap">PERIODE</th>
-                            <th class="py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">TAGIHAN TERBIT</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">STATUS</th>
-                            <th class="py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">AKSI</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center w-14 min-w-[50px] whitespace-nowrap">NO</th>
+                            <th class="py-2.5 px-2.5 sm:px-3 md:min-w-[260px]"><span class="md:hidden">NAMA JENIS IURAN</span><span class="hidden md:inline">NAMA JENIS IURAN & DESKRIPSI</span></th>
+                            <th class="py-2.5 px-2.5 sm:px-3 text-right min-w-[105px] md:min-w-[150px] whitespace-nowrap"><span class="md:hidden">NOMINAL</span><span class="hidden md:inline">BESARAN NOMINAL</span></th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[120px] whitespace-nowrap">PERIODE</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[130px] whitespace-nowrap">TAGIHAN TERBIT</th>
+                            <th class="hidden md:table-cell py-2.5 px-3 text-center min-w-[100px] whitespace-nowrap">STATUS</th>
+                            <th class="py-2.5 px-2 sm:px-3 text-center w-20 sm:w-28 md:w-auto md:min-w-[120px] whitespace-nowrap">AKSI</th>
                         </tr>
                     </thead>
 
@@ -178,42 +180,42 @@
 
                         @forelse($feeTypes as $ft)
                             <tr class="feetype-data-row hover:bg-[#F8FAFC] transition-colors">
-                                {{-- 1. NO --}}
-                                <td class="py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
+                                {{-- 1. NO (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center text-xs font-semibold text-[#5B6B82] whitespace-nowrap">
                                     {{ $feeTypes->firstItem() ? ($feeTypes->firstItem() + $loop->index) : $loop->iteration }}
                                 </td>
 
-                                {{-- 2. NAMA & DESKRIPSI --}}
-                                <td class="py-2.5 px-3">
-                                    <div class="font-bold text-xs text-[#0F1F3D]">
+                                {{-- 2. NAMA & DESKRIPSI (Deskripsi disembunyikan di Mobile) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3">
+                                    <div class="font-bold text-xs text-[#0F1F3D] hover:text-[#0B3A85] cursor-pointer" @click="detailModalOpen = true" wire:click="openDetail({{ $ft->id }})" title="Klik untuk melihat rincian jenis iuran">
                                         {{ $ft->nama }}
                                     </div>
-                                    <div class="text-[10.5px] text-[#5B6B82] mt-0.5 leading-relaxed">
+                                    <div class="hidden md:block text-[10.5px] text-[#5B6B82] mt-0.5 leading-relaxed line-clamp-2">
                                         {{ $ft->deskripsi ?? 'Tanpa deskripsi tambahan' }}
                                     </div>
                                 </td>
 
-                                {{-- 3. NOMINAL --}}
-                                <td class="py-2.5 px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900 text-xs">
+                                {{-- 3. NOMINAL (Mobile & Desktop) --}}
+                                <td class="py-2.5 px-2.5 sm:px-3 text-right whitespace-nowrap font-mono font-bold text-slate-900 text-xs">
                                     Rp {{ number_format($ft->nominal, 0, ',', '.') }}
                                 </td>
 
-                                {{-- 4. PERIODE --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 4. PERIODE (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10.5px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 capitalize">
                                         {{ $ft->periode }}
                                     </span>
                                 </td>
 
-                                {{-- 5. TAGIHAN TERBIT --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 5. TAGIHAN TERBIT (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-50 text-[#0B3A85] border border-blue-200">
                                         {{ $ft->invoices_count }} Tagihan
                                     </span>
                                 </td>
 
-                                {{-- 6. STATUS AKTIF (BADGE STATIS INFORMATIF) --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                                {{-- 6. STATUS AKTIF (Hanya Desktop) --}}
+                                <td class="hidden md:table-cell py-2.5 px-3 text-center whitespace-nowrap">
                                     <span 
                                         class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold select-none {{ $ft->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200' }}"
                                         title="Status: {{ $ft->is_active ? 'Aktif' : 'Nonaktif' }}"
@@ -223,9 +225,23 @@
                                     </span>
                                 </td>
 
-                                {{-- 7. AKSI --}}
-                                <td class="py-2.5 px-3 text-center whitespace-nowrap">
-                                    <div class="inline-flex items-center justify-center gap-1 whitespace-nowrap">
+                                {{-- 7. AKSI (Mobile Vertikal, Desktop Horizontal) --}}
+                                <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
+                                    <div class="inline-flex flex-col md:flex-row items-center justify-center gap-1 md:gap-1.5 whitespace-nowrap">
+                                        {{-- Tombol Detail (Mata Navy #0B3A85) --}}
+                                        <button 
+                                            type="button" 
+                                            @click="detailModalOpen = true"
+                                            wire:click="openDetail({{ $ft->id }})" 
+                                            class="inline-flex items-center justify-center w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg border border-[#0B3A85]/30 bg-[#EBF3FC] text-[#0B3A85] hover:bg-[#0B3A85] hover:text-white hover:border-[#0B3A85] transition-all shadow-2xs cursor-pointer" 
+                                            title="Lihat Rincian Jenis Iuran"
+                                        >
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                        </button>
+
                                         {{-- Tombol Ubah (Pensil Amber Soft Hover) --}}
                                         <button 
                                             type="button" 
@@ -280,6 +296,178 @@
                     {{ $feeTypes->links() }}
                 </div>
             @endif
+        </div>
+
+        {{-- ====================================================================
+             3.5. MODAL DETAIL MASTER JENIS IURAN (ALPINE.JS X-SHOW INSTANT OPEN)
+             ==================================================================== --}}
+        <div 
+            x-show="detailModalOpen" 
+            x-cloak 
+            style="display: none;"
+            class="fixed inset-0 z-50 overflow-y-auto" 
+            aria-labelledby="detail-modal-title" 
+            role="dialog" 
+            aria-modal="true"
+        >
+            {{-- Backdrop Blur --}}
+            <div 
+                x-show="detailModalOpen"
+                x-transition:enter="ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity cursor-pointer" 
+                style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"
+                @click="detailModalOpen = false; $wire.closeDetail()"
+            ></div>
+
+            {{-- Dialog Container --}}
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div 
+                    x-show="detailModalOpen"
+                    x-transition:enter="ease-out duration-200"
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave="ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full sm:max-w-lg border border-slate-200" 
+                    @click.stop
+                >
+                    {{-- Header Modal --}}
+                    <div class="bg-[#0B3A85] text-white px-5 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-white">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </span>
+                            <div>
+                                <h3 class="text-sm font-bold" id="detail-modal-title">
+                                    Rincian Jenis Iuran
+                                </h3>
+                                <p class="text-[11px] text-white/80">
+                                    {{ $selectedFeeType ? 'Pos Iuran #' . $selectedFeeType->id : 'Keuangan RT 15' }}
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" @click="detailModalOpen = false; $wire.closeDetail()" class="text-white/70 hover:text-white transition-colors cursor-pointer" title="Tutup">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Skeleton Loader while fetching selectedFeeType --}}
+                    <div wire:loading.flex wire:target="openDetail" class="p-6 flex-col space-y-4 animate-pulse">
+                        <div class="h-6 w-32 bg-slate-200 rounded-md"></div>
+                        <div class="h-20 bg-slate-100 rounded-xl"></div>
+                        <div class="h-16 bg-slate-100 rounded-xl"></div>
+                    </div>
+
+                    <div wire:loading.remove wire:target="openDetail">
+                        @if($selectedFeeType)
+                            <div class="p-5 space-y-4 text-xs">
+                                {{-- Status & Periode Banner --}}
+                                <div class="flex items-center justify-between p-3 rounded-xl {{ $selectedFeeType->is_active ? 'bg-emerald-50 border border-emerald-200' : 'bg-slate-100 border border-slate-200' }}">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[11px] font-bold text-slate-600">Status Pos:</span>
+                                        @if($selectedFeeType->is_active)
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                Aktif Digunakan
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-200 text-slate-700 border border-slate-300">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10.5px] font-bold bg-white text-slate-700 border border-slate-200 uppercase tracking-wider">
+                                        {{ $selectedFeeType->periode }}
+                                    </span>
+                                </div>
+
+                                {{-- Nama Iuran --}}
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Nama Jenis Iuran</span>
+                                    <h4 class="text-base font-extrabold text-[#0F1F3D] leading-snug">
+                                        {{ $selectedFeeType->nama }}
+                                    </h4>
+                                </div>
+
+                                {{-- Grid Ringkasan Nominal & Statistik --}}
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                                        <span class="text-[10.5px] font-semibold text-slate-500 block">Besaran Nominal:</span>
+                                        <span class="font-mono font-bold text-base sm:text-lg text-emerald-700 block">
+                                            Rp {{ number_format($selectedFeeType->nominal, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                                        <span class="text-[10.5px] font-semibold text-slate-500 block">Tagihan Terbit:</span>
+                                        <span class="font-bold text-sm text-[#0B3A85] block">
+                                            {{ $selectedFeeType->invoices_count ?? 0 }} Tagihan Warga
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {{-- Deskripsi Lengkap --}}
+                                <div>
+                                    <span class="text-[10.5px] font-bold text-slate-700 block mb-1">Deskripsi & Peruntukan:</span>
+                                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-xs leading-relaxed">
+                                        {{ $selectedFeeType->deskripsi ?: 'Tidak ada deskripsi tambahan untuk pos jenis iuran ini.' }}
+                                    </div>
+                                </div>
+
+                                {{-- Timestamp --}}
+                                @if($selectedFeeType->created_at)
+                                    <div class="text-[10.5px] text-slate-400 flex items-center justify-between pt-1">
+                                        <span>Dibuat: {{ $selectedFeeType->created_at->translatedFormat('d F Y, H:i') }} WIB</span>
+                                        @if($selectedFeeType->updated_at)
+                                            <span>Diperbarui: {{ $selectedFeeType->updated_at->diffForHumans() }}</span>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- Footer Modal --}}
+                            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                                <button 
+                                    type="button" 
+                                    @click="detailModalOpen = false; feeTypeModalOpen = true" 
+                                    wire:click="openEdit({{ $selectedFeeType->id }})"
+                                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors cursor-pointer"
+                                    title="Ubah data pos iuran ini"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Ubah Iuran</span>
+                                </button>
+
+                                <button 
+                                    type="button" 
+                                    @click="detailModalOpen = false; $wire.closeDetail()" 
+                                    class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                                >
+                                    Tutup
+                                </button>
+                            </div>
+                        @else
+                            <div class="p-6 flex-col space-y-4 animate-pulse">
+                                <div class="h-6 w-32 bg-slate-200 rounded-md"></div>
+                                <div class="h-20 bg-slate-100 rounded-xl"></div>
+                                <div class="h-16 bg-slate-100 rounded-xl"></div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
 
         {{-- ====================================================================

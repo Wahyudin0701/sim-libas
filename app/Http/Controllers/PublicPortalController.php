@@ -120,6 +120,30 @@ class PublicPortalController extends Controller
     }
 
     /**
+     * Halaman Publik Direktori Seluruh Pengumuman Resmi RT 15
+     */
+    public function pengumumanIndex(Request $request): View
+    {
+        $setting = RtSetting::first();
+        $search = $request->query('search', $request->query('q'));
+
+        $announcements = Announcement::where('is_published', true)
+            ->whereIn('target', ['semua', 'warga', 'tetap', 'kontrak'])
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                      ->orWhere('isi', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('is_pinned')
+            ->latest('created_at')
+            ->paginate(6)
+            ->withQueryString();
+
+        return view('public.pengumuman.index', compact('setting', 'announcements', 'search'));
+    }
+
+    /**
      * Halaman Publik Detail Pengumuman Resmi RT 15
      */
     public function pengumumanDetail($id): View
@@ -138,6 +162,68 @@ class PublicPortalController extends Controller
             ->get();
 
         return view('public.pengumuman-detail', compact('setting', 'announcement', 'otherAnnouncements'));
+    }
+
+    /**
+     * Halaman Publik Direktori Seluruh Agenda / Kegiatan Warga RT 15
+     */
+    public function agendaIndex(Request $request): View
+    {
+        $setting = RtSetting::first();
+        $kategori = $request->query('kategori');
+        $search = $request->query('search', $request->query('q'));
+
+        $events = Event::query()
+            ->when($kategori && $kategori !== 'semua', function ($query) use ($kategori) {
+                return $query->where('kategori', $kategori);
+            })
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                      ->orWhere('deskripsi', 'like', "%{$search}%")
+                      ->orWhere('lokasi', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('tanggal_mulai')
+            ->paginate(6)
+            ->withQueryString();
+
+        $kategoriList = [
+            'semua' => 'Semua Agenda',
+            'kerja_bakti' => 'Gotong Royong',
+            'rapat' => 'Rapat',
+            'pengajian' => 'Keagamaan',
+            'perayaan' => 'Perayaan',
+            'arisan' => 'Arisan',
+            'lainnya' => 'Lainnya',
+        ];
+
+        return view('public.agenda.index', compact('setting', 'events', 'kategori', 'search', 'kategoriList'));
+    }
+
+    /**
+     * Halaman Publik Detail Agenda / Kegiatan Resmi RT 15
+     */
+    public function agendaDetail($id): View
+    {
+        $setting = RtSetting::first();
+
+        $event = Event::findOrFail($id);
+
+        $otherEvents = Event::where('id', '!=', $event->id)
+            ->where('tanggal_mulai', '>=', now()->startOfDay())
+            ->orderBy('tanggal_mulai', 'asc')
+            ->take(4)
+            ->get();
+
+        if ($otherEvents->count() < 2) {
+            $otherEvents = Event::where('id', '!=', $event->id)
+                ->orderByDesc('tanggal_mulai')
+                ->take(4)
+                ->get();
+        }
+
+        return view('public.agenda-detail', compact('setting', 'event', 'otherEvents'));
     }
 
     /**

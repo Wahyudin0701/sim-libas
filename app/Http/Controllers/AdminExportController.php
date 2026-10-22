@@ -820,7 +820,7 @@ class AdminExportController extends Controller
                 foreach ($query->get() as $item) {
                     $rows[] = [
                         $index++,
-                        $item->nomor_surat ?? 'DRAFT',
+                        $item->nomor_surat ?: '-',
                         $item->created_at ? $item->created_at->format('d/m/Y') : '-',
                         $item->resident?->nama ?? 'Warga',
                         (string) ($item->resident?->nik ?? '-'),
@@ -894,14 +894,14 @@ class AdminExportController extends Controller
 
             case 'patrol-schedules':
                 $reguFilter = $request->query('regu');
-                $waktuFilter = $request->query('waktu', 'semua');
-                $query = PatrolSchedule::with('members.resident')->latest('tanggal');
+                $query = PatrolSchedule::with('members.resident')->orderBy('hari_ke', 'asc');
 
                 if (filled($search)) {
                     $term = strtolower(trim($search));
                     $query->where(function ($q) use ($term) {
                         $q->whereRaw('LOWER(regu) LIKE ?', ["%{$term}%"])
                           ->orWhereRaw('LOWER(catatan) LIKE ?', ["%{$term}%"])
+                          ->orWhereRaw('LOWER(pos_lokasi) LIKE ?', ["%{$term}%"])
                           ->orWhereHas('residents', function ($rq) use ($term) {
                               $rq->whereRaw('LOWER(nama) LIKE ?', ["%{$term}%"]);
                           });
@@ -910,40 +910,35 @@ class AdminExportController extends Controller
                 if (filled($reguFilter) && $reguFilter !== 'semua') {
                     $query->where('regu', $reguFilter);
                 }
-                if ($waktuFilter === 'mendatang') {
-                    $query->where('tanggal', '>=', now()->toDateString());
-                } elseif ($waktuFilter === 'selesai') {
-                    $query->where('tanggal', '<', now()->toDateString());
-                }
                 $filterParts = [];
                 if (filled($search)) $filterParts[] = "Pencarian: \"{$search}\"";
                 if (filled($reguFilter) && $reguFilter !== 'semua') $filterParts[] = "Regu: {$reguFilter}";
-                if (filled($waktuFilter) && $waktuFilter !== 'semua') $filterParts[] = "Waktu: " . ucfirst($waktuFilter);
-                $filterInfo = !empty($filterParts) ? implode(' | ', $filterParts) : 'Semua Jadwal Ronda';
+                $filterInfo = !empty($filterParts) ? implode(' | ', $filterParts) : 'Master Jadwal Ronda 7 Hari (Senin - Minggu)';
 
                 $rows = [];
                 $index = 1;
                 foreach ($query->get() as $item) {
-                    $personil = $item->members->map(fn ($m) => $m->resident?->nama ?? 'Warga')->implode(', ');
-                    $jam = ($item->waktu_mulai && $item->waktu_selesai) ? "{$item->waktu_mulai} - {$item->waktu_selesai}" : '-';
+                    $personil = $item->members->map(fn ($m) => ($m->peran === 'ketua_regu' ? '⭐ ' : '') . ($m->resident?->nama ?? 'Warga'))->implode(', ');
+                    $jam = ($item->waktu_mulai && $item->waktu_selesai) ? "{$item->waktu_mulai} - {$item->waktu_selesai} WIB" : '-';
+                    $posCatatan = $item->pos_lokasi . ($item->catatan ? ' - ' . $item->catatan : '');
                     $rows[] = [
                         $index++,
-                        $item->tanggal ? Carbon::parse($item->tanggal)->format('d/m/Y') : '-',
+                        $item->nama_hari,
                         $item->regu ?? 'Regu Ronda',
                         $jam,
                         $item->members->count() . ' Orang',
                         !empty($personil) ? $personil : 'Belum ditentukan',
-                        $item->catatan ?? '-',
+                        $posCatatan,
                     ];
                 }
 
                 return [
-                    'title' => 'Laporan Jadwal Ronda & Pos Kamling RT 15',
+                    'title' => 'Master Jadwal Ronda Mingguan RT 15',
                     'subtitle' => 'Wilayah Rukun Tetangga 15 / Rukun Warga 04',
                     'category' => 'Keamanan & Ketertiban RT 15',
-                    'filename' => 'Laporan_Jadwal_Ronda_' . now()->format('Ymd_His'),
+                    'filename' => 'Master_Jadwal_Ronda_' . now()->format('Ymd_His'),
                     'filterInfo' => $filterInfo,
-                    'headers' => ['NO', 'TANGGAL', 'REGU RONDA', 'JAM RONDA', 'JUMLAH PERSONIL', 'DAFTAR ANGGOTA BERTUGAS', 'CATATAN / POS'],
+                    'headers' => ['NO', 'HARI', 'REGU RONDA', 'JAM RONDA', 'JUMLAH PERSONIL', 'DAFTAR ANGGOTA BERTUGAS', 'POS / CATATAN'],
                     'alignments' => ['text-center', 'text-center', 'text-left', 'text-center', 'text-center', 'text-left', 'text-left'],
                     'rows' => $rows,
                     'orientation' => 'landscape',
