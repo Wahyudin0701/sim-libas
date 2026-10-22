@@ -166,11 +166,11 @@
         </h3>
         <div class="space-y-3">
             @forelse($pengumuman as $info)
-                <div class="p-3.5 rounded-xl bg-bg-soft">
+                <a href="{{ route('public.pengumuman.detail', $info->id) }}" class="block p-3.5 rounded-xl bg-bg-soft hover:bg-blue-50/80 transition group border border-transparent hover:border-blue-100">
                     <div class="text-[10px] text-text-muted font-bold uppercase">{{ $info->created_at->format('d M Y') }}</div>
-                    <div class="text-sm font-bold text-primary-900 mt-0.5">{{ $info->judul }}</div>
+                    <div class="text-sm font-bold text-primary-900 group-hover:text-primary-700 transition mt-0.5">{{ $info->judul }}</div>
                     <div class="text-xs text-text-muted line-clamp-2 mt-1">{{ $info->isi }}</div>
-                </div>
+                </a>
             @empty
                 <p class="text-xs text-text-muted">Tidak ada pengumuman saat ini.</p>
             @endforelse

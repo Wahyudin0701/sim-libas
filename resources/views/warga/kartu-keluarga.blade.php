@@ -104,7 +104,68 @@
             </span>
         </div>
 
-        <div class="overflow-x-auto rounded-xl border border-border-soft">
+        <!-- Tampilan Kartu untuk Mobile (Tanpa Scroll Horizontal) -->
+        <div class="sm:hidden space-y-3">
+            @forelse($household->residents as $index => $res)
+                <div class="p-4 rounded-xl border border-border-soft bg-white shadow-2xs {{ $res->is_kepala_keluarga ? 'border-primary-200 bg-blue-50/20' : '' }}">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px] flex items-center justify-center shrink-0">
+                                {{ $index + 1 }}
+                            </span>
+                            <div class="font-bold text-primary-900 text-sm">
+                                {{ $res->nama }}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            @if($res->is_kepala_keluarga)
+                                <span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-primary-100 text-primary-700">
+                                    Kepala KK
+                                </span>
+                            @endif
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-700 border border-gray-200 capitalize">
+                                {{ str_replace('_', ' ', $res->hubungan_keluarga ?? '-') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="font-mono text-xs text-text-muted mb-3 flex items-center gap-1.5 pl-7">
+                        <span>NIK:</span>
+                        <span class="font-semibold text-gray-800">{{ $res->nik }}</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-border-soft/60 pl-7">
+                        <div>
+                            <span class="text-text-muted block text-[10px]">Gender & TTL</span>
+                            <span class="font-medium text-gray-800">
+                                {{ $res->jenis_kelamin == 'L' ? 'Laki-laki' : ($res->jenis_kelamin == 'P' ? 'Perempuan' : $res->jenis_kelamin) }}
+                            </span>
+                            <div class="text-text-muted text-[10px] mt-0.5">
+                                {{ $res->tempat_lahir ?? '-' }}, {{ $res->tanggal_lahir ? $res->tanggal_lahir->format('d/m/Y') : '-' }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-text-muted block text-[10px]">Pekerjaan & Status</span>
+                            <span class="font-medium text-gray-800">
+                                {{ $res->pekerjaan ?? '-' }}
+                            </span>
+                            <div class="mt-0.5">
+                                <span class="px-1.5 py-0.2 rounded-full text-[9px] font-bold uppercase bg-emerald-100 text-emerald-800">
+                                    {{ ucfirst($res->status_kependudukan ?? 'Aktif') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="py-6 text-center text-text-muted text-xs">
+                    Belum ada data anggota keluarga yang terdaftar.
+                </div>
+            @endforelse
+        </div>
+
+        <!-- Tampilan Tabel untuk Tablet & Desktop (Hidden di Layar Mobile) -->
+        <div class="hidden sm:block overflow-x-auto rounded-xl border border-border-soft">
             <table class="w-full text-left text-xs">
                 <thead class="bg-bg-soft text-text-muted uppercase tracking-wider border-b border-border-soft text-[10px] font-bold">
                     <tr>

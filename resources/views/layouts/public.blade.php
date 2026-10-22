@@ -121,9 +121,10 @@
 
             <!-- Navigasi Menu Desktop -->
             <nav class="hidden lg:flex items-center gap-3.5 xl:gap-6 text-xs xl:text-sm font-semibold text-text-muted">
-                <a href="{{ route('public.home') }}" class="hover:text-primary-700 transition">Beranda</a>
-                <a href="{{ route('public.umkm') }}" class="hover:text-primary-700 transition">Katalog UMKM</a>
-                <a href="{{ route('public.bank-sampah') }}" class="hover:text-primary-700 transition">Bank Sampah</a>
+                <a href="{{ route('public.home') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.home') ? 'text-primary-700 font-bold' : '' }}">Beranda</a>
+                <a href="{{ route('public.struktur-pengurus') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.struktur-pengurus') ? 'text-primary-700 font-bold' : '' }}">Struktur Pengurus</a>
+                <a href="{{ route('public.umkm') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.umkm*') ? 'text-primary-700 font-bold' : '' }}">Katalog UMKM</a>
+                <a href="{{ route('public.bank-sampah') }}" class="hover:text-primary-700 transition {{ request()->routeIs('public.bank-sampah') ? 'text-primary-700 font-bold' : '' }}">Bank Sampah</a>
                 
                 <!-- Dropdown Layanan Warga -->
                 <div class="relative group" id="layanan-nav-wrapper">
@@ -224,13 +225,16 @@
         <!-- Mobile Drawer Menu -->
         <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 w-full bg-white border-b border-border-soft px-6 pt-4 pb-8 space-y-4 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto z-50">
             <nav class="flex flex-col space-y-1 text-sm font-semibold text-text-muted">
-                <a href="{{ route('public.home') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between">
+                <a href="{{ route('public.home') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.home') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Beranda</span>
                 </a>
-                <a href="{{ route('public.umkm') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between">
+                <a href="{{ route('public.struktur-pengurus') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.struktur-pengurus') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
+                    <span>Struktur Pengurus</span>
+                </a>
+                <a href="{{ route('public.umkm') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.umkm*') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Katalog UMKM</span>
                 </a>
-                <a href="{{ route('public.bank-sampah') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between">
+                <a href="{{ route('public.bank-sampah') }}" class="px-3 py-2.5 rounded-xl hover:bg-blue-50 hover:text-primary-700 transition flex items-center justify-between {{ request()->routeIs('public.bank-sampah') ? 'bg-blue-50 text-primary-700 font-bold' : '' }}">
                     <span>Bank Sampah</span>
                 </a>
                 <!-- Layanan Warga Submenu in Mobile -->
@@ -307,6 +311,7 @@
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Layanan Cepat</h4>
                     <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="{{ route('public.struktur-pengurus') }}" class="hover:text-gold-500 transition">Struktur Pengurus RT 15</a></li>
                         <li><a href="{{ route('citizen.login') }}" class="hover:text-gold-500 transition">Pengajuan Surat Pengantar</a></li>
                         <li><a href="{{ route('citizen.login') }}" class="hover:text-gold-500 transition">Bayar Iuran Bulanan</a></li>
                         <li><a href="{{ route('public.bank-sampah') }}" class="hover:text-gold-500 transition">Bank Sampah Pinang Masak</a></li>

@@ -251,13 +251,20 @@
 
                                 {{-- Kolom Nama Usaha & Kategori --}}
                                 <td class="py-3.5 px-4">
-                                    <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer transition-colors" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
-                                        {{ $item->nama_usaha }}
-                                    </div>
-                                    <div class="mt-0.5">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
-                                            {{ $item->kategori ?? 'Lainnya' }}
-                                        </span>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200">
+                                            <x-umkm-card-image :item="$item" aspect="aspect-square" />
+                                        </div>
+                                        <div>
+                                            <div class="font-extrabold text-[#0F1F3D] text-[13px] hover:text-[#0B3A85] cursor-pointer transition-colors" @click="detailModalOpen = true" wire:click="openDetail({{ $item->id }})">
+                                                {{ $item->nama_usaha }}
+                                            </div>
+                                            <div class="mt-0.5">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
+                                                    {{ $item->kategori ?? 'Lainnya' }}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
 
@@ -277,33 +284,26 @@
                                     </div>
                                 </td>
 
-                                {{-- Kolom Kontak / WhatsApp --}}
+                                {{-- Kolom Kontak & Multi-Medsos --}}
                                 <td class="py-3.5 px-4 text-xs whitespace-nowrap min-w-[170px]">
                                     @php
                                         $displayPhone = $item->telepon ?: $item->whatsapp;
-                                        $rawWa = $item->whatsapp ?: $item->telepon;
-                                        $cleanWa = preg_replace('/[^0-9]/', '', (string) $rawWa);
-                                        if (str_starts_with($cleanWa, '0')) {
-                                            $cleanWa = '62' . substr($cleanWa, 1);
-                                        }
+                                        $cleanWa = $item->getSocialUrl('whatsapp');
+                                        $tablePlatforms = $item->getAvailableSocialPlatforms();
                                     @endphp
                                     @if($displayPhone)
-                                        @if($cleanWa)
-                                            <a 
-                                                href="https://wa.me/{{ $cleanWa }}" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                class="inline-flex items-center gap-1 text-[#1B7A3A] font-bold hover:underline whitespace-nowrap" 
-                                                title="Chat WhatsApp ke {{ $item->nama_usaha }} ({{ $displayPhone }})"
-                                            >
-                                                <span class="select-all font-mono">{{ $displayPhone }}</span>
-                                                <span class="text-[10px] text-slate-400 font-normal shrink-0">(Chat WA)</span>
-                                            </a>
-                                        @else
-                                            <span class="select-all font-mono font-medium text-slate-700 whitespace-nowrap">{{ $displayPhone }}</span>
-                                        @endif
+                                        <div class="font-mono font-bold text-slate-700 select-all">{{ $displayPhone }}</div>
                                     @else
                                         <span class="text-slate-400 font-sans italic">-</span>
+                                    @endif
+                                    @if(!empty($tablePlatforms))
+                                        <div class="flex items-center gap-1 mt-1">
+                                            @foreach($tablePlatforms as $tp)
+                                                <a href="{{ $item->getSocialUrl($tp) }}" target="_blank" rel="noopener noreferrer" title="{{ ucfirst($tp) }}: {{ $item->getSocialLabel($tp) }}" class="w-5 h-5 rounded flex items-center justify-center text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition">
+                                                    @include('components.umkm-social-icon', ['platform' => $tp, 'class' => 'w-3 h-3 fill-current'])
+                                                </a>
+                                            @endforeach
+                                        </div>
                                     @endif
                                 </td>
 
@@ -551,6 +551,11 @@
                                     @endif
                                 </div>
 
+                                {{-- Visual Header Foto Usaha --}}
+                                <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-xs">
+                                    <x-umkm-card-image :item="$selectedMsme" aspect="aspect-[16/9]" />
+                                </div>
+
                                 {{-- Pemilik & Kontak --}}
                                 <div class="bg-slate-50 rounded-xl p-3.5 space-y-2 border border-slate-200/60">
                                     <div>
@@ -578,6 +583,33 @@
                                             <p class="font-bold text-emerald-600 mt-0.5">{{ $selectedMsme->whatsapp ?: $selectedMsme->telepon }}</p>
                                         </div>
                                     </div>
+
+                                    @php
+                                        $selectedPlatforms = $selectedMsme->getAvailableSocialPlatforms();
+                                    @endphp
+                                    @if(!empty($selectedPlatforms))
+                                        <div class="pt-2 border-t border-slate-200/60">
+                                            <span class="text-slate-400 font-medium text-[11px] block mb-1.5">Saluran Komunikasi & Toko Online:</span>
+                                            <div class="flex flex-wrap gap-2">
+                                                @foreach($selectedPlatforms as $sp)
+                                                    @php
+                                                        $sUrl = $selectedMsme->getSocialUrl($sp);
+                                                        $sBadge = match($sp) {
+                                                            'whatsapp' => 'bg-emerald-50 text-emerald-800 border-emerald-200',
+                                                            'instagram' => 'bg-rose-50 text-rose-800 border-rose-200',
+                                                            'tiktok' => 'bg-slate-100 text-slate-800 border-slate-200',
+                                                            'shopee' => 'bg-orange-50 text-orange-800 border-orange-200',
+                                                            default => 'bg-slate-100 text-slate-700 border-slate-200',
+                                                        };
+                                                    @endphp
+                                                    <a href="{{ $sUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold {{ $sBadge }}">
+                                                        @include('components.umkm-social-icon', ['platform' => $sp, 'class' => 'w-3.5 h-3.5 fill-current'])
+                                                        <span>{{ ucfirst($sp) }}: {{ $selectedMsme->getSocialLabel($sp) }}</span>
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 {{-- Produk Unggulan & Deskripsi --}}
@@ -987,31 +1019,114 @@
                                 </div>
                             </div>
 
-                            {{-- Telepon & WhatsApp --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block font-bold text-slate-700 mb-1">
-                                        Nomor Telepon / HP <span class="text-rose-500">*</span>
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="form_telepon" 
-                                        placeholder="081234567890"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-mono"
-                                    >
-                                    @error('form_telepon') <span class="text-rose-600 text-[11px]">{{ $message }}</span> @enderror
+                            {{-- Foto Usaha / Produk --}}
+                            <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-2">
+                                <label class="block font-bold text-slate-700">
+                                    Foto Usaha / Produk (Opsional)
+                                </label>
+                                
+                                {{-- Preview Foto --}}
+                                @if ($form_foto)
+                                    <div class="relative w-full max-w-xs h-36 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 group shadow-2xs">
+                                        <img src="{{ $form_foto->temporaryUrl() }}" alt="Preview Unggahan Foto" class="w-full h-full object-cover">
+                                        <button type="button" wire:click="clearPhoto" class="absolute top-2 right-2 bg-rose-600 text-white p-1 rounded-lg text-xs hover:bg-rose-700 shadow-sm transition cursor-pointer" title="Batalkan Foto">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
+                                        <span class="absolute bottom-1.5 left-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded backdrop-blur-sm">Siap Dioptimasi ke WebP</span>
+                                    </div>
+                                @elseif ($current_foto_path && !$remove_foto)
+                                    <div class="relative w-full max-w-xs h-36 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 group shadow-2xs">
+                                        <img src="{{ asset('storage/' . $current_foto_path) }}" alt="Foto Usaha Saat Ini" class="w-full h-full object-cover">
+                                        <button type="button" wire:click="clearPhoto" class="absolute top-2 right-2 bg-rose-600 text-white p-1 rounded-lg text-xs hover:bg-rose-700 shadow-sm transition cursor-pointer" title="Hapus Foto">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                        <span class="absolute bottom-1.5 left-2 bg-emerald-700/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded backdrop-blur-sm">Foto Aktif</span>
+                                    </div>
+                                @endif
+
+                                {{-- Input File Unggahan --}}
+                                <input 
+                                    type="file" 
+                                    wire:model="form_foto" 
+                                    accept="image/jpeg,image/png,image/webp" 
+                                    class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#0B3A85] hover:file:bg-blue-100 cursor-pointer border border-slate-200 rounded-xl p-1 bg-white"
+                                >
+                                <div wire:loading wire:target="form_foto" class="text-[11px] text-[#0B3A85] font-medium flex items-center gap-1.5">
+                                    <svg class="animate-spin w-3.5 h-3.5 text-[#0B3A85]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    <span>Mengunggah file foto...</span>
+                                </div>
+                                <p class="text-[11px] text-slate-400">Maks. 5 MB (JPG, PNG, WebP). Otomatis dikompresi dan dikonversi ke WebP untuk hemat storage VPS.</p>
+                                @error('form_foto') <span class="text-rose-600 text-[11px] font-semibold block">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Kontak & Media Sosial Multi-Platform --}}
+                            <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/80 space-y-3">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-[#0B3A85] flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                    <span>Kontak & Media Sosial Usaha</span>
                                 </div>
 
-                                <div>
-                                    <label class="block font-bold text-slate-700 mb-1">
-                                        Nomor WhatsApp (Opsional)
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="form_whatsapp" 
-                                        placeholder="081234567890 (otomatis jika kosong)"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-mono"
-                                    >
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            Nomor Telepon / HP <span class="text-rose-500">*</span>
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_telepon" 
+                                            placeholder="081234567890"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-mono"
+                                        >
+                                        @error('form_telepon') <span class="text-rose-600 text-[11px]">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            Nomor WhatsApp (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_whatsapp" 
+                                            placeholder="081234567890 (otomatis jika kosong)"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800 font-mono"
+                                        >
+                                    </div>
+
+                                    <div>
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            Instagram (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_instagram" 
+                                            placeholder="@akun atau tautan profil"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
+                                        >
+                                    </div>
+
+                                    <div>
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            TikTok (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_tiktok" 
+                                            placeholder="@akun atau tautan profil"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
+                                        >
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            Toko Shopee (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_shopee" 
+                                            placeholder="Nama toko atau https://shopee.co.id/namatoko"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
+                                        >
+                                    </div>
                                 </div>
                             </div>
 

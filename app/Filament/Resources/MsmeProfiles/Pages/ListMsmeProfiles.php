@@ -5,13 +5,17 @@ namespace App\Filament\Resources\MsmeProfiles\Pages;
 use App\Filament\Resources\MsmeProfiles\MsmeProfileResource;
 use App\Models\Household;
 use App\Models\MsmeProfile;
+use App\Services\ImageOptimizerService;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Livewire\Attributes\Url;
+use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListMsmeProfiles extends ListRecords
 {
+    use WithFileUploads;
+
     protected static string $resource = MsmeProfileResource::class;
 
     protected string $view = 'filament.resources.msme-profiles.pages.list-msme-profiles';
@@ -50,6 +54,12 @@ class ListMsmeProfiles extends ListRecords
     public string $form_alamat = '';
     public string $form_telepon = '';
     public string $form_whatsapp = '';
+    public string $form_instagram = '';
+    public string $form_tiktok = '';
+    public string $form_shopee = '';
+    public mixed $form_foto = null;
+    public ?string $current_foto_path = null;
+    public bool $remove_foto = false;
     public bool $form_is_active = true;
 
     protected function authorizeAction(): void
@@ -268,10 +278,26 @@ class ListMsmeProfiles extends ListRecords
         $this->form_kategori = $item->kategori ?? 'kuliner';
         $this->form_alamat = $item->alamat ?? '';
         $this->form_telepon = $item->telepon;
-        $this->form_whatsapp = $item->whatsapp ?? '';
         $this->form_is_active = (bool) $item->is_active;
 
+        $this->current_foto_path = $item->foto_path;
+        $this->form_foto = null;
+        $this->remove_foto = false;
+
+        $links = is_array($item->social_links) ? $item->social_links : [];
+        $this->form_whatsapp = $links['whatsapp'] ?? $item->whatsapp ?? '';
+        $this->form_instagram = $links['instagram'] ?? '';
+        $this->form_tiktok = $links['tiktok'] ?? '';
+        $this->form_shopee = $links['shopee'] ?? '';
+
         $this->formModalOpen = true;
+    }
+
+    public function clearPhoto(): void
+    {
+        $this->form_foto = null;
+        $this->remove_foto = true;
+        $this->current_foto_path = null;
     }
 
     public function closeForm(): void
@@ -290,16 +316,23 @@ class ListMsmeProfiles extends ListRecords
         $this->form_alamat = '';
         $this->form_telepon = '';
         $this->form_whatsapp = '';
+        $this->form_instagram = '';
+        $this->form_tiktok = '';
+        $this->form_shopee = '';
+        $this->form_foto = null;
+        $this->current_foto_path = null;
+        $this->remove_foto = false;
         $this->form_is_active = true;
         $this->msmeId = null;
         $this->isEditing = false;
+        $this->resetValidation();
     }
 
     public function saveMsme(): void
     {
         $this->authorizeAction();
 
-        $this->validate([
+        $rules = [
             'form_household_id' => 'required|exists:households,id',
             'form_nama_usaha' => 'required|string|max:255',
             'form_kategori' => 'required|string|max:100',
@@ -307,11 +340,38 @@ class ListMsmeProfiles extends ListRecords
             'form_alamat' => 'nullable|string|max:255',
             'form_deskripsi' => 'nullable|string',
             'form_produk' => 'nullable|string',
-        ], [
+            'form_whatsapp' => 'nullable|string|max:50',
+            'form_instagram' => 'nullable|string|max:100',
+            'form_tiktok' => 'nullable|string|max:100',
+            'form_shopee' => 'nullable|string|max:255',
+        ];
+
+        if ($this->form_foto) {
+            $rules['form_foto'] = 'image|mimes:jpeg,png,jpg,webp|max:5120';
+        }
+
+        $this->validate($rules, [
             'form_household_id.required' => 'Keluarga pemilik UMKM wajib dipilih.',
             'form_nama_usaha.required' => 'Nama usaha UMKM wajib diisi.',
             'form_telepon.required' => 'Nomor kontak telepon/HP wajib diisi.',
+            'form_foto.image' => 'File yang diunggah harus berupa citra gambar.',
+            'form_foto.mimes' => 'Format gambar harus berupa JPG, PNG, atau WebP.',
+            'form_foto.max' => 'Ukuran file foto maksimal 5 MB sebelum kompresi.',
         ]);
+
+        $socialLinks = [];
+        if (filled($this->form_whatsapp)) {
+            $socialLinks['whatsapp'] = trim($this->form_whatsapp);
+        }
+        if (filled($this->form_instagram)) {
+            $socialLinks['instagram'] = trim($this->form_instagram);
+        }
+        if (filled($this->form_tiktok)) {
+            $socialLinks['tiktok'] = trim($this->form_tiktok);
+        }
+        if (filled($this->form_shopee)) {
+            $socialLinks['shopee'] = trim($this->form_shopee);
+        }
 
         $payload = [
             'household_id' => $this->form_household_id,
@@ -322,8 +382,20 @@ class ListMsmeProfiles extends ListRecords
             'alamat' => $this->form_alamat,
             'telepon' => $this->form_telepon,
             'whatsapp' => $this->form_whatsapp ?: $this->form_telepon,
+            'social_links' => ! empty($socialLinks) ? $socialLinks : null,
             'is_active' => $this->form_is_active,
         ];
+
+        // Optimasi & kompresi foto server-side WebP
+        if ($this->form_foto) {
+            $optimizer = app(ImageOptimizerService::class);
+            $payload['foto_path'] = $optimizer->optimizeAndStore($this->form_foto, 'umkm');
+        } elseif ($this->remove_foto && $this->isEditing) {
+            if ($this->current_foto_path) {
+                app(ImageOptimizerService::class)->deleteOldPhoto($this->current_foto_path);
+            }
+            $payload['foto_path'] = null;
+        }
 
         if ($this->isEditing && $this->msmeId) {
             $msme = MsmeProfile::findOrFail($this->msmeId);
@@ -331,7 +403,7 @@ class ListMsmeProfiles extends ListRecords
 
             Notification::make()
                 ->title('Profil UMKM Berhasil Diperbarui')
-                ->body('Perubahan data katalog UMKM telah disimpan.')
+                ->body('Perubahan data katalog dan foto usaha telah disimpan.')
                 ->success()
                 ->send();
         } else {
@@ -353,6 +425,9 @@ class ListMsmeProfiles extends ListRecords
         $this->authorizeAction();
 
         $item = MsmeProfile::findOrFail($id);
+        if ($item->foto_path) {
+            app(ImageOptimizerService::class)->deleteOldPhoto($item->foto_path);
+        }
         $item->delete();
 
         Notification::make()
@@ -402,11 +477,15 @@ class ListMsmeProfiles extends ListRecords
                 'Nomor KK',
                 'Alamat Usaha',
                 'No. Telepon / WA',
+                'Instagram',
+                'TikTok',
+                'Shopee',
                 'Status Moderasi',
                 'Status Aktif',
             ]);
 
             foreach ($records as $item) {
+                $links = is_array($item->social_links) ? $item->social_links : [];
                 fputcsv($handle, [
                     $item->id,
                     $item->nama_usaha,
@@ -416,6 +495,9 @@ class ListMsmeProfiles extends ListRecords
                     $item->household ? "'{$item->household->no_kk}'" : '-',
                     $item->alamat ?? ($item->household ? $item->household->alamat : '-'),
                     $item->telepon,
+                    $links['instagram'] ?? '-',
+                    $links['tiktok'] ?? '-',
+                    $links['shopee'] ?? '-',
                     strtoupper($item->status_moderasi),
                     $item->is_active ? 'AKTIF' : 'NONAKTIF',
                 ]);

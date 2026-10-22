@@ -163,27 +163,28 @@
         </div>
     </section>
 
-    <!-- 6 Layanan Utama Warga -->
-    <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="layanan">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-            <h2 class="text-xs uppercase tracking-widest text-primary-700 font-bold mb-3">Ekosistem Pelayanan</h2>
-            <p class="text-3xl sm:text-4xl font-extrabold text-primary-900">Semua Kebutuhan Warga Ada di Sini</p>
-            <p class="text-text-muted mt-3">Dirancang sederhana dan ramah untuk seluruh kelompok usia warga RT 15.</p>
+    <!-- 3 Layanan Unggulan Warga (Direktori Lengkap Tersedia di Halaman Layanan) -->
+    <section class="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="layanan">
+        <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+            <h2 class="text-xs uppercase tracking-widest text-primary-700 font-bold mb-2 sm:mb-3">Ekosistem Pelayanan</h2>
+            <p class="text-2xl sm:text-4xl font-extrabold text-primary-900">Semua Kebutuhan Warga Ada di Sini</p>
+            <p class="text-xs sm:text-base text-text-muted mt-2 sm:mt-3">Dirancang sederhana dan ramah untuk seluruh kelompok usia warga RT 15.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             @if(isset($citizenServices))
-                @foreach($citizenServices as $svc)
-                    <div class="sim-card p-8 flex flex-col justify-between hover:-translate-y-1.5 transition duration-300 shadow-sm hover:shadow-xl bg-white border border-border-soft rounded-2xl group">
+                @foreach(array_slice($citizenServices, 0, 3) as $svc)
+                    <div class="sim-card p-6 sm:p-8 flex flex-col justify-between hover:-translate-y-1.5 transition duration-300 shadow-sm hover:shadow-xl bg-white border border-border-soft rounded-2xl group">
                         <div>
-                            <h3 class="text-xl font-bold text-primary-900 group-hover:text-primary-700 transition mb-3">
+                            <h3 class="text-lg sm:text-xl font-bold text-primary-900 group-hover:text-primary-700 transition mb-2 sm:mb-3">
                                 {{ $svc['nama'] }}
                             </h3>
-                            <p class="text-sm text-text-muted leading-relaxed mb-4">
+                            <p class="text-xs sm:text-sm text-text-muted leading-relaxed mb-4">
                                 {{ $svc['deskripsi'] }}
                             </p>
 
-                            <div class="p-3.5 rounded-xl bg-bg-soft border border-border-soft text-xs text-primary-900 mb-6 flex items-start gap-2.5">
+                            {{-- Highlight Keunggulan: Disembunyikan di versi mobile agar ringkas --}}
+                            <div class="hidden sm:flex p-3.5 rounded-xl bg-bg-soft border border-border-soft text-xs text-primary-900 mb-6 items-start gap-2.5">
                                 <svg class="w-4 h-4 text-green-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
@@ -191,8 +192,8 @@
                             </div>
                         </div>
 
-                        <div class="pt-4 border-t border-border-soft">
-                            <a href="{{ route('public.layanan.detail', $svc['slug']) }}" class="w-full text-center bg-primary-700 hover:bg-primary-900 text-white font-semibold text-sm py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow flex items-center justify-center gap-2 group/btn">
+                        <div class="pt-4 border-t border-border-soft mt-auto">
+                            <a href="{{ route('public.layanan.detail', $svc['slug']) }}" class="w-full text-center bg-primary-700 hover:bg-primary-900 text-white font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow flex items-center justify-center gap-2 group/btn">
                                 <span>Pelajari Layanan</span>
                                 <svg class="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
@@ -231,16 +232,33 @@
                 @else
                     <div class="space-y-4">
                         @foreach($pengumuman as $item)
-                            <div class="sim-card p-6 hover:border-primary-500 transition">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-100 text-primary-700">
-                                        {{ $item->target }}
-                                    </span>
+                            <a href="{{ route('public.pengumuman.detail', $item->id) }}" class="sim-card p-5 sm:p-6 hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5 transition block group cursor-pointer">
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-100 text-primary-700">
+                                            {{ $item->target }}
+                                        </span>
+                                        @if($item->is_pinned)
+                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                                                📌 Penting
+                                            </span>
+                                        @endif
+                                    </div>
                                     <span class="text-xs text-text-muted">{{ $item->created_at->format('d M Y') }}</span>
                                 </div>
-                                <h3 class="text-lg font-bold text-primary-900 mb-2">{{ $item->judul }}</h3>
-                                <p class="text-sm text-text-muted line-clamp-2 leading-relaxed">{{ $item->isi }}</p>
-                            </div>
+                                <h3 class="text-base sm:text-lg font-bold text-primary-900 group-hover:text-primary-700 transition leading-snug mb-2">
+                                    {{ $item->judul }}
+                                </h3>
+                                <p class="text-xs sm:text-sm text-text-muted line-clamp-2 leading-relaxed mb-3">
+                                    {{ $item->isi }}
+                                </p>
+                                <div class="flex items-center gap-1 text-xs font-semibold text-primary-700 group-hover:text-primary-900 group-hover:translate-x-1 transition duration-200">
+                                    <span>Baca Selengkapnya</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 @endif

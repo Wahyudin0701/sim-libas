@@ -26,7 +26,7 @@ class KampungDigitalSeeder extends Seeder
         $pencatat = User::where('email', 'rt@simlibas.com')->first()
             ?? User::first();
 
-        // 1. Seed UMKM Warga RT 15 (6 usaha warga)
+        // 1. Seed UMKM Warga RT 15 (6 usaha warga dengan variasi multi-kontak medsos)
         $msmes = [
             [
                 'household_id' => $households[0]->id,
@@ -37,6 +37,11 @@ class KampungDigitalSeeder extends Seeder
                 'alamat' => 'Jl. Aster No. 12 RT 15 Pematang Sulur',
                 'telepon' => '081274001511',
                 'whatsapp' => '081274001511',
+                'social_links' => [
+                    'whatsapp' => '081274001511',
+                    'instagram' => 'pempekpinang15',
+                    'shopee' => 'pempek_pinang_jambi',
+                ],
                 'status_moderasi' => 'disetujui',
                 'catatan_moderasi' => 'Usaha warga aktif, makanan higienis dan terdaftar.',
                 'is_active' => true,
@@ -50,6 +55,12 @@ class KampungDigitalSeeder extends Seeder
                 'alamat' => 'Gang Melati No. 04 RT 15',
                 'telepon' => '081366001522',
                 'whatsapp' => '081366001522',
+                'social_links' => [
+                    'whatsapp' => '081366001522',
+                    'instagram' => 'anyaman.lestari15',
+                    'tiktok' => 'anyaman.lestari15',
+                    'shopee' => 'lestari_craft_rt15',
+                ],
                 'status_moderasi' => 'disetujui',
                 'catatan_moderasi' => 'Produk kreatif unggulan RT 15 binaan kelurahan.',
                 'is_active' => true,
@@ -63,6 +74,9 @@ class KampungDigitalSeeder extends Seeder
                 'alamat' => 'Jl. Teratai Indah Blok B-3 RT 15',
                 'telepon' => '082188001533',
                 'whatsapp' => '082188001533',
+                'social_links' => [
+                    'whatsapp' => '082188001533',
+                ],
                 'status_moderasi' => 'pending',
                 'catatan_moderasi' => 'Menunggu verifikasi kelengkapan izin usaha rumahan.',
                 'is_active' => true,
@@ -76,6 +90,10 @@ class KampungDigitalSeeder extends Seeder
                 'alamat' => 'Lorong Mawar RT 15 Pematang Sulur',
                 'telepon' => '085277001544',
                 'whatsapp' => '085277001544',
+                'social_links' => [
+                    'whatsapp' => '085277001544',
+                    'instagram' => 'vermak.kilat15',
+                ],
                 'status_moderasi' => 'disetujui',
                 'catatan_moderasi' => 'Jasa jahit aktif dan terpercaya.',
                 'is_active' => true,
@@ -89,6 +107,10 @@ class KampungDigitalSeeder extends Seeder
                 'alamat' => 'Jl. Pinang Masak No. 05 Blok B RT 15',
                 'telepon' => '081274001555',
                 'whatsapp' => '081274001555',
+                'social_links' => [
+                    'whatsapp' => '081274001555',
+                    'tiktok' => 'laundry_bersihwangi',
+                ],
                 'status_moderasi' => 'disetujui',
                 'catatan_moderasi' => 'Layanan laundry warga aktif dengan fasilitas antar-jemput lingkungan.',
                 'is_active' => true,
@@ -101,7 +123,11 @@ class KampungDigitalSeeder extends Seeder
                 'kategori' => 'kuliner',
                 'alamat' => 'Jl. Pinang Masak No. 08 Blok C RT 15',
                 'telepon' => '081274001566',
-                'whatsapp' => '081274001566',
+                'whatsapp' => null,
+                'social_links' => [
+                    'instagram' => 'keripik.ibusri',
+                    'shopee' => 'keripik_ibusri_snack',
+                ],
                 'status_moderasi' => 'disetujui',
                 'catatan_moderasi' => 'UMKM camilan warga binaan PKK RT 15.',
                 'is_active' => true,

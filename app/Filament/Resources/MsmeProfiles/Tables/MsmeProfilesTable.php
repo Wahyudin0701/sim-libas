@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -18,33 +19,37 @@ class MsmeProfilesTable
     {
         return $table
             ->columns([
-                TextColumn::make('household.id')
-                    ->searchable(),
+                ImageColumn::make('foto_path')
+                    ->label('Foto')
+                    ->disk('public')
+                    ->square()
+                    ->defaultImageUrl(url('favicon.png')),
                 TextColumn::make('nama_usaha')
-                    ->searchable(),
+                    ->label('Nama Usaha')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('kategori')
+                    ->label('Kategori')
+                    ->badge()
                     ->searchable(),
-                TextColumn::make('foto_path')
-                    ->searchable(),
-                TextColumn::make('alamat')
+                TextColumn::make('household.headOfHousehold.nama')
+                    ->label('Pemilik (KK)')
                     ->searchable(),
                 TextColumn::make('telepon')
-                    ->searchable(),
-                TextColumn::make('whatsapp')
+                    ->label('Telepon / HP')
                     ->searchable(),
                 TextColumn::make('status_moderasi')
-                    ->badge(),
+                    ->label('Status')
+                    ->badge()
+                    ->colors([
+                        'success' => 'disetujui',
+                        'warning' => 'pending',
+                        'danger' => 'ditolak',
+                    ]),
                 IconColumn::make('is_active')
+                    ->label('Aktif')
                     ->boolean(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

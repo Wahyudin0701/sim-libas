@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Hero Header Kontak & Sekretariat (Selaras dengan Halaman SIM-LiBas Lainnya) -->
-    <section class="sim-gradient text-white relative overflow-hidden py-16 sm:py-20">
+    <section class="sim-gradient text-white relative overflow-hidden py-10 sm:py-20">
         <!-- Background subtle wave shapes -->
         <div class="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
             <svg class="w-full h-full" viewBox="0 0 1440 400" fill="none" preserveAspectRatio="none">
@@ -14,124 +14,225 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <!-- Breadcrumbs -->
-            <nav class="flex items-center justify-center gap-2 text-xs text-blue-200 mb-6">
+            <nav class="flex items-center justify-center gap-2 text-xs text-blue-200 mb-3 sm:mb-6">
                 <a href="{{ route('public.home') }}" class="hover:text-white transition">Beranda</a>
                 <span>/</span>
                 <span class="text-white font-semibold">Kontak RT</span>
             </nav>
 
-            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-gold-400 mb-4 border border-white/20">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold text-gold-400 mb-3 sm:mb-4 border border-white/20">
                 Pusat Komunikasi & Sekretariat Warga
             </span>
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
+            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-2 sm:mb-4">
                 Kontak & Sekretariat RT 15
             </h1>
-            <p class="text-base sm:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
+            <p class="hidden sm:block text-base sm:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
                 Pintu komunikasi resmi warga RT 15 Pematang Sulur. Dapatkan informasi administrasi kependudukan, koordinasi lingkungan, atau kunjungi sekretariat rukun tetangga kami.
             </p>
         </div>
     </section>
 
     <!-- Konten Utama: 3 Kartu Aksi Teratas (Floating -mt-8) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-16">
-        <!-- 3 Kartu Kontak Utama -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20 pb-16">
+        <!-- 3 Kartu Kontak Utama (Compact Horizontal di Mobile, Grid Vertikal di Desktop) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12">
             <!-- Kartu 1: WhatsApp Hotline -->
-            <div class="sim-card p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-xl transition duration-300 bg-white border border-border-soft rounded-2xl shadow-sm">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            @php
+                $cleanPhone = preg_replace('/[^0-9]/', '', $setting->telepon ?? '081274001515');
+                if (str_starts_with($cleanPhone, '0')) {
+                    $cleanPhone = '62' . substr($cleanPhone, 1);
+                }
+            @endphp
+            <div class="sim-card p-3.5 sm:p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
+                <!-- Tampilan Mobile: Ringkas dengan Button Lebar Penuh di Bawah -->
+                <div class="md:hidden flex flex-col justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.059-1.146-.084-.3-.095-.69-.234-1.196-.452-2.134-.925-3.522-3.088-3.627-3.232-.107-.143-.868-1.157-.868-2.207 0-1.05.549-1.567.747-1.776.195-.21.424-.263.566-.263.141 0 .283.003.407.01.131.007.307-.05.48.366.179.429.612 1.492.666 1.601.053.109.089.237.018.378-.07.143-.106.233-.213.357-.107.126-.225.28-.322.376-.107.106-.219.221-.094.437.125.215.556.917 1.194 1.485.822.732 1.516.96 1.731 1.067.215.108.341.09.468-.054.127-.144.544-.633.69-.85.144-.216.291-.18.49-.107.2.072 1.267.598 1.486.707.218.109.363.163.418.254.054.093.054.536-.09 1.482zM12 2C6.477 2 2 6.477 2 12c0 1.891.526 3.66 1.439 5.174L2 22l4.981-1.306A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.167c-1.637 0-3.161-.482-4.439-1.314l-.318-.207-2.957.776.79-2.883-.227-.361A8.125 8.125 0 013.833 12c0-4.503 3.664-8.167 8.167-8.167 4.503 0 8.167 3.664 8.167 8.167 0 4.503-3.664 8.167-8.167 8.167z"/>
                             </svg>
                         </div>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Telepon Aktif
-                        </span>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Telepon & WA</span>
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    Aktif
+                                </span>
+                            </div>
+                            <div class="text-sm font-extrabold text-primary-900 leading-tight">
+                                {{ $setting->telepon ?? '0812-7400-1515' }}
+                            </div>
+                            <div class="text-[11px] text-text-muted truncate">
+                                {{ $setting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman' }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">WhatsApp & Telepon Resmi</div>
-                    <div class="text-xl font-extrabold text-primary-900 mb-1">
-                        {{ $setting->telepon ?? '0812-7400-1515' }}
+                    <div class="mt-3 pt-2.5 border-t border-border-soft/70">
+                        <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode('Halo Pengurus RT 15 Pematang Sulur, saya ingin berkonsultasi mengenai layanan warga...') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-xs">
+                            <span>Chat WhatsApp Resmi</span>
+                        </a>
                     </div>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        {{ $setting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman, S.E.' }} (Ketua RT 15 Pematang Sulur).
-                    </p>
                 </div>
-                <div class="mt-5 pt-4 border-t border-border-soft">
-                    @php
-                        $cleanPhone = preg_replace('/[^0-9]/', '', $setting->telepon ?? '081274001515');
-                        if (str_starts_with($cleanPhone, '0')) {
-                            $cleanPhone = '62' . substr($cleanPhone, 1);
-                        }
-                    @endphp
-                    <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode('Halo Pengurus RT 15 Pematang Sulur, saya ingin berkonsultasi mengenai layanan warga...') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
-                        <span>Chat WhatsApp Resmi</span>
-                    </a>
+
+                <!-- Tampilan Desktop: Card Vertikal Lengkap -->
+                <div class="hidden md:flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.059-1.146-.084-.3-.095-.69-.234-1.196-.452-2.134-.925-3.522-3.088-3.627-3.232-.107-.143-.868-1.157-.868-2.207 0-1.05.549-1.567.747-1.776.195-.21.424-.263.566-.263.141 0 .283.003.407.01.131.007.307-.05.48.366.179.429.612 1.492.666 1.601.053.109.089.237.018.378-.07.143-.106.233-.213.357-.107.126-.225.28-.322.376-.107.106-.219.221-.094.437.125.215.556.917 1.194 1.485.822.732 1.516.96 1.731 1.067.215.108.341.09.468-.054.127-.144.544-.633.69-.85.144-.216.291-.18.49-.107.2.072 1.267.598 1.486.707.218.109.363.163.418.254.054.093.054.536-.09 1.482zM12 2C6.477 2 2 6.477 2 12c0 1.891.526 3.66 1.439 5.174L2 22l4.981-1.306A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.167c-1.637 0-3.161-.482-4.439-1.314l-.318-.207-2.957.776.79-2.883-.227-.361A8.125 8.125 0 013.833 12c0-4.503 3.664-8.167 8.167-8.167 4.503 0 8.167 3.664 8.167 8.167 0 4.503-3.664 8.167-8.167 8.167z"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Telepon Aktif
+                            </span>
+                        </div>
+                        <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">WhatsApp & Telepon Resmi</div>
+                        <div class="text-xl font-extrabold text-primary-900 mb-1">
+                            {{ $setting->telepon ?? '0812-7400-1515' }}
+                        </div>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            {{ $setting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman, S.E.' }} (Ketua RT 15 Pematang Sulur).
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-border-soft">
+                        <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode('Halo Pengurus RT 15 Pematang Sulur, saya ingin berkonsultasi mengenai layanan warga...') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
+                            <span>Chat WhatsApp Resmi</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Kartu 2: Alamat Sekretariat -->
-            <div class="sim-card p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-xl transition duration-300 bg-white border border-border-soft rounded-2xl shadow-sm">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary-700 border border-blue-100 flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="sim-card p-3.5 sm:p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
+                <!-- Tampilan Mobile: Ringkas dengan Button Lebar Penuh di Bawah -->
+                <div class="md:hidden flex flex-col justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary-700 border border-blue-100 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-primary-700 border border-blue-100">
-                            Sekretariat RT
-                        </span>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Sekretariat</span>
+                                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-blue-50 text-primary-700 border border-blue-100">
+                                    Posko RT 15
+                                </span>
+                            </div>
+                            <div class="text-sm font-extrabold text-primary-900 leading-tight">
+                                {{ $setting->alamat ?? 'Kampung Digital Pinang Masak Lestari, RT 15' }}
+                            </div>
+                            <div class="text-[11px] text-text-muted truncate">
+                                Kel. {{ $setting->kelurahan ?? 'Pematang Sulur' }}, Kota Jambi
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Alamat Balai & Sekretariat</div>
-                    <div class="text-base font-extrabold text-primary-900 mb-1 leading-snug">
-                        {{ $setting->alamat ?? 'Jl. Pinang Masak, RT 15' }}
+                    <div class="mt-3 pt-2.5 border-t border-border-soft/70">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center bg-primary-700 hover:bg-primary-800 active:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-xs">
+                            <span>Petunjuk Arah Google Maps</span>
+                        </a>
                     </div>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Kel. {{ $setting->kelurahan ?? 'Pematang Sulur' }}, Kec. {{ $setting->kecamatan ?? 'Telanaipura' }}, {{ $setting->kota ?? 'Kota Jambi' }} {{ $setting->kode_pos ?? '36129' }}.
-                    </p>
                 </div>
-                <div class="mt-5 pt-4 border-t border-border-soft">
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
-                        <span>Petunjuk Arah Google Maps</span>
-                    </a>
+
+                <!-- Tampilan Desktop: Card Vertikal Lengkap -->
+                <div class="hidden md:flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary-700 border border-blue-100 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-primary-700 border border-blue-100">
+                                Sekretariat RT
+                            </span>
+                        </div>
+                        <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Alamat Balai & Sekretariat</div>
+                        <div class="text-base font-extrabold text-primary-900 mb-1 leading-snug">
+                            {{ $setting->alamat ?? 'Jl. Pinang Masak, RT 15' }}
+                        </div>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Kel. {{ $setting->kelurahan ?? 'Pematang Sulur' }}, Kec. {{ $setting->kecamatan ?? 'Telanaipura' }}, {{ $setting->kota ?? 'Kota Jambi' }} {{ $setting->kode_pos ?? '36129' }}.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-border-soft">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
+                            <span>Petunjuk Arah Google Maps</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Kartu 3: Email & Saluran Mandiri -->
-            <div class="sim-card p-6 flex flex-col justify-between hover:-translate-y-1 hover:shadow-xl transition duration-300 bg-white border border-border-soft rounded-2xl shadow-sm">
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-700 border border-amber-100 flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="sim-card p-3.5 sm:p-6 bg-white border border-border-soft rounded-2xl shadow-sm hover:shadow-md transition">
+                <!-- Tampilan Mobile: Ringkas dengan Button Lebar Penuh di Bawah -->
+                <div class="md:hidden flex flex-col justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-gold-700 border border-amber-100 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-gold-700 border border-amber-200">
-                            24 Jam Mandiri
-                        </span>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Portal Mandiri</span>
+                                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-50 text-gold-700 border border-amber-200">
+                                    24 Jam
+                                </span>
+                            </div>
+                            <div class="text-sm font-extrabold text-primary-900 leading-tight">
+                                Layanan Mandiri Warga
+                            </div>
+                            <div class="text-[11px] text-text-muted truncate">
+                                {{ $setting->email ?? 'rt15pematangsulur@gmail.com' }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Email & Portal Digital</div>
-                    <div class="text-base font-extrabold text-primary-900 mb-1 truncate">
-                        {{ $setting->email ?? 'rt15pematangsulur@gmail.com' }}
+                    <div class="mt-3 pt-2.5 border-t border-border-soft/70">
+                        <a href="{{ route('citizen.login') }}" class="w-full inline-flex items-center justify-center bg-gold-500 hover:bg-gold-600 active:bg-gold-700 text-primary-900 font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-xs">
+                            <span>Buka Portal Mandiri Warga</span>
+                        </a>
                     </div>
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        Ajukan surat pengantar resmi, cek iuran, dan sampaikan pengaduan secara mandiri melalui Portal Warga.
-                    </p>
                 </div>
-                <div class="mt-5 pt-4 border-t border-border-soft">
-                    <a href="{{ route('citizen.login') }}" class="w-full inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-700 text-primary-900 font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
-                        <span>Buka Portal Mandiri Warga</span>
-                    </a>
+
+                <!-- Tampilan Desktop: Card Vertikal Lengkap -->
+                <div class="hidden md:flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-700 border border-amber-100 flex items-center justify-center shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-gold-700 border border-amber-200">
+                                24 Jam Mandiri
+                            </span>
+                        </div>
+                        <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Email & Portal Digital</div>
+                        <div class="text-base font-extrabold text-primary-900 mb-1 truncate">
+                            {{ $setting->email ?? 'rt15pematangsulur@gmail.com' }}
+                        </div>
+                        <p class="text-xs text-text-muted leading-relaxed">
+                            Ajukan surat pengantar resmi, cek iuran, dan sampaikan pengaduan secara mandiri melalui Portal Warga.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-border-soft">
+                        <a href="{{ route('citizen.login') }}" class="w-full inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-700 text-primary-900 font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
+                            <span>Buka Portal Mandiri Warga</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Bagian Dua Kolom: Form Pesan Cepat + Jadwal & Info Pengurus -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <!-- Kolom Kiri (7/12): Form Pesan Cepat & Struktur Pengurus -->
+            <!-- Kolom Kiri (7/12): Form Pesan Cepat -->
             <div class="lg:col-span-7 space-y-8">
                 <!-- Card Form Pesan / Pertanyaan Cepat -->
                 <div class="bg-white border border-border-soft rounded-2xl p-6 sm:p-8 shadow-sm">
@@ -143,7 +244,6 @@
                         </div>
                         <div>
                             <h3 class="text-lg sm:text-xl font-bold text-primary-900">Kirim Pesan ke Pengurus RT</h3>
-                            <p class="text-xs text-text-muted">Pesan Anda akan langsung diteruskan ke WhatsApp Hotline Resmi RT 15.</p>
                         </div>
                     </div>
 
@@ -187,92 +287,16 @@
                             <textarea id="pesan" rows="4" required placeholder="Tuliskan secara singkat maksud atau pertanyaan Anda kepada pengurus RT 15..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent leading-relaxed"></textarea>
                         </div>
 
-                        <div class="flex items-center justify-between pt-2">
-                            <span class="text-[11px] text-text-muted flex items-center gap-1.5">
+                        <div class="pt-2 space-y-2.5">
+                            <div class="flex items-center gap-1.5 text-[11px] text-text-muted">
                                 <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                Perlindungan Data Pribadi (UU PDP)
-                            </span>
-                            <button type="submit" class="bg-primary-700 hover:bg-primary-900 text-white font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition shadow-sm hover:shadow flex items-center gap-2">
+                                <span>Perlindungan Data Pribadi (UU PDP)</span>
+                            </div>
+                            <button type="submit" class="w-full inline-flex items-center justify-center bg-primary-700 hover:bg-primary-800 active:bg-primary-900 text-white font-bold text-xs sm:text-sm py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
                                 <span>Kirim via WhatsApp</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                             </button>
                         </div>
                     </form>
-                </div>
-
-                <!-- Card Struktur Pengurus & Penanggung Jawab Pelayanan -->
-                <div class="bg-white border border-border-soft rounded-2xl p-6 sm:p-8 shadow-sm">
-                    <div class="flex items-center justify-between pb-4 border-b border-border-soft mb-6">
-                        <div>
-                            <h3 class="text-lg sm:text-xl font-bold text-primary-900">Struktur Pengurus & Tim Pelayanan</h3>
-                            <p class="text-xs text-text-muted mt-0.5">Penanggung jawab koordinasi operasional RT 15 Pematang Sulur</p>
-                        </div>
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-primary-700 border border-blue-100">
-                            Periode 2024 - 2027
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- 1. Ketua RT -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3.5">
-                            <div class="w-10 h-10 rounded-xl bg-primary-900 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
-                                RT
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-primary-700 block">Ketua Rukun Tetangga</span>
-                                <div class="text-xs font-bold text-primary-900 mt-0.5">{{ $setting->nama_ketua_rt ?? 'Bpk. H. Ahmad Sudirman, S.E.' }}</div>
-                                <div class="text-[11px] text-text-muted mt-0.5">Pengesahan surat, koordinasi kelurahan & kebijakan warga.</div>
-                            </div>
-                        </div>
-
-                        <!-- 2. Sekretaris RT -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3.5">
-                            <div class="w-10 h-10 rounded-xl bg-blue-800 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
-                                SK
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-primary-700 block">Sekretaris RT</span>
-                                <div class="text-xs font-bold text-primary-900 mt-0.5">Bpk. Rahmat Hidayat, S.Kom.</div>
-                                <div class="text-[11px] text-text-muted mt-0.5">Administrasi berkas, database kependudukan & sistem SIM-LiBas.</div>
-                            </div>
-                        </div>
-
-                        <!-- 3. Bendahara RT -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3.5">
-                            <div class="w-10 h-10 rounded-xl bg-gold-500 text-primary-900 flex items-center justify-center font-extrabold text-sm shrink-0">
-                                BD
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-gold-700 block">Bendahara RT</span>
-                                <div class="text-xs font-bold text-primary-900 mt-0.5">Ibu Hj. Nur Aini</div>
-                                <div class="text-[11px] text-text-muted mt-0.5">Pencatatan kas, iuran bulanan warga & transparansi keuangan.</div>
-                            </div>
-                        </div>
-
-                        <!-- 4. Koordinator Bank Sampah -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3.5">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
-                                BS
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block">Kordinator Bank Sampah</span>
-                                <div class="text-xs font-bold text-primary-900 mt-0.5">Bpk. Bambang Setiawan</div>
-                                <div class="text-[11px] text-text-muted mt-0.5">Jadwal penimbangan sampah, buku tabungan & konversi saldo.</div>
-                            </div>
-                        </div>
-
-                        <!-- 5. Seksi Keamanan & Ronda -->
-                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3.5 sm:col-span-2">
-                            <div class="w-10 h-10 rounded-xl bg-slate-700 text-white flex items-center justify-center font-extrabold text-sm shrink-0">
-                                KM
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 block">Seksi Keamanan & Ketertiban Lingkungan</span>
-                                <div class="text-xs font-bold text-primary-900 mt-0.5">Bpk. Supriyanto & Tim Siskamling RT 15</div>
-                                <div class="text-[11px] text-text-muted mt-0.5">Jadwal pos ronda malam, koordinasi portal gerbang malam & penanganan tanggap darurat lingkungan.</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 

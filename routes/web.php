@@ -15,9 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 // --- 1. Rute Publik (Terbuka untuk Umum / Warga Tanpa Login) ---
 Route::get('/', [PublicPortalController::class, 'index'])->name('public.home');
+Route::get('/struktur-pengurus', [PublicPortalController::class, 'strukturPengurus'])->name('public.struktur-pengurus');
+Route::get('/struktur-organisasi', fn () => redirect()->route('public.struktur-pengurus'));
+Route::get('/struktur', fn () => redirect()->route('public.struktur-pengurus'));
 Route::get('/layanan', [PublicPortalController::class, 'layananIndex'])->name('public.layanan.index');
 Route::get('/layanan/{slug}', [PublicPortalController::class, 'layananDetail'])->name('public.layanan.detail');
 Route::get('/katalog-umkm', [PublicPortalController::class, 'umkm'])->name('public.umkm');
+Route::get('/katalog-umkm/{id}', [PublicPortalController::class, 'umkmDetail'])->name('public.umkm.detail');
+Route::get('/pengumuman/{id}', [PublicPortalController::class, 'pengumumanDetail'])->name('public.pengumuman.detail');
 Route::get('/bank-sampah', [PublicPortalController::class, 'bankSampah'])->name('public.bank-sampah');
 Route::get('/kontak', [PublicPortalController::class, 'contact'])->name('public.contact');
 
