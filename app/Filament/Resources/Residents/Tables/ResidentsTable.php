@@ -50,7 +50,8 @@ class ResidentsTable
                 TextColumn::make('masked_nik')
                     ->label('NIK')
                     ->badge()
-                    ->color('gray'),
+                    ->color(fn (?string $state): string => empty($state) ? 'warning' : 'gray')
+                    ->placeholder('Belum Terverifikasi'),
 
                 TextColumn::make('household.alamat')
                     ->label('Alamat KK')

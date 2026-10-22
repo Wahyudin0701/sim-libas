@@ -54,9 +54,10 @@ class ResidentForm
 
                 TextInput::make('nik')
                     ->label('NIK (16 Digit)')
-                    ->required()
+                    ->nullable()
                     ->length(16)
-                    ->numeric(),
+                    ->numeric()
+                    ->helperText('Kosongkan jika NIK fisik belum terverifikasi dari KK asli'),
 
                 TextInput::make('nama')
                     ->label('Nama Lengkap')
