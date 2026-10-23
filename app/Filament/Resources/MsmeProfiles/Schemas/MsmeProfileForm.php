@@ -4,8 +4,8 @@ namespace App\Filament\Resources\MsmeProfiles\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
@@ -72,6 +72,10 @@ class MsmeProfileForm
                 TextInput::make('social_links.shopee')
                     ->label('Toko Shopee')
                     ->placeholder('Nama toko atau https://shopee.co.id/...')
+                    ->maxLength(255),
+                TextInput::make('social_links.facebook')
+                    ->label('Akun / Halaman Facebook')
+                    ->placeholder('Nama akun atau tautan profil')
                     ->maxLength(255),
                 TextInput::make('produk')
                     ->label('Menu / Produk Unggulan')

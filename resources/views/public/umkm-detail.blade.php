@@ -332,6 +332,50 @@
                                 </a>
                             @endif
 
+                            {{-- Facebook --}}
+                            @if(in_array('facebook', $platforms))
+                                @php
+                                    $fbUrl = $umkm->getSocialUrl('facebook');
+                                    $fbLabel = $umkm->getSocialLabel('facebook');
+                                @endphp
+                                <a href="{{ $fbUrl }}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#1877F2] hover:bg-[#166fe5] text-white shadow-md hover:shadow-lg transition-all duration-200">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                                            @include('components.umkm-social-icon', ['platform' => 'facebook', 'class' => 'w-5 h-5 fill-white'])
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-xs font-bold leading-tight">Buka di Facebook</div>
+                                            <div class="text-[11px] text-white/90 truncate mt-0.5">{{ $fbLabel }}</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-white/80 group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            @endif
+
+                            {{-- GrabFood / Marketplace --}}
+                            @if(in_array('grabfood', $platforms))
+                                @php
+                                    $grabUrl = $umkm->getSocialUrl('grabfood');
+                                    $grabLabel = $umkm->getSocialLabel('grabfood');
+                                @endphp
+                                <a href="{{ $grabUrl }}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#00B14F] hover:bg-[#009b45] text-white shadow-md hover:shadow-lg transition-all duration-200">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                                            @include('components.umkm-social-icon', ['platform' => 'grabfood', 'class' => 'w-5 h-5 fill-white'])
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-xs font-bold leading-tight">Pesan di GrabFood</div>
+                                            <div class="text-[11px] text-white/90 truncate mt-0.5">{{ $grabLabel }}</div>
+                                        </div>
+                                    </div>
+                                    <svg class="w-4 h-4 text-white/80 group-hover:translate-x-1 transition shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            @endif
+
                             {{-- Sambungan Telepon Biasa (Jika ada dan belum tercakup) --}}
                             @if(!empty($umkm->telepon))
                                 @php

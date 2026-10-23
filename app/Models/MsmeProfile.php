@@ -133,7 +133,7 @@ class MsmeProfile extends Model
     public function getPhotoUrl(): ?string
     {
         if ($this->hasPhoto()) {
-            return asset('storage/' . $this->foto_path);
+            return asset('storage/'.$this->foto_path);
         }
 
         return null;
@@ -163,7 +163,7 @@ class MsmeProfile extends Model
             $available[] = 'whatsapp';
         }
 
-        foreach (['instagram', 'tiktok', 'shopee'] as $platform) {
+        foreach (['instagram', 'tiktok', 'shopee', 'facebook', 'grabfood'] as $platform) {
             if (! empty($links[$platform]) && filled(trim($links[$platform]))) {
                 $available[] = $platform;
             }
@@ -188,11 +188,12 @@ class MsmeProfile extends Model
                     return null;
                 }
                 if (str_starts_with($clean, '0')) {
-                    $clean = '62' . substr($clean, 1);
+                    $clean = '62'.substr($clean, 1);
                 } elseif (! str_starts_with($clean, '62') && strlen($clean) >= 9) {
-                    $clean = '62' . $clean;
+                    $clean = '62'.$clean;
                 }
                 $pesan = urlencode("Halo {$this->nama_usaha}, saya warga RT 15 melihat profil usaha Anda di Portal SIM-LiBas. Apakah produk masih tersedia?");
+
                 return "https://wa.me/{$clean}?text={$pesan}";
 
             case 'instagram':
@@ -205,6 +206,7 @@ class MsmeProfile extends Model
                     $handle = $matches[1];
                 }
                 $handle = ltrim($handle, '@');
+
                 return filled($handle) ? "https://instagram.com/{$handle}" : null;
 
             case 'tiktok':
@@ -217,6 +219,7 @@ class MsmeProfile extends Model
                     $handle = $matches[1];
                 }
                 $handle = ltrim($handle, '@');
+
                 return filled($handle) ? "https://www.tiktok.com/@{$handle}" : null;
 
             case 'shopee':
@@ -229,7 +232,33 @@ class MsmeProfile extends Model
                     return $val;
                 }
                 $shop = ltrim($val, '@');
+
                 return filled($shop) ? "https://shopee.co.id/{$shop}" : null;
+
+            case 'facebook':
+                $raw = $links['facebook'] ?? '';
+                if (empty($raw)) {
+                    return null;
+                }
+                $val = trim((string) $raw);
+                if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://')) {
+                    return $val;
+                }
+                $handle = ltrim($val, '@');
+
+                return 'https://www.facebook.com/'.rawurlencode($handle);
+
+            case 'grabfood':
+                $raw = $links['grabfood'] ?? $links['marketplace'] ?? '';
+                if (empty($raw)) {
+                    return null;
+                }
+                $val = trim((string) $raw);
+                if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://')) {
+                    return $val;
+                }
+
+                return 'https://food.grab.com/id/id/';
 
             default:
                 return null;
@@ -254,6 +283,7 @@ class MsmeProfile extends Model
                     $raw = $matches[1];
                 }
                 $handle = ltrim(trim((string) $raw), '@');
+
                 return filled($handle) ? "@{$handle}" : null;
 
             case 'tiktok':
@@ -262,6 +292,7 @@ class MsmeProfile extends Model
                     $raw = $matches[1];
                 }
                 $handle = ltrim(trim((string) $raw), '@');
+
                 return filled($handle) ? "@{$handle}" : null;
 
             case 'shopee':
@@ -269,7 +300,19 @@ class MsmeProfile extends Model
                 if (preg_match('~shopee\.co\.id/([^/?#]+)~i', (string) $raw, $matches)) {
                     return $matches[1];
                 }
+
                 return filled($raw) ? trim((string) $raw) : null;
+
+            case 'facebook':
+                $raw = $links['facebook'] ?? '';
+                if (preg_match('~facebook\.com/([^/?#]+)~i', (string) $raw, $matches)) {
+                    return $matches[1];
+                }
+
+                return filled($raw) ? trim((string) $raw) : null;
+
+            case 'grabfood':
+                return 'GrabFood';
 
             default:
                 return null;
