@@ -26,7 +26,7 @@ class Notifications extends Page
 
     protected static ?int $navigationSort = 0;
 
-    protected static ?string $title = 'Pusat Notifikasi';
+    protected static ?string $title = 'Notifikasi';
 
     protected static ?string $slug = 'notifikasi';
 

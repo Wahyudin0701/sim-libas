@@ -150,6 +150,7 @@
             if (! $topbarTitle) {
                 $topbarTitle = match (true) {
                     request()->routeIs('*.pages.dashboard') || request()->is('admin') => 'Dashboard',
+                    request()->is('admin/notifikasi*') || request()->routeIs('filament.admin.pages.notifikasi*') => 'Notifikasi',
                     request()->is('admin/households*') => 'Kartu Keluarga (KK)',
                     request()->is('admin/residents*') => 'Data Warga',
                     request()->is('admin/announcements*') => 'Pengumuman',

@@ -39,15 +39,29 @@
                 </div>
             </div>
 
-            {{-- Tombol Aksi: Tandai Semua Telah Dibaca --}}
-            <div class="flex items-center gap-2 shrink-0">
-                <button 
-                    type="button"
-                    wire:click="markAllAsRead"
-                    wire:loading.attr="disabled"
-                    class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white bg-[#0B3A85] hover:bg-[#08295E] rounded-xl shadow-xs transition duration-150 cursor-pointer disabled:opacity-50">
-                    <span>Tandai Semua Telah Dibaca</span>
-                </button>
+            {{-- Tombol Aksi di Pojok Kanan Atas: Tandai Semua Telah Dibaca & Tombol Kembali --}}
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+                @if ($this->unreadCount > 0)
+                    <button 
+                        type="button"
+                        wire:click="markAllAsRead"
+                        wire:loading.attr="disabled"
+                        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white bg-[#0B3A85] hover:bg-[#08295E] rounded-xl shadow-xs transition duration-150 cursor-pointer disabled:opacity-50">
+                        <span>Tandai Semua Telah Dibaca</span>
+                    </button>
+                @endif
+
+                <a 
+                    href="{{ route('filament.admin.pages.dashboard') }}" 
+                    id="admin-page-back-btn"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#0F1F3D] border border-[#CBD5E1] hover:bg-[#F8FAFC] hover:border-[#0B3A85] hover:text-[#0B3A85] transition-all duration-150 text-xs font-bold shadow-2xs hover:shadow-xs cursor-pointer group"
+                    title="Kembali ke halaman sebelumnya atau Dashboard"
+                >
+                    <svg class="w-3.5 h-3.5 text-[#5B6B82] group-hover:text-[#0B3A85] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span>Kembali</span>
+                </a>
             </div>
         </div>
 
@@ -268,4 +282,37 @@
             </div>
         @endif
     </div>
+
+    {{-- Script Navigasi Cerdas Tombol Kembali --}}
+    <script>
+        (function () {
+            var defaultUrl = "{{ route('filament.admin.pages.dashboard') }}";
+            var storageKey = 'simlibas_admin_notif_referrer';
+
+            if (document.referrer) {
+                try {
+                    var refUrl = new URL(document.referrer);
+                    if (refUrl.host === window.location.host && !refUrl.pathname.includes('/notifikasi')) {
+                        sessionStorage.setItem(storageKey, document.referrer);
+                    }
+                } catch (e) {}
+            }
+
+            var backBtn = document.getElementById('admin-page-back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var target = sessionStorage.getItem(storageKey);
+                    if (target && target !== window.location.href) {
+                        sessionStorage.removeItem(storageKey);
+                        window.location.href = target;
+                    } else if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1 && !document.referrer.includes('/notifikasi')) {
+                        window.history.back();
+                    } else {
+                        window.location.href = defaultUrl;
+                    }
+                });
+            }
+        })();
+    </script>
 </x-filament-panels::page>

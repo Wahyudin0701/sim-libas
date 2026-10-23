@@ -27,6 +27,7 @@
             request()->routeIs('warga.surat*') => 'Surat Pengantar',
             request()->routeIs('warga.iuran*') => 'Iuran Bulanan',
             request()->routeIs('warga.pengaduan*') => 'Pengaduan Warga',
+            request()->routeIs('warga.notifications*') => 'Notifikasi',
             default => 'Portal Warga',
         };
     }
@@ -70,8 +71,12 @@
             <!-- Judul Menu Khusus Mobile (Tampil di Mobile saat berada di menu selain Beranda) -->
             @if(!$isHome)
                 <div class="flex md:hidden items-center gap-2">
-                    @if(request()->routeIs('warga.kartu-keluarga*') || request()->routeIs('warga.profile*'))
-                        <a href="{{ route('warga.dashboard') }}" class="p-1 -ml-1 text-primary-900 hover:text-primary-700 active:scale-95 transition" title="Kembali ke Beranda" aria-label="Kembali ke Beranda">
+                    @if(request()->routeIs('warga.kartu-keluarga*') || request()->routeIs('warga.profile*') || request()->routeIs('warga.notifications*'))
+                        <a href="{{ route('warga.dashboard') }}" 
+                           id="citizen-topbar-back-btn"
+                           class="p-1 -ml-1 text-primary-900 hover:text-primary-700 active:scale-95 transition" 
+                           title="Kembali" 
+                           aria-label="Kembali">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                         </a>
                     @endif

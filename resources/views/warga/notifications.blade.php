@@ -1,6 +1,7 @@
 @extends('layouts.citizen')
 
 @section('title', 'Pusat Notifikasi | SIM-LiBas RT 15')
+@section('page_title', 'Notifikasi')
 
 @section('content')
 <div class="space-y-4">
@@ -25,9 +26,9 @@
             </div>
         </div>
 
-        {{-- Tombol Aksi: Tandai Semua Telah Dibaca (Tanpa Icon Centang) --}}
-        @if ($unreadCount > 0)
-            <div class="flex items-center gap-2 shrink-0">
+        {{-- Tombol Aksi di Pojok Kanan Atas: Tandai Semua Telah Dibaca & Tombol Kembali --}}
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+            @if ($unreadCount > 0)
                 <form action="{{ route('warga.notifications.read-all') }}" method="POST">
                     @csrf
                     <button 
@@ -36,8 +37,18 @@
                         <span>Tandai Semua Telah Dibaca</span>
                     </button>
                 </form>
-            </div>
-        @endif
+            @endif
+
+            <a href="{{ route('warga.dashboard') }}"
+               id="warga-page-back-btn"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-white text-[#0F1F3D] border border-[#CBD5E1] hover:bg-[#F8FAFC] hover:border-[#0B3A85] hover:text-[#0B3A85] transition-all duration-150 text-xs font-bold shadow-2xs hover:shadow-xs cursor-pointer group active:scale-95"
+               title="Kembali ke halaman sebelumnya atau Beranda">
+                <svg class="w-3.5 h-3.5 text-[#5B6B82] group-hover:text-[#0B3A85] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Kembali</span>
+            </a>
+        </div>
     </div>
 
     {{-- ====================================================================
@@ -243,3 +254,44 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        var defaultUrl = "{{ route('warga.dashboard') }}";
+        var storageKey = 'simlibas_warga_notif_referrer';
+
+        if (document.referrer) {
+            try {
+                var refUrl = new URL(document.referrer);
+                if (refUrl.host === window.location.host && !refUrl.pathname.includes('/notifikasi')) {
+                    sessionStorage.setItem(storageKey, document.referrer);
+                }
+            } catch (e) {}
+        }
+
+        function handleBackNavigation(e) {
+            if (e) e.preventDefault();
+            var target = sessionStorage.getItem(storageKey);
+            if (target && target !== window.location.href) {
+                sessionStorage.removeItem(storageKey);
+                window.location.href = target;
+            } else if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1 && !document.referrer.includes('/notifikasi')) {
+                window.history.back();
+            } else {
+                window.location.href = defaultUrl;
+            }
+        }
+
+        var topbarBackBtn = document.getElementById('citizen-topbar-back-btn');
+        if (topbarBackBtn) {
+            topbarBackBtn.addEventListener('click', handleBackNavigation);
+        }
+
+        var pageBackBtn = document.getElementById('warga-page-back-btn');
+        if (pageBackBtn) {
+            pageBackBtn.addEventListener('click', handleBackNavigation);
+        }
+    })();
+</script>
+@endpush

@@ -608,6 +608,9 @@ class CitizenPortalTest extends TestCase
         $response->assertSee('Surat Pengantar');
         $response->assertSee('Tandai Semua Telah Dibaca');
         $response->assertSee('Surat Pengantar Disetujui');
+        $response->assertSee('citizen-topbar-back-btn', false);
+        $response->assertSee('warga-page-back-btn', false);
+        $response->assertSee('Kembali');
     }
 
     /**

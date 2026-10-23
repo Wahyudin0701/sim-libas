@@ -49,6 +49,9 @@ class FilamentNotificationPageTest extends TestCase
             ->assertSee('Pusat Notifikasi')
             ->assertSee('KOMUNIKASI WARGA RT 15')
             ->assertSee('Tandai Semua Telah Dibaca')
+            ->assertSee('admin-page-back-btn', false)
+            ->assertSee('Kembali')
+            ->assertSee('Notifikasi')
             ->assertDontSee('TOTAL NOTIFIKASI')
             ->assertDontSee('Cari permohonan');
     }
