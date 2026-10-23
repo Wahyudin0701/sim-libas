@@ -236,7 +236,6 @@
                 const shouldOpen = show !== undefined ? show : isHidden;
 
                 if (shouldOpen) {
-                    toggleNotifMenu(false);
                     userDropdown.classList.remove('hidden');
                     requestAnimationFrame(() => {
                         userDropdown.classList.remove('opacity-0', 'scale-95');

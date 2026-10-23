@@ -194,6 +194,12 @@ class CitizenPortalTest extends TestCase
         $response->assertSee('Tabungan Sampah');
         $response->assertSee('Nomor Kartu Keluarga');
         $response->assertSee(route('warga.kartu-keluarga'));
+        $response->assertSee('id="user-menu-button"', false);
+        $response->assertSee('id="user-menu-dropdown"', false);
+        $response->assertSee('Profil Saya');
+        $response->assertSee(route('warga.profile'));
+        $response->assertSee(route('citizen.logout'));
+        $response->assertSee('Keluar');
     }
 
     /**
