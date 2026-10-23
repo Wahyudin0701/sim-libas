@@ -257,8 +257,11 @@ class MsmeProfile extends Model
                 if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://')) {
                     return $val;
                 }
+                if (strtolower($val) === 'grabfood') {
+                    return 'https://food.grab.com/id/id/';
+                }
 
-                return 'https://food.grab.com/id/id/';
+                return 'https://food.grab.com/id/id/search?search='.rawurlencode($val);
 
             default:
                 return null;
@@ -312,10 +315,61 @@ class MsmeProfile extends Model
                 return filled($raw) ? trim((string) $raw) : null;
 
             case 'grabfood':
+                $raw = $links['grabfood'] ?? $links['marketplace'] ?? '';
+                if (empty($raw)) {
+                    return 'GrabFood';
+                }
+                if (preg_match('~food\.grab\.com/[^/]+/[^/]+/restaurant/([^/?#]+)~i', (string) $raw, $matches)) {
+                    $slug = str_replace(['-', '_'], ' ', $matches[1]);
+                    return ucwords($slug);
+                }
+                $val = trim((string) $raw);
+                if (! str_starts_with($val, 'http://') && ! str_starts_with($val, 'https://') && strtolower($val) !== 'grabfood') {
+                    return $val;
+                }
+
                 return 'GrabFood';
 
             default:
                 return null;
         }
+    }
+
+    /**
+     * Accessor & Mutator untuk kemudahan akses atribut Facebook.
+     */
+    public function getFacebookAttribute(): ?string
+    {
+        return $this->social_links['facebook'] ?? null;
+    }
+
+    public function setFacebookAttribute(?string $value): void
+    {
+        $links = is_array($this->social_links) ? $this->social_links : [];
+        if (filled($value)) {
+            $links['facebook'] = trim((string) $value);
+        } else {
+            unset($links['facebook']);
+        }
+        $this->social_links = ! empty($links) ? $links : null;
+    }
+
+    /**
+     * Accessor & Mutator untuk kemudahan akses atribut GrabFood.
+     */
+    public function getGrabfoodAttribute(): ?string
+    {
+        return $this->social_links['grabfood'] ?? null;
+    }
+
+    public function setGrabfoodAttribute(?string $value): void
+    {
+        $links = is_array($this->social_links) ? $this->social_links : [];
+        if (filled($value)) {
+            $links['grabfood'] = trim((string) $value);
+        } else {
+            unset($links['grabfood']);
+        }
+        $this->social_links = ! empty($links) ? $links : null;
     }
 }

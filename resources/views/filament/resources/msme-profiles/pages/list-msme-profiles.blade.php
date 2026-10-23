@@ -599,6 +599,8 @@
                                                             'instagram' => 'bg-rose-50 text-rose-800 border-rose-200',
                                                             'tiktok' => 'bg-slate-100 text-slate-800 border-slate-200',
                                                             'shopee' => 'bg-orange-50 text-orange-800 border-orange-200',
+                                                            'facebook' => 'bg-blue-50 text-[#1877F2] border-blue-200 hover:bg-[#1877F2] hover:text-white',
+                                                            'grabfood' => 'bg-emerald-50 text-[#00B14F] border-emerald-200 hover:bg-[#00B14F] hover:text-white',
                                                             default => 'bg-slate-100 text-slate-700 border-slate-200',
                                                         };
                                                     @endphp
@@ -1116,7 +1118,19 @@
                                         >
                                     </div>
 
-                                    <div class="sm:col-span-2">
+                                    <div>
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            Facebook (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_facebook" 
+                                            placeholder="@akun atau tautan profil Facebook"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
+                                        >
+                                    </div>
+
+                                    <div>
                                         <label class="block font-bold text-slate-700 mb-1">
                                             Toko Shopee (Opsional)
                                         </label>
@@ -1124,6 +1138,18 @@
                                             type="text" 
                                             wire:model="form_shopee" 
                                             placeholder="Nama toko atau https://shopee.co.id/namatoko"
+                                            class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
+                                        >
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label class="block font-bold text-slate-700 mb-1">
+                                            GrabFood (Opsional)
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            wire:model="form_grabfood" 
+                                            placeholder="Tautan resto (https://food.grab.com/...) atau nama resto di GrabFood"
                                             class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0B3A85] text-xs text-slate-800"
                                         >
                                     </div>

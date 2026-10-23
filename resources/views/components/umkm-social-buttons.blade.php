@@ -20,6 +20,8 @@
             'instagram' => 'Kunjungi Instagram',
             'tiktok' => 'Buka TikTok',
             'shopee' => 'Belanja di Shopee',
+            'facebook' => 'Buka di Facebook',
+            'grabfood' => 'Pesan di GrabFood',
             default => 'Hubungi Usaha',
         };
         $btnStyle = match($p) {
@@ -27,6 +29,8 @@
             'instagram' => 'bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white shadow-rose-500/20',
             'tiktok' => 'bg-slate-900 hover:bg-black text-white shadow-slate-900/20',
             'shopee' => 'bg-[#EE4D2D] hover:bg-[#d83f20] text-white shadow-[#EE4D2D]/20',
+            'facebook' => 'bg-[#1877F2] hover:bg-[#166fe5] text-white shadow-[#1877F2]/20',
+            'grabfood' => 'bg-[#00B14F] hover:bg-[#009b45] text-white shadow-[#00B14F]/20',
             default => 'bg-primary-700 hover:bg-primary-800 text-white',
         };
     @endphp
@@ -53,6 +57,8 @@
                         'instagram' => 'bg-rose-50 text-rose-800 hover:bg-rose-600 hover:text-white border-rose-200',
                         'tiktok' => 'bg-slate-100 text-slate-800 hover:bg-slate-900 hover:text-white border-slate-200',
                         'shopee' => 'bg-orange-50 text-orange-800 hover:bg-[#EE4D2D] hover:text-white border-orange-200',
+                        'facebook' => 'bg-blue-50 text-[#1877F2] hover:bg-[#1877F2] hover:text-white border-blue-200',
+                        'grabfood' => 'bg-emerald-50 text-[#00B14F] hover:bg-[#00B14F] hover:text-white border-emerald-200',
                         default => 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200',
                     };
                     $shortLabel = match($p) {
@@ -60,6 +66,8 @@
                         'instagram' => 'Instagram',
                         'tiktok' => 'TikTok',
                         'shopee' => 'Shopee',
+                        'facebook' => 'Facebook',
+                        'grabfood' => 'GrabFood',
                         default => ucfirst($p),
                     };
                 @endphp

@@ -235,9 +235,16 @@
                                             'instagram' => 'text-rose-700 bg-rose-100/80 hover:bg-rose-600 hover:text-white border-rose-200',
                                             'tiktok' => 'text-slate-900 bg-slate-200/80 hover:bg-slate-900 hover:text-white border-slate-300',
                                             'shopee' => 'text-[#EE4D2D] bg-orange-100/80 hover:bg-[#EE4D2D] hover:text-white border-orange-200',
+                                            'facebook' => 'text-[#1877F2] bg-blue-100/80 hover:bg-[#1877F2] hover:text-white border-blue-200',
+                                            'grabfood' => 'text-[#00B14F] bg-emerald-100/80 hover:bg-[#00B14F] hover:text-white border-emerald-200',
                                             default => 'text-primary-700 bg-blue-100/80 hover:bg-primary-700 hover:text-white border-blue-200',
                                         };
-                                        $pLabel = $p === 'whatsapp' ? 'Hubungi via WhatsApp' : ucfirst($p);
+                                        $pLabel = match($p) {
+                                            'whatsapp' => 'Hubungi via WhatsApp',
+                                            'facebook' => 'Buka Facebook',
+                                            'grabfood' => 'Pesan di GrabFood',
+                                            default => ucfirst($p),
+                                        };
                                     @endphp
                                     <a href="{{ $pUrl }}" target="_blank" rel="noopener noreferrer" title="{{ $pLabel }}" onclick="event.stopPropagation();" class="w-5 h-5 sm:w-6 sm:h-6 rounded-md border flex items-center justify-center transition shrink-0 {{ $iconStyle }}">
                                         @include('components.umkm-social-icon', ['platform' => $p, 'class' => 'w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current'])
@@ -338,9 +345,16 @@
                                                         'instagram' => 'text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border-rose-200',
                                                         'tiktok' => 'text-slate-900 hover:text-black bg-slate-100 hover:bg-slate-200 border-slate-300',
                                                         'shopee' => 'text-[#EE4D2D] hover:text-[#d43d1f] bg-orange-50 hover:bg-orange-100 border-orange-200',
+                                                        'facebook' => 'text-[#1877F2] hover:text-[#166fe5] bg-blue-50 hover:bg-blue-100 border-blue-200',
+                                                        'grabfood' => 'text-[#00B14F] hover:text-[#009b45] bg-emerald-50 hover:bg-emerald-100 border-emerald-200',
                                                         default => 'text-primary-700 bg-blue-50 border-blue-200',
                                                     };
-                                                    $tableLabel = $p === 'whatsapp' ? 'Hubungi via WhatsApp' : ucfirst($p);
+                                                    $tableLabel = match($p) {
+                                                        'whatsapp' => 'Hubungi via WhatsApp',
+                                                        'facebook' => 'Buka Facebook',
+                                                        'grabfood' => 'Pesan di GrabFood',
+                                                        default => ucfirst($p),
+                                                    };
                                                 @endphp
                                                 <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" title="{{ $tableLabel }}" onclick="event.stopPropagation();" class="w-7 h-7 rounded-lg border flex items-center justify-center transition {{ $iconStyle }}">
                                                     @include('components.umkm-social-icon', ['platform' => $p, 'class' => 'w-3.5 h-3.5 fill-current'])

@@ -75,7 +75,11 @@ class MsmeProfileForm
                     ->maxLength(255),
                 TextInput::make('social_links.facebook')
                     ->label('Akun / Halaman Facebook')
-                    ->placeholder('Nama akun atau tautan profil')
+                    ->placeholder('Nama akun atau tautan profil Facebook')
+                    ->maxLength(255),
+                TextInput::make('social_links.grabfood')
+                    ->label('Toko / Resto GrabFood')
+                    ->placeholder('Tautan resto GrabFood (misal: https://food.grab.com/...) atau nama resto')
                     ->maxLength(255),
                 TextInput::make('produk')
                     ->label('Menu / Produk Unggulan')

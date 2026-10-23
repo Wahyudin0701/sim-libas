@@ -355,4 +355,120 @@ class MsmePhotoAndMultiContactTest extends TestCase
         $responseInactive = $this->get(route('public.umkm.detail', $inactiveMsme->id));
         $responseInactive->assertStatus(404);
     }
+
+    /**
+     * 12. Tambah & Edit UMKM dengan Facebook dan GrabFood melalui Livewire Admin.
+     */
+    public function test_can_create_and_edit_msme_with_facebook_and_grabfood_via_livewire(): void
+    {
+        Livewire::actingAs($this->admin)
+            ->test(ListMsmeProfiles::class)
+            ->call('openCreate')
+            ->set('form_household_id', $this->household->id)
+            ->set('form_nama_usaha', 'Warung Nasi Padang Sabana')
+            ->set('form_kategori', 'kuliner')
+            ->set('form_telepon', '081298765432')
+            ->set('form_whatsapp', '081298765432')
+            ->set('form_facebook', 'https://facebook.com/padangsabana15')
+            ->set('form_grabfood', 'https://food.grab.com/id/id/restaurant/padang-sabana')
+            ->call('saveMsme');
+
+        $created = MsmeProfile::where('nama_usaha', 'Warung Nasi Padang Sabana')->first();
+        $this->assertNotNull($created);
+        $this->assertEquals('https://facebook.com/padangsabana15', $created->facebook);
+        $this->assertEquals('https://food.grab.com/id/id/restaurant/padang-sabana', $created->grabfood);
+        $this->assertContains('facebook', $created->getAvailableSocialPlatforms());
+        $this->assertContains('grabfood', $created->getAvailableSocialPlatforms());
+
+        // Test edit via Livewire
+        Livewire::actingAs($this->admin)
+            ->test(ListMsmeProfiles::class)
+            ->call('openEdit', $created->id)
+            ->assertSet('form_facebook', 'https://facebook.com/padangsabana15')
+            ->assertSet('form_grabfood', 'https://food.grab.com/id/id/restaurant/padang-sabana')
+            ->set('form_facebook', 'padang.sabana.official')
+            ->set('form_grabfood', 'Padang Sabana Pinang')
+            ->call('saveMsme');
+
+        $fresh = $created->fresh();
+        $this->assertEquals('padang.sabana.official', $fresh->facebook);
+        $this->assertEquals('Padang Sabana Pinang', $fresh->grabfood);
+        $this->assertStringContainsString('facebook.com/padang.sabana.official', $fresh->getSocialUrl('facebook'));
+        $this->assertStringContainsString('food.grab.com/id/id/search?search=Padang%20Sabana%20Pinang', $fresh->getSocialUrl('grabfood'));
+    }
+
+    /**
+     * 13. Verifikasi URL resolver dan Label untuk Facebook & GrabFood.
+     */
+    public function test_facebook_and_grabfood_url_generation_and_labels(): void
+    {
+        $msme = MsmeProfile::create([
+            'household_id' => $this->household->id,
+            'nama_usaha' => 'Dapoer Umi 15',
+            'kategori' => 'kuliner',
+            'telepon' => '081234567800',
+            'social_links' => [
+                'facebook' => 'dapoerumi.rt15',
+                'grabfood' => 'https://food.grab.com/id/id/restaurant/dapoer-umi-delivery/12345',
+            ],
+            'status_moderasi' => 'disetujui',
+            'is_active' => true,
+        ]);
+
+        $this->assertEquals('https://www.facebook.com/dapoerumi.rt15', $msme->getSocialUrl('facebook'));
+        $this->assertEquals('dapoerumi.rt15', $msme->getSocialLabel('facebook'));
+
+        $this->assertEquals('https://food.grab.com/id/id/restaurant/dapoer-umi-delivery/12345', $msme->getSocialUrl('grabfood'));
+        $this->assertEquals('Dapoer Umi Delivery', $msme->getSocialLabel('grabfood'));
+
+        // Test fallback pencarian GrabFood jika hanya teks nama gerai
+        $msme->social_links = ['grabfood' => 'Dapoer Umi Spesial'];
+        $this->assertEquals('https://food.grab.com/id/id/search?search=Dapoer%20Umi%20Spesial', $msme->getSocialUrl('grabfood'));
+        $this->assertEquals('Dapoer Umi Spesial', $msme->getSocialLabel('grabfood'));
+
+        // Test generic keyword 'grabfood'
+        $msme->social_links = ['grabfood' => 'grabfood'];
+        $this->assertEquals('https://food.grab.com/id/id/', $msme->getSocialUrl('grabfood'));
+    }
+
+    /**
+     * 14. Halaman katalog publik dan halaman detail menampilkan tautan Facebook dan GrabFood.
+     */
+    public function test_public_katalog_and_detail_render_facebook_and_grabfood_links(): void
+    {
+        $msme = MsmeProfile::create([
+            'household_id' => $this->household->id,
+            'nama_usaha' => 'Sate Kambing Muda Pak RT',
+            'kategori' => 'kuliner',
+            'deskripsi' => 'Sate kambing empuk tanpa bau prengus.',
+            'telepon' => '081299900011',
+            'social_links' => [
+                'facebook' => 'satepakrt15',
+                'grabfood' => 'https://food.grab.com/id/id/restaurant/sate-pak-rt',
+            ],
+            'status_moderasi' => 'disetujui',
+            'is_active' => true,
+        ]);
+
+        // Verifikasi pada halaman Katalog UMKM publik
+        $catalogResponse = $this->get(route('public.umkm'));
+        $catalogResponse->assertStatus(200);
+        $catalogResponse->assertSee('facebook.com/satepakrt15');
+        $catalogResponse->assertSee('food.grab.com/id/id/restaurant/sate-pak-rt');
+
+        // Verifikasi pada halaman Detail UMKM publik
+        $detailResponse = $this->get(route('public.umkm.detail', $msme->id));
+        $detailResponse->assertStatus(200);
+        $detailResponse->assertSee('Buka di Facebook');
+        $detailResponse->assertSee('facebook.com/satepakrt15');
+        $detailResponse->assertSee('Pesan di GrabFood');
+        $detailResponse->assertSee('food.grab.com/id/id/restaurant/sate-pak-rt');
+        $detailResponse->assertSee('style="background-color: #1877F2;"', false);
+        $detailResponse->assertSee('style="background-color: #00B14F;"', false);
+
+        // Verifikasi bahwa kontak yang tidak ada tidak dirender
+        $detailResponse->assertDontSee('Kunjungi Instagram');
+        $detailResponse->assertDontSee('Buka di TikTok');
+        $detailResponse->assertDontSee('Belanja di Shopee');
+    }
 }

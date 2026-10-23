@@ -316,7 +316,7 @@
                                     $shopeeUrl = $umkm->getSocialUrl('shopee');
                                     $shopeeLabel = $umkm->getSocialLabel('shopee');
                                 @endphp
-                                <a href="{{ $shopeeUrl }}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#EE4D2D] hover:bg-[#d83f20] text-white shadow-md hover:shadow-lg transition-all duration-200">
+                                <a href="{{ $shopeeUrl }}" target="_blank" rel="noopener noreferrer" style="background-color: #EE4D2D;" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#EE4D2D] hover:bg-[#d83f20] text-white shadow-md hover:shadow-lg transition-all duration-200">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                                             @include('components.umkm-social-icon', ['platform' => 'shopee', 'class' => 'w-5 h-5 fill-white'])
@@ -338,7 +338,7 @@
                                     $fbUrl = $umkm->getSocialUrl('facebook');
                                     $fbLabel = $umkm->getSocialLabel('facebook');
                                 @endphp
-                                <a href="{{ $fbUrl }}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#1877F2] hover:bg-[#166fe5] text-white shadow-md hover:shadow-lg transition-all duration-200">
+                                <a href="{{ $fbUrl }}" target="_blank" rel="noopener noreferrer" style="background-color: #1877F2;" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#1877F2] hover:bg-[#166fe5] text-white shadow-md hover:shadow-lg transition-all duration-200">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                                             @include('components.umkm-social-icon', ['platform' => 'facebook', 'class' => 'w-5 h-5 fill-white'])
@@ -360,7 +360,7 @@
                                     $grabUrl = $umkm->getSocialUrl('grabfood');
                                     $grabLabel = $umkm->getSocialLabel('grabfood');
                                 @endphp
-                                <a href="{{ $grabUrl }}" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#00B14F] hover:bg-[#009b45] text-white shadow-md hover:shadow-lg transition-all duration-200">
+                                <a href="{{ $grabUrl }}" target="_blank" rel="noopener noreferrer" style="background-color: #00B14F;" class="group flex items-center justify-between p-3.5 rounded-2xl bg-[#00B14F] hover:bg-[#009b45] text-white shadow-md hover:shadow-lg transition-all duration-200">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                                             @include('components.umkm-social-icon', ['platform' => 'grabfood', 'class' => 'w-5 h-5 fill-white'])

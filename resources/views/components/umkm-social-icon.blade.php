@@ -31,15 +31,15 @@
 
     @case('facebook')
         {{-- Facebook Official Icon --}}
-        <svg class="{{ $class }}" viewBox="0 0 24 24">
+        <svg class="{{ $class }}" viewBox="0 0 24 24" fill="currentColor">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
         </svg>
         @break
 
     @case('grabfood')
         {{-- Food Delivery / GrabFood Icon --}}
-        <svg class="{{ $class }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        <svg class="{{ $class }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 7h-2.1A5.002 5.002 0 0 0 12 3a5.002 5.002 0 0 0-4.9 4H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-7-2a3 3 0 0 1 2.82 2h-5.64A3 3 0 0 1 12 5zm-2.5 7.5a.75.75 0 0 1 1.5 0v3.75a.75.75 0 0 1-1.5 0V12.5zm4.25 0a.75.75 0 0 1 1.5 0v3.75a.75.75 0 0 1-1.5 0V12.5zM12 11a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 12 11z"/>
         </svg>
         @break
 

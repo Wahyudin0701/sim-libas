@@ -57,6 +57,8 @@ class ListMsmeProfiles extends ListRecords
     public string $form_instagram = '';
     public string $form_tiktok = '';
     public string $form_shopee = '';
+    public string $form_facebook = '';
+    public string $form_grabfood = '';
     public mixed $form_foto = null;
     public ?string $current_foto_path = null;
     public bool $remove_foto = false;
@@ -289,6 +291,8 @@ class ListMsmeProfiles extends ListRecords
         $this->form_instagram = $links['instagram'] ?? '';
         $this->form_tiktok = $links['tiktok'] ?? '';
         $this->form_shopee = $links['shopee'] ?? '';
+        $this->form_facebook = $links['facebook'] ?? '';
+        $this->form_grabfood = $links['grabfood'] ?? '';
 
         $this->formModalOpen = true;
     }
@@ -319,6 +323,8 @@ class ListMsmeProfiles extends ListRecords
         $this->form_instagram = '';
         $this->form_tiktok = '';
         $this->form_shopee = '';
+        $this->form_facebook = '';
+        $this->form_grabfood = '';
         $this->form_foto = null;
         $this->current_foto_path = null;
         $this->remove_foto = false;
@@ -344,6 +350,8 @@ class ListMsmeProfiles extends ListRecords
             'form_instagram' => 'nullable|string|max:100',
             'form_tiktok' => 'nullable|string|max:100',
             'form_shopee' => 'nullable|string|max:255',
+            'form_facebook' => 'nullable|string|max:255',
+            'form_grabfood' => 'nullable|string|max:255',
         ];
 
         if ($this->form_foto) {
@@ -371,6 +379,12 @@ class ListMsmeProfiles extends ListRecords
         }
         if (filled($this->form_shopee)) {
             $socialLinks['shopee'] = trim($this->form_shopee);
+        }
+        if (filled($this->form_facebook)) {
+            $socialLinks['facebook'] = trim($this->form_facebook);
+        }
+        if (filled($this->form_grabfood)) {
+            $socialLinks['grabfood'] = trim($this->form_grabfood);
         }
 
         $payload = [
@@ -480,6 +494,8 @@ class ListMsmeProfiles extends ListRecords
                 'Instagram',
                 'TikTok',
                 'Shopee',
+                'Facebook',
+                'GrabFood',
                 'Status Moderasi',
                 'Status Aktif',
             ]);
@@ -498,6 +514,8 @@ class ListMsmeProfiles extends ListRecords
                     $links['instagram'] ?? '-',
                     $links['tiktok'] ?? '-',
                     $links['shopee'] ?? '-',
+                    $links['facebook'] ?? '-',
+                    $links['grabfood'] ?? '-',
                     strtoupper($item->status_moderasi),
                     $item->is_active ? 'AKTIF' : 'NONAKTIF',
                 ]);
