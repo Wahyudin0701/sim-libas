@@ -108,27 +108,13 @@
         <div class="max-w-md w-full mx-auto my-auto py-2">
             
             {{-- Header Form --}}
-            <div class="mb-6">
+            <div class="mb-8">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-primary-900 tracking-tight">
                     Masuk <span class="text-primary-500">Portal Warga</span>
                 </h2>
-                <p class="text-xs sm:text-sm text-text-muted mt-1.5 leading-relaxed">
-                    Akses layanan mandiri warga RT 15 dengan mudah menggunakan Nama Lengkap dan NIK sesuai KTP.
+                <p class="text-sm text-text-muted mt-2">
+                    Silakan masukkan Nama Lengkap dan NIK Anda sesuai KTP.
                 </p>
-            </div>
-
-            {{-- Petunjuk Masuk Ramah Lansia --}}
-            <div class="mb-5 p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/80 text-xs text-[#0B3A85] leading-relaxed flex items-start gap-2.5">
-                <svg class="w-5 h-5 text-[#0B3A85] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <div>
-                    <span class="font-bold block mb-0.5">Petunjuk Masuk Warga:</span>
-                    <ul class="list-disc list-inside space-y-0.5 text-[11.5px] text-slate-700">
-                        <li><strong>Username:</strong> Nama lengkap Anda sesuai KTP.</li>
-                        <li><strong>Kata Sandi:</strong> 16 digit NIK pada KTP Anda.</li>
-                    </ul>
-                </div>
             </div>
 
             {{-- Alert Notifikasi Gagal --}}
@@ -147,12 +133,12 @@
             @endif
 
             {{-- Form Login Utama --}}
-            <form action="{{ route('citizen.login.post') }}" method="POST" class="space-y-4" novalidate>
+            <form action="{{ route('citizen.login.post') }}" method="POST" class="space-y-5" novalidate>
                 @csrf
 
                 {{-- 1. Input Nama Lengkap Sesuai KTP --}}
                 <div>
-                    <label for="nama" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider mb-1.5">
+                    <label for="nama" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider mb-2">
                         Nama Lengkap Sesuai KTP <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -164,22 +150,16 @@
                         autofocus
                         autocomplete="name"
                         placeholder="Contoh: EDWIN EDWARD RUMAJAR"
-                        class="w-full px-4 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nama') || $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
+                        class="w-full px-4 py-3.5 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nama') || $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
                     >
-                    <p class="text-[11px] text-slate-500 mt-1">
-                        Ketik nama lengkap Anda persis seperti yang tertulis pada e-KTP.
-                    </p>
                 </div>
 
                 {{-- 2. Input NIK (Sebagai Kata Sandi Warga) --}}
                 <div>
-                    <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center justify-between mb-2">
                         <label for="nik" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider">
                             Nomor Induk Kependudukan (NIK) <span class="text-red-500">*</span>
                         </label>
-                        <a href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin menanyakan NIK akun Portal Warga SIM-LiBas saya.') }}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-primary-500 hover:text-primary-700 hover:underline transition">
-                            Cek NIK / Bantuan?
-                        </a>
                     </div>
                     <div class="relative">
                         <input
@@ -190,8 +170,8 @@
                             inputmode="numeric"
                             maxlength="16"
                             autocomplete="current-password"
-                            placeholder="16 digit angka NIK pada KTP"
-                            class="w-full pl-4 pr-11 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nik') || $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base font-mono text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150 tracking-wider"
+                            placeholder="16 digit angka NIK KTP"
+                            class="w-full pl-4 pr-12 py-3.5 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nik') || $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base font-mono text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150 tracking-wider"
                         >
                         {{-- Toggle Show/Hide Password NIK --}}
                         <button
@@ -211,9 +191,6 @@
                             </svg>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-1">
-                        16 digit NIK Anda digunakan sebagai kata sandi untuk masuk ke portal.
-                    </p>
                 </div>
 
                 {{-- Checkbox Ingat Saya --}}
@@ -224,7 +201,7 @@
                             name="remember"
                             class="w-4 h-4 rounded border-border-soft text-primary-700 focus:ring-primary-500 cursor-pointer"
                         >
-                        <span class="text-xs text-text-muted group-hover:text-primary-900 transition">
+                        <span class="text-xs sm:text-sm text-text-muted group-hover:text-primary-900 transition">
                             Ingat saya di perangkat ini
                         </span>
                     </label>
@@ -233,65 +210,64 @@
                 {{-- Tombol Masuk Sekarang --}}
                 <button
                     type="submit"
-                    class="w-full bg-primary-700 hover:bg-primary-900 text-white font-bold text-sm sm:text-base py-3.5 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer mt-2"
+                    class="w-full bg-primary-700 hover:bg-primary-900 text-white font-bold text-base py-3.5 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer mt-2"
                 >
-                    <svg class="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                    </svg>
                     <span>Masuk ke Portal Warga</span>
+                    <svg class="w-5 h-5 shrink-0 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
                 </button>
             </form>
 
-            {{-- Divider: Akses Portal Lainnya --}}
+            {{-- Hubungi Pengurus / Bantuan --}}
+            <div class="mt-6 text-center">
+                <p class="text-xs sm:text-sm text-text-muted">
+                    Lupa NIK atau butuh bantuan?
+                    <a
+                        href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin menanyakan akses Portal Warga SIM-LiBas saya.') }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="font-bold text-primary-700 hover:text-primary-900 hover:underline transition inline-block ml-1"
+                    >
+                        Hubungi Pengurus RT
+                    </a>
+                </p>
+            </div>
+
+            {{-- Divider --}}
             <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-border-soft"></div>
                 </div>
-                <div class="relative flex justify-center">
-                    <span class="bg-white px-3 text-xs text-text-muted font-medium">Akses Portal Lainnya</span>
-                </div>
             </div>
 
-            {{-- 2 Tombol Pilihan (Portal Pengurus & Ke Beranda) --}}
-            <div class="grid grid-cols-2 gap-3">
-                <a
-                    href="{{ url('/admin/login') }}"
-                    class="py-2.5 px-3 text-center border border-border-soft hover:border-primary-500 hover:bg-blue-50/50 rounded-xl text-xs font-bold text-primary-700 hover:text-primary-900 transition flex items-center justify-center gap-1.5"
-                >
-                    <svg class="w-3.5 h-3.5 text-primary-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                    <span>Portal Pengurus</span>
-                </a>
-
+            {{-- Navigasi Pilihan (Ke Beranda & Portal Pengurus) --}}
+            <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-text-muted">
                 <a
                     href="{{ route('public.home') }}"
-                    class="py-2.5 px-3 text-center border border-border-soft hover:border-primary-500 hover:bg-blue-50/50 rounded-xl text-xs font-bold text-text-muted hover:text-primary-900 transition flex items-center justify-center gap-1.5"
+                    class="hover:text-primary-700 transition flex items-center gap-1.5 py-1"
                 >
-                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
                     <span>Ke Beranda</span>
                 </a>
-            </div>
 
-            {{-- Keterangan Aktivasi Warga di Bawah Tombol --}}
-            <div class="mt-4 text-center">
                 <a
-                    href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin mengaktifkan akun Portal Warga SIM-LiBas.') }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-xs text-text-muted hover:text-primary-700 transition font-medium inline-block"
+                    href="{{ url('/admin/login') }}"
+                    class="hover:text-primary-700 transition flex items-center gap-1.5 py-1"
                 >
-                    Belum punya akun atau NIK belum terdaftar? <span class="font-bold text-primary-700 hover:underline">Hubungi Pengurus RT</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span>Portal Pengurus</span>
                 </a>
             </div>
         </div>
 
         {{-- Footer Hak Cipta di Bawah Panel Form --}}
         <div class="pt-6 text-center text-xs text-text-muted">
-            <p>&copy; {{ date('Y') }} SIM-LiBas RT 15 Pematang Sulur.</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">Semua hak dilindungi.</p>
+            <p>&copy; {{ date('Y') }} SIM-LiBas RT 15 Pematang Sulur</p>
         </div>
     </div>
 </div>

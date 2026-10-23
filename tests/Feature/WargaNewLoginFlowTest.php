@@ -37,7 +37,7 @@ class WargaNewLoginFlowTest extends TestCase
     }
 
     /**
-     * 1. Halaman login warga menampilkan label Nama KTP, NIK, dan petunjuk ramah lansia
+     * 1. Halaman login warga menampilkan label Nama KTP, NIK, dan antarmuka yang bersih & ramah lansia
      */
     public function test_login_page_renders_new_labels_and_elderly_instructions(): void
     {
@@ -46,7 +46,6 @@ class WargaNewLoginFlowTest extends TestCase
         $response->assertOk();
         $response->assertSee('Nama Lengkap Sesuai KTP');
         $response->assertSee('Nomor Induk Kependudukan (NIK)');
-        $response->assertSee('Petunjuk Masuk Warga');
         $response->assertSee('Masuk ke Portal Warga');
     }
 
