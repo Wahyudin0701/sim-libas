@@ -100,21 +100,31 @@
 
 
     {{-- ======================================================== --}}
-    {{-- SISI KANAN / FORM PANEL (PUTIH, BERSIH, RAMAH LANSIA)    --}}
+    {{-- SISI KANAN / FORM PANEL (KONSISTEN DENGAN PORTAL PENGURUS)--}}
     {{-- ======================================================== --}}
-    <div class="flex-1 flex flex-col justify-between bg-white px-6 sm:px-10 lg:px-14 xl:px-20 py-8 sm:py-10 lg:py-12 -mt-4 lg:mt-0 rounded-t-3xl lg:rounded-none shadow-2xl lg:shadow-none relative z-20">
+    <div class="flex-1 flex flex-col justify-between bg-white px-6 sm:px-10 lg:px-12 xl:px-16 py-8 sm:py-10 lg:py-12 -mt-4 lg:mt-0 rounded-t-3xl lg:rounded-none shadow-2xl lg:shadow-none relative z-20">
         
         {{-- Wrapper Form Terpusat --}}
         <div class="max-w-md w-full mx-auto my-auto py-2">
             
             {{-- Header Form --}}
-            <div class="mb-8">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-primary-900 tracking-tight">
-                    Masuk <span class="text-primary-500">Portal Warga</span>
-                </h2>
-                <p class="text-sm text-text-muted mt-2">
-                    Silakan masukkan Nama Lengkap dan NIK Anda sesuai KTP.
+            <div class="mb-4">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-[#071F47] tracking-tight leading-tight mb-1.5">
+                    Portal Warga RT 15
+                </h1>
+                <p class="text-xs sm:text-sm text-[#5B6B82] leading-relaxed">
+                    Masuk ke layanan mandiri, pengajuan surat pengantar, dan administrasi warga RT 15.
                 </p>
+            </div>
+
+            {{-- Custom Badge (Konsisten dengan Khusus Pengurus & Administrator) --}}
+            <div class="mb-5 flex justify-start">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFF6FF] border border-[#BFDBFE] text-[11px] font-bold text-[#0B3A85] tracking-wide">
+                    <svg class="w-3.5 h-3.5 text-[#0B3A85] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span>Khusus Warga RT 15</span>
+                </div>
             </div>
 
             {{-- Alert Notifikasi Gagal --}}
@@ -138,30 +148,32 @@
 
                 {{-- 1. Input Nama Lengkap Sesuai KTP --}}
                 <div>
-                    <label for="nama" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider mb-2">
+                    <label for="nama" class="block text-xs font-bold text-[#071F47] uppercase tracking-wider mb-2">
                         Nama Lengkap Sesuai KTP <span class="text-red-500">*</span>
                     </label>
-                    <input
-                        type="text"
-                        id="nama"
-                        name="nama"
-                        value="{{ old('nama', old('login')) }}"
-                        required
-                        autofocus
-                        autocomplete="name"
-                        placeholder="Contoh: EDWIN EDWARD RUMAJAR"
-                        class="w-full px-4 py-3.5 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nama') || $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
-                    >
+                    <div class="relative flex items-center bg-[#F0F5FA] hover:bg-[#EBF2F9] focus-within:bg-white border {{ $errors->has('nama') || $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-[#DDE5F0] focus-within:border-[#0B3A85] focus-within:ring-2 focus-within:ring-[#0B3A85]/15' }} rounded-xl min-h-[2.875rem] transition duration-150">
+                        <input
+                            type="text"
+                            id="nama"
+                            name="nama"
+                            value="{{ old('nama', old('login')) }}"
+                            required
+                            autofocus
+                            autocomplete="name"
+                            placeholder="Contoh: EDWIN EDWARD RUMAJAR"
+                            class="w-full bg-transparent px-4 py-3 text-sm text-[#0F1F3D] placeholder:text-[#94A3B8] focus:outline-none"
+                        >
+                    </div>
                 </div>
 
                 {{-- 2. Input NIK (Sebagai Kata Sandi Warga) --}}
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <label for="nik" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider">
+                        <label for="nik" class="block text-xs font-bold text-[#071F47] uppercase tracking-wider">
                             Nomor Induk Kependudukan (NIK) <span class="text-red-500">*</span>
                         </label>
                     </div>
-                    <div class="relative">
+                    <div class="relative flex items-center bg-[#F0F5FA] hover:bg-[#EBF2F9] focus-within:bg-white border {{ $errors->has('nik') || $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-[#DDE5F0] focus-within:border-[#0B3A85] focus-within:ring-2 focus-within:ring-[#0B3A85]/15' }} rounded-xl min-h-[2.875rem] transition duration-150">
                         <input
                             type="password"
                             id="nik"
@@ -171,13 +183,13 @@
                             maxlength="16"
                             autocomplete="current-password"
                             placeholder="16 digit angka NIK KTP"
-                            class="w-full pl-4 pr-12 py-3.5 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nik') || $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base font-mono text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150 tracking-wider"
+                            class="w-full bg-transparent pl-4 pr-11 py-3 text-sm font-mono tracking-wider text-[#0F1F3D] placeholder:text-[#94A3B8] focus:outline-none"
                         >
                         {{-- Toggle Show/Hide Password NIK --}}
                         <button
                             type="button"
                             onclick="togglePassword()"
-                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-primary-700 transition focus:outline-none cursor-pointer"
+                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#94A3B8] hover:text-[#0B3A85] transition focus:outline-none cursor-pointer"
                             tabindex="-1"
                             aria-label="Tampilkan atau sembunyikan angka NIK"
                             title="Klik untuk melihat atau menyembunyikan angka NIK"
@@ -199,75 +211,74 @@
                         <input
                             type="checkbox"
                             name="remember"
-                            class="w-4 h-4 rounded border-border-soft text-primary-700 focus:ring-primary-500 cursor-pointer"
+                            class="w-4 h-4 rounded border-[#DDE5F0] text-[#0B3A85] focus:ring-[#0B3A85] cursor-pointer"
                         >
-                        <span class="text-xs sm:text-sm text-text-muted group-hover:text-primary-900 transition">
+                        <span class="text-xs text-[#5B6B82] font-normal group-hover:text-[#071F47] transition">
                             Ingat saya di perangkat ini
                         </span>
                     </label>
                 </div>
 
-                {{-- Tombol Masuk Sekarang --}}
+                {{-- Tombol Masuk Utama (Konsisten dengan Masuk ke Panel Pengurus) --}}
                 <button
                     type="submit"
-                    class="w-full bg-primary-700 hover:bg-primary-900 text-white font-bold text-base py-3.5 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer mt-2"
+                    class="w-full bg-[#0B3A85] hover:bg-[#071F47] text-white font-bold text-sm py-3.5 px-5 rounded-xl transition duration-200 shadow-[0_4px_14px_0_rgba(11,58,133,0.25)] hover:shadow-[0_6px_20px_0_rgba(11,58,133,0.35)] hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center cursor-pointer mt-1"
                 >
-                    <span>Masuk ke Portal Warga</span>
-                    <svg class="w-5 h-5 shrink-0 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
+                    Masuk ke Portal Warga
                 </button>
             </form>
 
-            {{-- Hubungi Pengurus / Bantuan --}}
-            <div class="mt-6 text-center">
-                <p class="text-xs sm:text-sm text-text-muted">
-                    Lupa NIK atau butuh bantuan?
+            {{-- Divider: Akses Portal Lainnya (Persis Pengurus) --}}
+            <div class="relative my-6 text-center">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-[#DDE5F0]"></div>
+                </div>
+                <span class="relative z-10 bg-white px-3 text-xs text-[#5B6B82] font-medium">Akses Portal Lainnya</span>
+            </div>
+
+            {{-- 2 Tombol Kotak (Portal Pengurus & Ke Beranda) --}}
+            <div class="grid grid-cols-2 gap-3">
+                <a
+                    href="{{ url('/admin/login') }}"
+                    class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-[#DDE5F0] bg-white text-xs font-bold text-[#0B3A85] hover:bg-[#EFF6FF] hover:border-[#0B3A85] hover:text-[#071F47] transition shadow-2xs"
+                >
+                    <svg class="w-4 h-4 text-[#0B3A85] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span>Portal Pengurus</span>
+                </a>
+
+                <a
+                    href="{{ route('public.home') }}"
+                    class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-[#DDE5F0] bg-white text-xs font-bold text-[#5B6B82] hover:bg-[#F8FAFC] hover:border-[#0B3A85] hover:text-[#071F47] transition shadow-2xs"
+                >
+                    <svg class="w-4 h-4 text-[#94A3B8] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span>Ke Beranda</span>
+                </a>
+            </div>
+
+            {{-- Kendala Akses Akun Warga (Konsisten dengan Kendala Akses Akun Pengurus) --}}
+            <div class="mt-5 text-center text-xs text-[#5B6B82]">
+                <p>
+                    Kendala akses akun warga?
                     <a
-                        href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin menanyakan akses Portal Warga SIM-LiBas saya.') }}"
+                        href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga mengalami kendala login ke Portal Warga SIM-LiBas.') }}"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="font-bold text-primary-700 hover:text-primary-900 hover:underline transition inline-block ml-1"
+                        class="font-bold text-[#0B3A85] hover:underline"
                     >
                         Hubungi Pengurus RT
                     </a>
                 </p>
             </div>
-
-            {{-- Divider --}}
-            <div class="relative my-6">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-border-soft"></div>
-                </div>
-            </div>
-
-            {{-- Navigasi Pilihan (Ke Beranda & Portal Pengurus) --}}
-            <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-text-muted">
-                <a
-                    href="{{ route('public.home') }}"
-                    class="hover:text-primary-700 transition flex items-center gap-1.5 py-1"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    <span>Ke Beranda</span>
-                </a>
-
-                <a
-                    href="{{ url('/admin/login') }}"
-                    class="hover:text-primary-700 transition flex items-center gap-1.5 py-1"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    <span>Portal Pengurus</span>
-                </a>
-            </div>
         </div>
 
-        {{-- Footer Hak Cipta di Bawah Panel Form --}}
-        <div class="pt-6 text-center text-xs text-text-muted">
-            <p>&copy; {{ date('Y') }} SIM-LiBas RT 15 Pematang Sulur</p>
+        {{-- Footer Hak Cipta di Bawah Panel Form (Persis Pengurus) --}}
+        <div class="pt-6 text-center text-xs text-[#5B6B82]">
+            <p>&copy; {{ date('Y') }} SIM-LiBas RT 15 Pematang Sulur.</p>
+            <p class="text-[11px] text-[#94A3B8] mt-0.5">Semua hak dilindungi.</p>
         </div>
     </div>
 </div>
