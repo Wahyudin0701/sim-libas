@@ -227,10 +227,14 @@ class CreateHousehold extends Page
                 [
                     'name' => $this->kepala_nama,
                     'phone' => $this->kepala_telepon ?: null,
-                    'password' => Hash::make('password'),
+                    'password' => Hash::make($this->kepala_nik),
                     'status' => 'aktif',
                 ]
             );
+            $user->update([
+                'name' => $this->kepala_nama,
+                'password' => Hash::make($this->kepala_nik),
+            ]);
             if (!$user->hasRole('warga')) {
                 $user->assignRole('warga');
             }
@@ -283,10 +287,14 @@ class CreateHousehold extends Page
                         [
                             'name' => $anggota['nama'],
                             'phone' => !empty($anggota['telepon']) ? $anggota['telepon'] : null,
-                            'password' => Hash::make('password'),
+                            'password' => Hash::make($anggota['nik']),
                             'status' => 'aktif',
                         ]
                     );
+                    $anggotaUser->update([
+                        'name' => $anggota['nama'],
+                        'password' => Hash::make($anggota['nik']),
+                    ]);
                     if (!$anggotaUser->hasRole('warga')) {
                         $anggotaUser->assignRole('warga');
                     }

@@ -117,19 +117,6 @@ trait HandlesEditResidentModal
     }
 
     /**
-     * Set kata sandi cepat ke nilai bawaan ('password')
-     */
-    public function resetPasswordToDefault(): void
-    {
-        $this->edit_password = 'password';
-        Notification::make()
-            ->title('Kata Sandi Diatur ke Default')
-            ->body('Kolom kata sandi diisi dengan "password". Klik tombol Simpan Perubahan untuk mengonfirmasi.')
-            ->info()
-            ->send();
-    }
-
-    /**
      * Menyimpan perubahan data warga dengan validasi integritas ketat.
      */
     public function saveResident(): void
@@ -149,7 +136,7 @@ trait HandlesEditResidentModal
             'edit_hubungan_keluarga' => ['required', 'string', 'max:50'],
             'edit_status_kependudukan' => ['required', 'in:aktif,pindah,meninggal,lahir_baru'],
             'edit_telepon' => ['nullable', 'string', 'max:30'],
-            'edit_email' => ['nullable', 'email', 'max:100', Rule::unique('users', 'email')->ignore($resident->user_id)],
+            'edit_email' => ['nullable', 'email', 'max:100'],
             'edit_kategori_warga' => ['required', 'in:memiliki_kk,tanpa_kk'],
             'edit_household_id' => ['nullable', 'exists:households,id'],
             'edit_status_tempat_tinggal' => ['nullable', 'string', 'max:50'],
@@ -163,7 +150,6 @@ trait HandlesEditResidentModal
             'edit_agama.required' => 'Agama wajib dipilih.',
             'edit_hubungan_keluarga.required' => 'Hubungan keluarga wajib dipilih.',
             'edit_status_kependudukan.required' => 'Status kependudukan wajib dipilih.',
-            'edit_email.unique' => 'Alamat email ini sudah digunakan oleh akun lain.',
         ]);
 
         // Validasi NIK unik via SHA-256 hash (termasuk cek soft-deleted records)
@@ -176,13 +162,6 @@ trait HandlesEditResidentModal
         if ($duplicate) {
             $this->addError('edit_nik', 'NIK ini sudah terdaftar pada data warga lain (termasuk arsip/terhapus).');
             return;
-        }
-
-        if (!empty($this->edit_password)) {
-            if (strlen($this->edit_password) < 6) {
-                $this->addError('edit_password', 'Kata sandi baru minimal harus 6 karakter.');
-                return;
-            }
         }
 
         $isKepala = ($this->edit_kategori_warga === 'memiliki_kk' && $this->edit_hubungan_keluarga === 'kepala_keluarga');
@@ -205,15 +184,16 @@ trait HandlesEditResidentModal
             $resolvedUserId = $resident->user_id;
 
             if ($resident->user) {
-                $userUpdates = ['name' => $this->edit_nama];
-                if (!empty($this->edit_email)) {
-                    $userUpdates['email'] = $this->edit_email;
+                $userUpdates = [
+                    'name' => $this->edit_nama,
+                    'status' => $this->edit_status_kependudukan === 'aktif' ? 'aktif' : 'nonaktif',
+                ];
+                // Sinkronkan password hash NIK jika NIK berubah
+                if ($resident->nik !== $this->edit_nik) {
+                    $userUpdates['password'] = Hash::make($this->edit_nik);
                 }
                 if (!empty($this->edit_telepon)) {
                     $userUpdates['phone'] = $this->edit_telepon;
-                }
-                if (!empty($this->edit_password)) {
-                    $userUpdates['password'] = Hash::make($this->edit_password);
                 }
                 $resident->user->update($userUpdates);
             } else {
@@ -222,13 +202,16 @@ trait HandlesEditResidentModal
                     [
                         'name' => $this->edit_nama,
                         'phone' => $this->edit_telepon ?: null,
-                        'password' => Hash::make(!empty($this->edit_password) ? $this->edit_password : 'password'),
-                        'status' => 'aktif',
+                        'password' => Hash::make($this->edit_nik),
+                        'status' => $this->edit_status_kependudukan === 'aktif' ? 'aktif' : 'nonaktif',
                     ]
                 );
-                if (!empty($this->edit_password)) {
-                    $newUser->update(['password' => Hash::make($this->edit_password)]);
-                }
+                // Pastikan password sesuai hash NIK
+                $newUser->update([
+                    'name' => $this->edit_nama,
+                    'password' => Hash::make($this->edit_nik),
+                    'status' => $this->edit_status_kependudukan === 'aktif' ? 'aktif' : 'nonaktif',
+                ]);
                 if (!$newUser->hasRole('warga')) {
                     $newUser->assignRole('warga');
                 }
@@ -269,14 +252,9 @@ trait HandlesEditResidentModal
             }
         }
 
-        $bodyMsg = "Identitas dan data kependudukan warga {$this->edit_nama} berhasil disimpan.";
-        if (!empty($this->edit_password)) {
-            $bodyMsg .= " Kata sandi akun login warga berhasil diperbarui.";
-        }
-
         Notification::make()
             ->title('Data Warga Berhasil Diperbarui')
-            ->body($bodyMsg)
+            ->body("Identitas kependudukan dan akun login warga {$this->edit_nama} berhasil disimpan.")
             ->success()
             ->send();
     }

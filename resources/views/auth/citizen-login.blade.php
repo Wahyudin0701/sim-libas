@@ -22,7 +22,7 @@
         <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-accent-cyan/20 blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-primary-500/20 blur-3xl pointer-events-none"></div>
 
-        {{-- 1. Brand Logo Header (Top Left - persis referensi) --}}
+        {{-- 1. Brand Logo Header --}}
         <div class="relative z-10">
             <a href="{{ route('public.home') }}" class="inline-flex items-center gap-3 group">
                 <img src="{{ asset('images/logo-icon.png') }}" alt="Logo SIM-LiBas" class="h-11 w-auto object-contain drop-shadow-md">
@@ -37,19 +37,19 @@
             </a>
         </div>
 
-        {{-- 2. Hero Headline & Subtitle (Center - persis referensi) --}}
+        {{-- 2. Hero Headline & Subtitle --}}
         <div class="relative z-10 my-auto py-8 max-w-lg">
             <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.18] text-white mb-5">
                 Membangun <br>
                 <span class="text-accent-cyan">Kampung Digital</span> <br>
-                Bersama
+                Bersama Warga
             </h1>
             <p class="text-sm xl:text-base text-blue-100/90 leading-relaxed font-normal">
-                Digitalisasi pelayanan warga RT 15 Pematang Sulur melalui akses surat pengantar online, transparansi kas & iuran, bank sampah, dan etalase UMKM yang lebih mudah, aman, serta terintegrasi.
+                Portal pelayanan mandiri warga RT 15 Pematang Sulur: pengajuan surat pengantar online, transparansi kas & iuran, bank sampah, dan etalase UMKM warga yang mudah, cepat, dan terpercaya.
             </p>
         </div>
 
-        {{-- 3. Bottom Stats & Copyright (Bottom - persis 3 metrik pada referensi) --}}
+        {{-- 3. Bottom Stats & Copyright --}}
         <div class="relative z-10 pt-6">
             <div class="grid grid-cols-3 gap-6 pb-6 border-b border-white/15">
                 <div>
@@ -74,7 +74,7 @@
 
 
     {{-- ======================================================== --}}
-    {{-- MOBILE HEADER: HEADER GRADIENT BIRU (PERSIS GAMBAR 2)     --}}
+    {{-- MOBILE HEADER: HEADER GRADIENT BIRU                      --}}
     {{-- ======================================================== --}}
     <div class="lg:hidden bg-gradient-to-br from-[#071F47] via-[#0B3A85] to-[#104F9E] text-white p-6 pt-8 pb-10 relative overflow-hidden">
         {{-- Subtle background decoration --}}
@@ -94,13 +94,13 @@
 
         <div class="relative z-10">
             <h2 class="text-2xl font-extrabold text-white tracking-tight">Selamat Datang</h2>
-            <p class="text-xs text-blue-100 mt-1">Portal Layanan Mandiri & Informasi Warga RT 15</p>
+            <p class="text-xs text-blue-100 mt-1">Portal Layanan Mandiri Warga RT 15</p>
         </div>
     </div>
 
 
     {{-- ======================================================== --}}
-    {{-- SISI KANAN / FORM PANEL (PUTIH, BERSIH, PERSIS REFERENSI) --}}
+    {{-- SISI KANAN / FORM PANEL (PUTIH, BERSIH, RAMAH LANSIA)    --}}
     {{-- ======================================================== --}}
     <div class="flex-1 flex flex-col justify-between bg-white px-6 sm:px-10 lg:px-14 xl:px-20 py-8 sm:py-10 lg:py-12 -mt-4 lg:mt-0 rounded-t-3xl lg:rounded-none shadow-2xl lg:shadow-none relative z-20">
         
@@ -108,18 +108,32 @@
         <div class="max-w-md w-full mx-auto my-auto py-2">
             
             {{-- Header Form --}}
-            <div class="mb-7">
+            <div class="mb-6">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-primary-900 tracking-tight">
-                    Selamat Datang <span class="text-primary-500">Kembali</span>
+                    Masuk <span class="text-primary-500">Portal Warga</span>
                 </h2>
                 <p class="text-xs sm:text-sm text-text-muted mt-1.5 leading-relaxed">
-                    Masuk untuk mengakses layanan administrasi dan informasi warga dengan aman dan mudah.
+                    Akses layanan mandiri warga RT 15 dengan mudah menggunakan Nama Lengkap dan NIK sesuai KTP.
                 </p>
+            </div>
+
+            {{-- Petunjuk Masuk Ramah Lansia --}}
+            <div class="mb-5 p-3.5 rounded-xl bg-blue-50/80 border border-blue-200/80 text-xs text-[#0B3A85] leading-relaxed flex items-start gap-2.5">
+                <svg class="w-5 h-5 text-[#0B3A85] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <span class="font-bold block mb-0.5">Petunjuk Masuk Warga:</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[11.5px] text-slate-700">
+                        <li><strong>Username:</strong> Nama lengkap Anda sesuai KTP.</li>
+                        <li><strong>Kata Sandi:</strong> 16 digit NIK pada KTP Anda.</li>
+                    </ul>
+                </div>
             </div>
 
             {{-- Alert Notifikasi Gagal --}}
             @if($errors->any())
-                <div class="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-sm">
+                <div class="mb-5 flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-sm">
                     <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -133,68 +147,77 @@
             @endif
 
             {{-- Form Login Utama --}}
-            <form action="{{ route('citizen.login.post') }}" method="POST" class="space-y-5" novalidate>
+            <form action="{{ route('citizen.login.post') }}" method="POST" class="space-y-4" novalidate>
                 @csrf
 
-                {{-- Input Email atau HP --}}
+                {{-- 1. Input Nama Lengkap Sesuai KTP --}}
                 <div>
-                    <label for="login" class="block text-xs font-bold text-primary-900 uppercase tracking-wider mb-2">
-                        NIK (16 Digit), Nomor HP, atau Email
+                    <label for="nama" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider mb-1.5">
+                        Nama Lengkap Sesuai KTP <span class="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
-                        id="login"
-                        name="login"
-                        value="{{ old('login') }}"
+                        id="nama"
+                        name="nama"
+                        value="{{ old('nama', old('login')) }}"
                         required
                         autofocus
-                        autocomplete="username"
-                        placeholder="Contoh: 157101... (NIK) atau 0812... atau email"
-                        class="w-full px-4 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
+                        autocomplete="name"
+                        placeholder="Contoh: EDWIN EDWARD RUMAJAR"
+                        class="w-full px-4 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nama') || $errors->has('login') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
                     >
+                    <p class="text-[11px] text-slate-500 mt-1">
+                        Ketik nama lengkap Anda persis seperti yang tertulis pada e-KTP.
+                    </p>
                 </div>
 
-                {{-- Input Kata Sandi --}}
+                {{-- 2. Input NIK (Sebagai Kata Sandi Warga) --}}
                 <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label for="password" class="block text-xs font-bold text-primary-900 uppercase tracking-wider">
-                            Kata Sandi
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="nik" class="block text-xs sm:text-sm font-bold text-primary-900 uppercase tracking-wider">
+                            Nomor Induk Kependudukan (NIK) <span class="text-red-500">*</span>
                         </label>
-                        <a href="https://wa.me/6281274001515?text=Halo%20Pengurus%20RT%2015,%20saya%20warga%20lupa%20kata%20sandi%20akun%20Portal%20Warga%20SIM-LiBas." target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-primary-500 hover:text-primary-700 hover:underline transition">
-                            Lupa kata sandi?
+                        <a href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya warga ingin menanyakan NIK akun Portal Warga SIM-LiBas saya.') }}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-primary-500 hover:text-primary-700 hover:underline transition">
+                            Cek NIK / Bantuan?
                         </a>
                     </div>
                     <div class="relative">
                         <input
                             type="password"
-                            id="password"
-                            name="password"
+                            id="nik"
+                            name="nik"
                             required
+                            inputmode="numeric"
+                            maxlength="16"
                             autocomplete="current-password"
-                            placeholder="••••••••"
-                            class="w-full pl-4 pr-11 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150"
+                            placeholder="16 digit angka NIK pada KTP"
+                            class="w-full pl-4 pr-11 py-3 bg-[#F0F5FA] hover:bg-[#EBF2F9] focus:bg-white border {{ $errors->has('nik') || $errors->has('password') ? 'border-red-400 bg-red-50/50' : 'border-border-soft' }} rounded-xl text-sm sm:text-base font-mono text-text-main placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition duration-150 tracking-wider"
                         >
-                        {{-- Toggle Show/Hide Password --}}
+                        {{-- Toggle Show/Hide Password NIK --}}
                         <button
                             type="button"
                             onclick="togglePassword()"
                             class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-primary-700 transition focus:outline-none cursor-pointer"
                             tabindex="-1"
-                            aria-label="Tampilkan atau sembunyikan kata sandi"
+                            aria-label="Tampilkan atau sembunyikan angka NIK"
+                            title="Klik untuk melihat atau menyembunyikan angka NIK"
                         >
-                            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                            <svg id="eye-off-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg id="eye-off-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
                             </svg>
                         </button>
                     </div>
+                    <p class="text-[11px] text-slate-500 mt-1">
+                        16 digit NIK Anda digunakan sebagai kata sandi untuk masuk ke portal.
+                    </p>
                 </div>
 
                 {{-- Checkbox Ingat Saya --}}
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pt-1">
                     <label class="flex items-center gap-2 cursor-pointer group select-none">
                         <input
                             type="checkbox"
@@ -207,12 +230,15 @@
                     </label>
                 </div>
 
-                {{-- Tombol Masuk Sekarang (Persis referensi dengan ikon enter/pintu) --}}
+                {{-- Tombol Masuk Sekarang --}}
                 <button
                     type="submit"
-                    class="w-full bg-primary-700 hover:bg-primary-900 text-white font-bold text-sm py-3.5 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                    class="w-full bg-primary-700 hover:bg-primary-900 text-white font-bold text-sm sm:text-base py-3.5 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer mt-2"
                 >
-                    <span>Masuk Sekarang</span>
+                    <svg class="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
+                    <span>Masuk ke Portal Warga</span>
                 </button>
             </form>
 
@@ -257,12 +283,12 @@
                     rel="noopener noreferrer"
                     class="text-xs text-text-muted hover:text-primary-700 transition font-medium inline-block"
                 >
-                    Belum punya akun? <span class="font-bold text-primary-700 hover:underline">Aktivasi Warga</span>
+                    Belum punya akun atau NIK belum terdaftar? <span class="font-bold text-primary-700 hover:underline">Hubungi Pengurus RT</span>
                 </a>
             </div>
         </div>
 
-        {{-- Footer Hak Cipta di Bawah Panel Form (Persis referensi) --}}
+        {{-- Footer Hak Cipta di Bawah Panel Form --}}
         <div class="pt-6 text-center text-xs text-text-muted">
             <p>&copy; {{ date('Y') }} SIM-LiBas RT 15 Pematang Sulur.</p>
             <p class="text-[11px] text-slate-400 mt-0.5">Semua hak dilindungi.</p>
@@ -273,7 +299,7 @@
 @push('scripts')
 <script>
     function togglePassword() {
-        const input = document.getElementById('password');
+        const input = document.getElementById('nik');
         const eyeIcon = document.getElementById('eye-icon');
         const eyeOffIcon = document.getElementById('eye-off-icon');
 

@@ -185,10 +185,16 @@ class CreateResident extends Page
                 [
                     'name' => $this->nama,
                     'phone' => $this->telepon ?: null,
-                    'password' => Hash::make('password'),
+                    'password' => Hash::make($this->nik),
                     'status' => 'aktif',
                 ]
             );
+
+            // Pastikan nama dan password NIK hash sinkron
+            $user->update([
+                'name' => $this->nama,
+                'password' => Hash::make($this->nik),
+            ]);
 
             if (!$user->hasRole('warga')) {
                 $user->assignRole('warga');

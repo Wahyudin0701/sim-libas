@@ -1082,42 +1082,12 @@
                             </div>
                         </div>
 
-                        {{-- Kata Sandi Akun Login Portal --}}
-                        <div x-data="{ showModalKepalaPass: false }" class="p-3 bg-blue-50/50 rounded-xl border border-blue-100">
-                            <div class="flex items-center justify-between mb-1">
-                                <label class="block text-xs font-bold text-slate-700">
-                                    Kata Sandi Akun Portal <span class="text-slate-400 font-normal">(Opsional)</span>
-                                </label>
-                                <button 
-                                    type="button" 
-                                    wire:click="$set('kepala_password', 'password')"
-                                    class="text-[10px] font-bold text-[#0B3A85] hover:underline cursor-pointer"
-                                >
-                                    Reset "password"
-                                </button>
-                            </div>
-                            <div class="relative">
-                                <input 
-                                    :type="showModalKepalaPass ? 'text' : 'password'" 
-                                    wire:model="kepala_password" 
-                                    placeholder="Kosongkan jika tidak ingin mengubah kata sandi"
-                                    class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 font-mono focus:border-[#0B3A85] focus:outline-none focus:ring-1 focus:ring-[#0B3A85] transition-colors pr-10"
-                                />
-                                <button 
-                                    type="button" 
-                                    @click="showModalKepalaPass = !showModalKepalaPass"
-                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                                    title="Lihat / Sembunyikan Kata Sandi"
-                                >
-                                    <svg x-show="!showModalKepalaPass" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <svg x-show="showModalKepalaPass" x-cloak class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
-                                </button>
-                            </div>
-                            @error('kepala_password')
-                                <p class="mt-1 text-xs text-rose-600 font-semibold">{{ $message }}</p>
-                            @else
-                                <p class="text-[10px] text-slate-400 mt-1">* Kosongkan jika tidak ingin diubah. Minimal 6 karakter.</p>
-                            @enderror
+                        {{-- Keterangan Login Portal --}}
+                        <div class="p-3 bg-blue-50/60 rounded-xl border border-blue-100 flex items-start gap-2 text-xs text-[#0B3A85]">
+                            <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Akun login Kepala Keluarga otomatis tersinkronisasi menggunakan <strong>Nama Lengkap sesuai KTP</strong> dan <strong>16 digit NIK</strong> sebagai kata sandi.</span>
                         </div>
 
                         {{-- Keterangan Otomatis --}}
@@ -1289,21 +1259,14 @@
                             </div>
                         </div>
 
-                        {{-- Ubah Password (Opsional) --}}
+                        {{-- Keterangan Kredensial --}}
                         <div class="pt-2 border-t border-slate-100">
-                            <label class="block text-xs font-bold text-slate-700 mb-1.5">
-                                Password Baru (Opsional)
-                            </label>
-                            <input 
-                                type="password" 
-                                wire:model="akun_password" 
-                                placeholder="Masukkan password baru (minimal 6 karakter)"
-                                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-[#0B3A85] focus:outline-none focus:ring-1 focus:ring-[#0B3A85] transition-colors"
-                            />
-                            <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika tidak ingin mereset password akun warga.</p>
-                            @error('akun_password')
-                                <p class="mt-1 text-xs text-rose-600 font-semibold">{{ $message }}</p>
-                            @enderror
+                            <div class="p-3 bg-blue-50/60 rounded-xl border border-blue-100 flex items-start gap-2 text-xs text-[#0B3A85]">
+                                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Akun portal warga login menggunakan <strong>Nama Lengkap sesuai KTP</strong> dan <strong>16 digit NIK</strong> sebagai kata sandi.</span>
+                            </div>
                         </div>
                     </div>
 

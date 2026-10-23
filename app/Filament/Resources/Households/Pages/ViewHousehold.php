@@ -246,7 +246,6 @@ class ViewHousehold extends ViewRecord
             'kepala_nik' => ['required', 'digits:16'],
             'kepala_telepon' => ['nullable', 'string', 'max:30'],
             'kepala_email' => ['nullable', 'email', 'max:100'],
-            'kepala_password' => ['nullable', 'string', 'min:6'],
             'kepala_tempat_lahir' => ['nullable', 'string', 'max:50'],
             'kepala_tanggal_lahir' => ['nullable', 'date'],
             'kepala_agama' => ['nullable', 'string', 'max:50'],
@@ -256,7 +255,6 @@ class ViewHousehold extends ViewRecord
             'kepala_nama.required' => 'Nama Kepala Keluarga wajib diisi.',
             'kepala_nik.required' => 'NIK Kepala Keluarga wajib diisi.',
             'kepala_nik.digits' => 'NIK Kepala Keluarga harus 16 digit angka.',
-            'kepala_password.min' => 'Kata sandi baru Kepala Keluarga minimal harus 6 karakter.',
         ]);
 
         $kepalaNikHash = hash('sha256', $this->kepala_nik);
@@ -313,9 +311,7 @@ class ViewHousehold extends ViewRecord
             if (!empty($this->kepala_email)) {
                 $userUpdates['email'] = $this->kepala_email;
             }
-            if (!empty($this->kepala_password)) {
-                $userUpdates['password'] = Hash::make($this->kepala_password);
-            }
+            $userUpdates['password'] = Hash::make($this->kepala_nik);
             $record->user->update($userUpdates);
         }
 
@@ -382,14 +378,14 @@ class ViewHousehold extends ViewRecord
             'akun_email' => ['required', 'email', 'max:100', 'unique:users,email' . ($userId ? ",{$userId}" : '')],
             'akun_phone' => ['nullable', 'string', 'max:30'],
             'akun_status' => ['required', 'in:aktif,nonaktif'],
-            'akun_password' => ['nullable', 'string', 'min:6'],
         ], [
             'akun_name.required' => 'Nama akun portal wajib diisi.',
             'akun_email.required' => 'Email login portal wajib diisi.',
             'akun_email.email' => 'Format email tidak valid.',
             'akun_email.unique' => 'Alamat email sudah digunakan oleh akun lain.',
-            'akun_password.min' => 'Password minimal 6 karakter.',
         ]);
+
+        $defaultPassword = $record->kepalaKeluarga?->nik ?: 'password';
 
         if ($record->user) {
             $updates = [
@@ -398,16 +394,13 @@ class ViewHousehold extends ViewRecord
                 'phone' => $this->akun_phone ?: null,
                 'status' => $this->akun_status,
             ];
-            if (!empty($this->akun_password)) {
-                $updates['password'] = Hash::make($this->akun_password);
-            }
             $record->user->update($updates);
         } else {
             $user = User::create([
                 'name' => $this->akun_name,
                 'email' => $this->akun_email,
                 'phone' => $this->akun_phone ?: null,
-                'password' => Hash::make($this->akun_password ?: 'password'),
+                'password' => Hash::make($defaultPassword),
                 'status' => $this->akun_status,
             ]);
             if (!$user->hasRole('warga')) {

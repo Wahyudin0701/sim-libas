@@ -384,9 +384,7 @@ class EditHousehold extends Page
                 if (!empty($this->kepala_email)) {
                     $userUpdates['email'] = $this->kepala_email;
                 }
-                if (!empty($this->kepala_password)) {
-                    $userUpdates['password'] = Hash::make($this->kepala_password);
-                }
+                $userUpdates['password'] = Hash::make($this->kepala_nik);
                 $kepalaUser->update($userUpdates);
                 $kepalaUserId = $kepalaUser->id;
             } else {
@@ -395,13 +393,14 @@ class EditHousehold extends Page
                     [
                         'name' => $this->kepala_nama,
                         'phone' => $this->kepala_telepon ?: null,
-                        'password' => Hash::make(!empty($this->kepala_password) ? $this->kepala_password : 'password'),
+                        'password' => Hash::make($this->kepala_nik),
                         'status' => 'aktif',
                     ]
                 );
-                if (!empty($this->kepala_password)) {
-                    $newUser->update(['password' => Hash::make($this->kepala_password)]);
-                }
+                $newUser->update([
+                    'name' => $this->kepala_nama,
+                    'password' => Hash::make($this->kepala_nik),
+                ]);
                 if (!$newUser->hasRole('warga')) {
                     $newUser->assignRole('warga');
                 }
@@ -463,8 +462,8 @@ class EditHousehold extends Page
                     if (!empty($anggota['telepon'])) {
                         $userUpdates['phone'] = $anggota['telepon'];
                     }
-                    if (!empty($anggota['password'])) {
-                        $userUpdates['password'] = Hash::make($anggota['password']);
+                    if (!empty($anggota['nik'])) {
+                        $userUpdates['password'] = Hash::make($anggota['nik']);
                     }
                     $targetResident->user->update($userUpdates);
                     $memberUserId = $targetResident->user_id;
@@ -474,13 +473,14 @@ class EditHousehold extends Page
                         [
                             'name' => $anggota['nama'],
                             'phone' => !empty($anggota['telepon']) ? $anggota['telepon'] : null,
-                            'password' => Hash::make(!empty($anggota['password']) ? $anggota['password'] : 'password'),
+                            'password' => Hash::make($anggota['nik']),
                             'status' => 'aktif',
                         ]
                     );
-                    if (!empty($anggota['password'])) {
-                        $newUser->update(['password' => Hash::make($anggota['password'])]);
-                    }
+                    $newUser->update([
+                        'name' => $anggota['nama'],
+                        'password' => Hash::make($anggota['nik']),
+                    ]);
                     if (!$newUser->hasRole('warga')) {
                         $newUser->assignRole('warga');
                     }

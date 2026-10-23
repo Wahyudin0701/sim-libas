@@ -95,12 +95,12 @@
 
             <div class="space-y-4 text-xs">
                 <div>
-                    <span class="text-text-muted font-semibold block">Nama Pengguna Akun</span>
-                    <span class="text-primary-900 font-bold block mt-0.5">{{ $user->name }}</span>
+                    <span class="text-text-muted font-semibold block">Username Masuk Portal</span>
+                    <span class="text-primary-900 font-bold block mt-0.5">{{ $resident?->nama ?? $user->name }} <span class="text-slate-400 font-normal">(Nama Sesuai KTP)</span></span>
                 </div>
                 <div>
-                    <span class="text-text-muted font-semibold block">Identitas Login (Email / NIK)</span>
-                    <span class="font-mono text-primary-900 font-bold block mt-0.5">{{ $user->email }}</span>
+                    <span class="text-text-muted font-semibold block">Kata Sandi Masuk Portal</span>
+                    <span class="font-mono text-primary-900 font-bold block mt-0.5">{{ $resident?->masked_nik ?? '16 Digit NIK KTP Anda' }}</span>
                 </div>
                 <div>
                     <span class="text-text-muted font-semibold block">Nomor Telepon / WhatsApp</span>
@@ -118,28 +118,20 @@
                 </div>
             </div>
 
-            <!-- Tombol Aksi Kredensial Terpusat di Bawah Card -->
+            <!-- Tombol Aksi Kontak di Bawah Card -->
             <div class="pt-4 mt-4 border-t border-border-soft space-y-2">
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" onclick="openEmailModal()" class="w-full px-3 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-primary-900 border border-blue-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98">
-                        <svg class="w-4 h-4 text-primary-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        <span>Ganti Email</span>
-                    </button>
-                    <button type="button" onclick="openPhoneModal()" class="w-full px-3 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98">
-                        <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                        </svg>
-                        <span>Ganti No. HP</span>
-                    </button>
-                </div>
-                <button type="button" onclick="openPasswordModal()" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98">
-                    <svg class="w-4 h-4 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                <button type="button" onclick="openPhoneModal()" class="w-full px-3 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98">
+                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
-                    <span>Ganti Kata Sandi</span>
+                    <span>Perbarui Nomor Telepon / WA</span>
                 </button>
+                <a href="https://wa.me/6281274001515?text={{ urlencode('Halo Pengurus RT 15, saya ingin mengonfirmasi perubahan data akun/NIK saya.') }}" target="_blank" rel="noopener noreferrer" class="w-full px-3 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-primary-900 border border-blue-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98">
+                    <svg class="w-4 h-4 text-[#0B3A85] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <span>Bantuan Kredensial / Hubungi Pengurus</span>
+                </a>
             </div>
         </div>
 
@@ -152,7 +144,7 @@
                 Perlindungan Data Pribadi
             </h3>
             <p class="text-[11px] text-text-muted leading-relaxed">
-                Nomor Induk Kependudukan (NIK) dan Nomor Kartu Keluarga (KK) dilindungi enkripsi standar UU No. 27 Tahun 2022 (UU PDP). Anda dapat memperbarui alamat email dan kata sandi akun secara mandiri melalui tombol di atas.
+                Nomor Induk Kependudukan (NIK) dan Nomor Kartu Keluarga (KK) dilindungi enkripsi standar UU No. 27 Tahun 2022 (UU PDP). Kredensial login Anda tersinkronisasi otomatis dengan data resmi kependudukan RT 15.
             </p>
         </div>
     </div>
