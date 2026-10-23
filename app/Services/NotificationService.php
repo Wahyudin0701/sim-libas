@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\NewComplaintNotificationMail;
 use App\Models\Complaint;
 use App\Models\GuestReport;
 use App\Models\Household;
@@ -9,11 +10,21 @@ use App\Models\Letter;
 use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\Resident;
+use App\Models\RtSetting;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class NotificationService
 {
+    /**
+     * Cache memori ID pengaduan yang sudah dikirimkan email pada siklus request berjalan
+     * guna mencegah pengiriman email ganda (deduplication).
+     *
+     * @var array<int, bool>
+     */
+    protected static array $sentComplaintEmailIds = [];
     /**
      * Kirim notifikasi ke User ID tertentu.
      */
@@ -193,7 +204,115 @@ class NotificationService
             }
         }
 
+        // Kirimkan notifikasi email pengaduan warga ke Ketua RT secara otomatis
+        self::sendComplaintEmailToKetuaRt($complaint);
+
         return $notifications;
+    }
+
+    /**
+     * Dapatkan alamat email resmi Ketua RT tujuan notifikasi pengaduan.
+     * Mengambil dari konfigurasi .env (KETUA_RT_EMAIL) sebagai prioritas utama.
+     * Jika belum diatur, memanfaatkan email akun Ketua RT aktif atau RtSetting tanpa mengarang alamat.
+     */
+    public static function getKetuaRtEmail(): ?string
+    {
+        // 1. Konfigurasi prioritas dari .env / config
+        $envEmail = config('mail.ketua_rt_email');
+        if (!empty($envEmail) && filter_var($envEmail, FILTER_VALIDATE_EMAIL)) {
+            return trim($envEmail);
+        }
+
+        // 2. Email akun Ketua RT aktif yang terdaftar di database
+        try {
+            $userEmail = User::role('ketua_rt')
+                ->where('status', 'aktif')
+                ->whereNotNull('email')
+                ->value('email');
+
+            if (!empty($userEmail) && filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+                return trim($userEmail);
+            }
+        } catch (\Throwable $e) {
+            Log::debug('Gagal mengambil email ketua_rt dari tabel users: ' . $e->getMessage());
+        }
+
+        // 3. Email resmi di pengaturan identitas RT (RtSetting)
+        try {
+            $rtSettingEmail = RtSetting::query()->value('email');
+            if (!empty($rtSettingEmail) && filter_var($rtSettingEmail, FILTER_VALIDATE_EMAIL)) {
+                return trim($rtSettingEmail);
+            }
+        } catch (\Throwable $e) {
+            Log::debug('Gagal mengambil email dari tabel rt_settings: ' . $e->getMessage());
+        }
+
+        // 4. Konfigurasi akun seeder ketua RT jika tersedia
+        $seederEmail = config('seeder.accounts.ketua_rt.email');
+        if (!empty($seederEmail) && filter_var($seederEmail, FILTER_VALIDATE_EMAIL)) {
+            return trim($seederEmail);
+        }
+
+        return null;
+    }
+
+    /**
+     * Mengirimkan notifikasi email pengaduan warga baru ke alamat email resmi Ketua RT.
+     *
+     * Fitur Keamanan & Keandalan:
+     * - Pencegahan duplikasi pengiriman email (deduplication check).
+     * - Fault-tolerant: kegagalan email tidak membatalkan penyimpanan atau alur pengaduan.
+     * - Logging komprehensif untuk audit penelusuran.
+     */
+    public static function sendComplaintEmailToKetuaRt(Complaint $complaint): bool
+    {
+        // Cegah pengiriman email berulang untuk pengaduan yang sama
+        if (isset(self::$sentComplaintEmailIds[$complaint->id]) || $complaint->email_sent_at !== null) {
+            Log::info("Pengiriman notifikasi email pengaduan warga #{$complaint->id} dilewati karena sudah pernah dikirim.");
+            return false;
+        }
+
+        $recipientEmail = self::getKetuaRtEmail();
+
+        if (empty($recipientEmail)) {
+            Log::warning("Pengiriman email notifikasi pengaduan warga #{$complaint->id} dilewati: Alamat email Ketua RT belum dikonfigurasi pada .env (KETUA_RT_EMAIL) maupun data profil pengurus.");
+            return false;
+        }
+
+        try {
+            $mailable = new NewComplaintNotificationMail($complaint);
+
+            Mail::to($recipientEmail)->send($mailable);
+
+            // Tandai sudah terkirim (di memori dan database)
+            self::$sentComplaintEmailIds[$complaint->id] = true;
+
+            try {
+                $complaint->forceFill(['email_sent_at' => now()])->saveQuietly();
+            } catch (\Throwable $saveError) {
+                Log::debug("Gagal memperbarui kolom email_sent_at pada pengaduan #{$complaint->id}: " . $saveError->getMessage());
+            }
+
+            Log::info("Notifikasi email pengaduan warga #{$complaint->id} berhasil dikirim ke Ketua RT [{$recipientEmail}].");
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error("Gagal mengirim email notifikasi pengaduan warga #{$complaint->id} ke Ketua RT [{$recipientEmail}]: " . $e->getMessage(), [
+                'complaint_id' => $complaint->id,
+                'recipient' => $recipientEmail,
+                'exception' => $e,
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Helper untuk mereset pelacak pengiriman email pengaduan di memori (khusus pengujian / unit test).
+     */
+    public static function resetSentComplaintEmailTracker(): void
+    {
+        self::$sentComplaintEmailIds = [];
     }
 
     /**

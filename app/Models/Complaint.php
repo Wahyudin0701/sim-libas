@@ -48,6 +48,7 @@ class Complaint extends Model
         'catatan_penanganan',
         'penanggung_jawab_id',
         'tanggal_selesai',
+        'email_sent_at',
     ];
 
     /**
@@ -60,6 +61,7 @@ class Complaint extends Model
         return [
             'is_anonim' => 'boolean',
             'tanggal_selesai' => 'datetime',
+            'email_sent_at' => 'datetime',
         ];
     }
 

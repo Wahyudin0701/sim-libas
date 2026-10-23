@@ -115,4 +115,14 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | SIM-LiBas RT Notification Recipients
+    |--------------------------------------------------------------------------
+    |
+    | Destination email addresses for official RT notifications.
+    |
+    */
+    'ketua_rt_email' => env('KETUA_RT_EMAIL'),
+
 ];
