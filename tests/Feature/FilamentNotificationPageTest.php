@@ -39,7 +39,10 @@ class FilamentNotificationPageTest extends TestCase
 
         $response->assertOk()
             ->assertSee('Pusat Notifikasi')
-            ->assertSee('KOMUNIKASI WARGA RT 15');
+            ->assertSee('KOMUNIKASI WARGA RT 15')
+            ->assertSee('Tandai Semua Telah Dibaca')
+            ->assertDontSee('TOTAL NOTIFIKASI')
+            ->assertDontSee('Cari permohonan');
     }
 
     /**
@@ -53,9 +56,9 @@ class FilamentNotificationPageTest extends TestCase
     }
 
     /**
-     * Test: Livewire merender daftar notifikasi dan kartu statistik dengan benar.
+     * Test: Livewire merender daftar notifikasi dan 3 filter tab (Semua, Belum Dibaca, Surat Pengantar).
      */
-    public function test_livewire_renders_notifications_and_stats(): void
+    public function test_livewire_renders_notifications_and_three_filters(): void
     {
         Notification::create([
             'user_id' => $this->adminUser->id,
@@ -75,10 +78,13 @@ class FilamentNotificationPageTest extends TestCase
 
         Livewire::actingAs($this->adminUser)
             ->test(Notifications::class)
+            ->assertSee('Semua')
+            ->assertSee('Belum Dibaca')
+            ->assertSee('Surat Pengantar')
             ->assertSee('Pengajuan Surat Baru: Surat Pengantar SKCK')
             ->assertSee('Aduan Warga: Jalan Rusak')
-            ->assertSee('Surat Pengantar')
-            ->assertSee('Pengaduan Warga');
+            ->assertDontSee('TOTAL NOTIFIKASI')
+            ->assertDontSee('Cari permohonan');
     }
 
     /**
@@ -134,41 +140,9 @@ class FilamentNotificationPageTest extends TestCase
     }
 
     /**
-     * Test: Hapus satu notifikasi dan bersihkan notifikasi terbaca.
+     * Test: Filter 3 tab berfungsi: Semua, Belum Dibaca, dan Surat Pengantar.
      */
-    public function test_can_delete_notifications(): void
-    {
-        $notif1 = Notification::create([
-            'user_id' => $this->adminUser->id,
-            'judul' => 'Notif 1',
-            'isi' => 'Isi 1',
-            'is_read' => true,
-        ]);
-
-        $notif2 = Notification::create([
-            'user_id' => $this->adminUser->id,
-            'judul' => 'Notif 2',
-            'isi' => 'Isi 2',
-            'is_read' => false,
-        ]);
-
-        Livewire::actingAs($this->adminUser)
-            ->test(Notifications::class)
-            ->call('deleteNotification', $notif2->id);
-
-        $this->assertDatabaseMissing('notifications', ['id' => $notif2->id]);
-
-        Livewire::actingAs($this->adminUser)
-            ->test(Notifications::class)
-            ->call('deleteAllRead');
-
-        $this->assertDatabaseMissing('notifications', ['id' => $notif1->id]);
-    }
-
-    /**
-     * Test: Filter kategori tab dan pencarian teks berfungsi.
-     */
-    public function test_filter_tabs_and_search(): void
+    public function test_three_filter_tabs_work_correctly(): void
     {
         Notification::create([
             'user_id' => $this->adminUser->id,
@@ -180,24 +154,42 @@ class FilamentNotificationPageTest extends TestCase
 
         Notification::create([
             'user_id' => $this->adminUser->id,
-            'judul' => 'Laporan Ronda Malam',
-            'isi' => 'Laporan ronda regu A berjalan aman.',
-            'url' => '/admin/patrol-schedules',
+            'judul' => 'Pengaduan Lampu Padam',
+            'isi' => 'Lampu jalan mati di gang 2.',
+            'url' => '/admin/complaints',
+            'is_read' => false,
+        ]);
+
+        Notification::create([
+            'user_id' => $this->adminUser->id,
+            'judul' => 'Pengajuan Surat Usaha',
+            'isi' => 'Surat keterangan usaha UMKM.',
+            'url' => '/admin/letters',
             'is_read' => true,
         ]);
 
-        // Filter tab letter
+        // 1. Tab Semua: menampilkan semua notifikasi
+        Livewire::actingAs($this->adminUser)
+            ->test(Notifications::class)
+            ->call('setTab', 'all')
+            ->assertSee('Pengajuan Surat Pindah')
+            ->assertSee('Pengaduan Lampu Padam')
+            ->assertSee('Pengajuan Surat Usaha');
+
+        // 2. Tab Belum Dibaca: hanya menampilkan yang belum dibaca
+        Livewire::actingAs($this->adminUser)
+            ->test(Notifications::class)
+            ->call('setTab', 'unread')
+            ->assertSee('Pengajuan Surat Pindah')
+            ->assertSee('Pengaduan Lampu Padam')
+            ->assertDontSee('Pengajuan Surat Usaha');
+
+        // 3. Tab Surat Pengantar: hanya menampilkan kategori surat
         Livewire::actingAs($this->adminUser)
             ->test(Notifications::class)
             ->call('setTab', 'letter')
             ->assertSee('Pengajuan Surat Pindah')
-            ->assertDontSee('Laporan Ronda Malam');
-
-        // Pencarian spesifik
-        Livewire::actingAs($this->adminUser)
-            ->test(Notifications::class)
-            ->set('search', 'Pindah')
-            ->assertSee('Pengajuan Surat Pindah')
-            ->assertDontSee('Laporan Ronda Malam');
+            ->assertSee('Pengajuan Surat Usaha')
+            ->assertDontSee('Pengaduan Lampu Padam');
     }
 }

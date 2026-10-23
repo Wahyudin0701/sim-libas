@@ -24,7 +24,7 @@ class Notifications extends Page
 
     protected static string|UnitEnum|null $navigationGroup = 'Komunikasi Warga';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 0;
 
     protected static ?string $title = 'Pusat Notifikasi';
 
@@ -36,9 +36,6 @@ class Notifications extends Page
 
     #[Url]
     public string $tab = 'all';
-
-    #[Url]
-    public string $search = '';
 
     public int $perPage = 15;
 
@@ -77,11 +74,6 @@ class Notifications extends Page
         return [];
     }
 
-    public function updatedSearch(): void
-    {
-        $this->resetPage();
-    }
-
     public function updatedTab(): void
     {
         $this->resetPage();
@@ -89,39 +81,32 @@ class Notifications extends Page
 
     public function setTab(string $tab): void
     {
-        $this->tab = $tab;
+        $this->tab = in_array($tab, ['all', 'unread', 'letter'], true) ? $tab : 'all';
         $this->resetPage();
     }
 
     public function resetFilters(): void
     {
-        $this->search = '';
         $this->tab = 'all';
         $this->resetPage();
     }
 
-    /**
-     * Ringkasan statistik notifikasi untuk kartu KPI atas.
-     */
-    public function getStatsProperty(): array
+    public function getUnreadCountProperty(): int
     {
         $userId = Auth::id();
-        if (! $userId) {
-            return ['total' => 0, 'unread' => 0, 'today' => 0, 'read' => 0];
-        }
 
-        $base = Notification::where('user_id', $userId);
+        return $userId ? Notification::where('user_id', $userId)->unread()->count() : 0;
+    }
 
-        return [
-            'total' => (clone $base)->count(),
-            'unread' => (clone $base)->unread()->count(),
-            'today' => (clone $base)->whereDate('created_at', today())->count(),
-            'read' => (clone $base)->where('is_read', true)->count(),
-        ];
+    public function getHasReadNotificationsProperty(): bool
+    {
+        $userId = Auth::id();
+
+        return $userId ? Notification::where('user_id', $userId)->where('is_read', true)->exists() : false;
     }
 
     /**
-     * Dapatkan daftar notifikasi berdasarkan filter tab dan pencarian.
+     * Dapatkan daftar notifikasi berdasarkan filter tab (semua, belum dibaca, surat pengantar).
      */
     public function getNotificationsProperty(): LengthAwarePaginator
     {
@@ -129,47 +114,13 @@ class Notifications extends Page
 
         $query = Notification::where('user_id', $userId)->latest();
 
-        // Filter Tab Kategori
         if ($this->tab === 'unread') {
             $query->unread();
-        } elseif ($this->tab === 'read') {
-            $query->where('is_read', true);
         } elseif ($this->tab === 'letter') {
             $query->where(function ($q) {
                 $q->where('url', 'like', '%letters%')
                     ->orWhere('url', 'like', '%surat%')
                     ->orWhere('judul', 'like', '%Surat%');
-            });
-        } elseif ($this->tab === 'complaint') {
-            $query->where(function ($q) {
-                $q->where('url', 'like', '%complaint%')
-                    ->orWhere('url', 'like', '%pengaduan%')
-                    ->orWhere('judul', 'like', '%Pengaduan%');
-            });
-        } elseif ($this->tab === 'payment') {
-            $query->where(function ($q) {
-                $q->where('url', 'like', '%payment%')
-                    ->orWhere('url', 'like', '%iuran%')
-                    ->orWhere('judul', 'like', '%Pembayaran%')
-                    ->orWhere('judul', 'like', '%Invoice%');
-            });
-        } elseif ($this->tab === 'guest') {
-            $query->where(function ($q) {
-                $q->where('url', 'like', '%guest%')
-                    ->orWhere('url', 'like', '%tamu%')
-                    ->orWhere('url', 'like', '%patrol%')
-                    ->orWhere('judul', 'like', '%Tamu%')
-                    ->orWhere('judul', 'like', '%Patroli%')
-                    ->orWhere('judul', 'like', '%Ronda%');
-            });
-        }
-
-        // Filter Pencarian Teks
-        if (filled($this->search)) {
-            $search = trim($this->search);
-            $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', "%{$search}%")
-                    ->orWhere('isi', 'like', "%{$search}%");
             });
         }
 
@@ -253,7 +204,7 @@ class Notifications extends Page
                 ->send();
         } else {
             FilamentNotification::make()
-                ->title('Tidak ada notifikasi baru yang perlu ditandai')
+                ->title('Semua notifikasi sudah dalam status dibaca')
                 ->info()
                 ->send();
         }
