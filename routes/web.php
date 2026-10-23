@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminExportController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\CitizenAuthController;
 use App\Http\Controllers\CitizenPortalController;
+use App\Http\Controllers\HouseholdExportController;
 use App\Http\Controllers\PublicPortalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,9 +34,9 @@ Route::get('/kontak', [PublicPortalController::class, 'contact'])->name('public.
 // Verifikasi Surat Pengantar via QR Code (FR-PUB-03)
 Route::get('/verifikasi-surat/{token?}', function (Request $request, ?string $token = null) {
     $searchToken = $token ?? $request->query('token', '');
+
     return app(PublicPortalController::class)->verifyLetter($searchToken);
 })->name('public.verify-letter');
-
 
 // --- 2. Autentikasi Warga ---
 Route::middleware('guest')->group(function () {
@@ -45,7 +47,6 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/keluar', [CitizenAuthController::class, 'logout'])->name('citizen.logout')->middleware('auth');
 
-
 // --- 3. Portal Layanan Mandiri Warga RT 15 (Wajib Login) ---
 Route::middleware(['auth'])->prefix('warga')->name('warga.')->group(function () {
     Route::get('/dashboard', [CitizenPortalController::class, 'dashboard'])->name('dashboard');
@@ -54,7 +55,7 @@ Route::middleware(['auth'])->prefix('warga')->name('warga.')->group(function () 
     Route::put('/profil/email', [CitizenPortalController::class, 'updateEmail'])->name('profile.email');
     Route::put('/profil/password', [CitizenPortalController::class, 'updatePassword'])->name('profile.password');
     Route::put('/profil/telepon', [CitizenPortalController::class, 'updatePhone'])->name('profile.phone');
-    
+
     // Surat Pengantar
     Route::get('/surat', [CitizenPortalController::class, 'letters'])->name('surat');
     Route::post('/surat', [CitizenPortalController::class, 'storeLetter'])->name('surat.store');
@@ -69,8 +70,10 @@ Route::middleware(['auth'])->prefix('warga')->name('warga.')->group(function () 
 
     // Notifikasi Sistem Warga
     Route::get('/notifikasi', [CitizenPortalController::class, 'getNotifications'])->name('notifications');
+    Route::get('/notifikasi/{notification}/buka', [CitizenPortalController::class, 'openNotification'])->name('notifications.open');
     Route::post('/notifikasi/{notification}/baca', [CitizenPortalController::class, 'markNotificationAsRead'])->name('notifications.read');
     Route::post('/notifikasi/baca-semua', [CitizenPortalController::class, 'markAllNotificationsAsRead'])->name('notifications.read-all');
+    Route::post('/notifikasi/bersihkan-terbaca', [CitizenPortalController::class, 'deleteAllReadNotifications'])->name('notifications.clear-read');
 });
 
 // --- 4. Cetak Lembar Resmi Surat Pengantar RT 15 (Admin & Warga) ---
@@ -89,14 +92,13 @@ Route::middleware(['auth'])->prefix('admin/api')->name('admin.api.')->group(func
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     // Dedicated household routes
     Route::prefix('households/export')->name('households.export.')->group(function () {
-        Route::get('/pdf', [\App\Http\Controllers\HouseholdExportController::class, 'exportPdf'])->name('pdf');
-        Route::get('/excel', [\App\Http\Controllers\HouseholdExportController::class, 'exportExcel'])->name('excel');
+        Route::get('/pdf', [HouseholdExportController::class, 'exportPdf'])->name('pdf');
+        Route::get('/excel', [HouseholdExportController::class, 'exportExcel'])->name('excel');
     });
 
     // Unified export routes for all 16 resources
     Route::prefix('export')->name('export.')->group(function () {
-        Route::get('/{resource}/pdf', [\App\Http\Controllers\AdminExportController::class, 'exportPdf'])->name('pdf');
-        Route::get('/{resource}/excel', [\App\Http\Controllers\AdminExportController::class, 'exportExcel'])->name('excel');
+        Route::get('/{resource}/pdf', [AdminExportController::class, 'exportPdf'])->name('pdf');
+        Route::get('/{resource}/excel', [AdminExportController::class, 'exportExcel'])->name('excel');
     });
 });
-

@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\FeeType;
+use App\Models\Invoice;
 use App\Models\Letter;
 use App\Models\LetterType;
+use App\Models\Notification;
+use App\Models\Payment;
 use App\Models\Resident;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -186,7 +190,7 @@ class CitizenPortalTest extends TestCase
         $response = $this->actingAs($warga)->get('/warga/dashboard');
 
         $response->assertStatus(200);
-        $response->assertSee('Halo, ' . $warga->name);
+        $response->assertSee('Halo, '.$warga->name);
         $response->assertSee('Tabungan Sampah');
         $response->assertSee('Nomor Kartu Keluarga');
         $response->assertSee(route('warga.kartu-keluarga'));
@@ -344,9 +348,9 @@ class CitizenPortalTest extends TestCase
     {
         $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
-        $feeType = \App\Models\FeeType::first();
+        $feeType = FeeType::first();
 
-        $invoice = \App\Models\Invoice::firstOrCreate(
+        $invoice = Invoice::firstOrCreate(
             ['household_id' => $household->id, 'fee_type_id' => $feeType->id, 'periode_bulan' => 10, 'periode_tahun' => 2026],
             ['jumlah' => 25000, 'status' => 'belum_bayar']
         );
@@ -541,7 +545,7 @@ class CitizenPortalTest extends TestCase
     public function test_citizen_can_fetch_notifications_via_api(): void
     {
         $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
-        \App\Models\Notification::create([
+        Notification::create([
             'user_id' => $warga->id,
             'judul' => 'Uji Notifikasi RT',
             'isi' => 'Isi pesan notifikasi simulasi untuk warga.',
@@ -554,7 +558,7 @@ class CitizenPortalTest extends TestCase
         $response->assertJsonStructure([
             'unread_count',
             'notifications' => [
-                '*' => ['id', 'judul', 'isi', 'url', 'is_read', 'time_ago']
+                '*' => ['id', 'judul', 'isi', 'url', 'is_read', 'time_ago'],
             ],
         ]);
         $this->assertGreaterThanOrEqual(1, $response->json('unread_count'));
@@ -566,7 +570,7 @@ class CitizenPortalTest extends TestCase
     public function test_citizen_can_mark_notification_as_read(): void
     {
         $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
-        $notif = \App\Models\Notification::create([
+        $notif = Notification::create([
             'user_id' => $warga->id,
             'judul' => 'Surat Pengantar Disetujui',
             'isi' => 'Surat pengantar Anda telah disetujui.',
@@ -582,15 +586,108 @@ class CitizenPortalTest extends TestCase
     }
 
     /**
+     * Warga dapat mengakses tampilan halaman penuh Pusat Notifikasi via browser.
+     */
+    public function test_citizen_can_access_notification_page_via_web(): void
+    {
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
+        Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Surat Pengantar Disetujui',
+            'isi' => 'Surat pengantar Anda telah disetujui RT.',
+            'url' => route('warga.surat'),
+            'kanal' => 'web',
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($warga)->get(route('warga.notifications'));
+        $response->assertOk();
+        $response->assertSee('Pusat Notifikasi');
+        $response->assertSee('Semua');
+        $response->assertSee('Belum Dibaca');
+        $response->assertSee('Surat Pengantar');
+        $response->assertSee('Tandai Semua Telah Dibaca');
+        $response->assertSee('Surat Pengantar Disetujui');
+    }
+
+    /**
+     * Warga dapat menandai seluruh notifikasi telah dibaca via tombol web.
+     */
+    public function test_citizen_can_mark_all_notifications_as_read_via_web(): void
+    {
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
+        Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Notif 1',
+            'isi' => 'Isi 1',
+            'is_read' => false,
+        ]);
+        Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Notif 2',
+            'isi' => 'Isi 2',
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($warga)->post(route('warga.notifications.read-all'));
+        $response->assertRedirect();
+        $this->assertEquals(0, Notification::where('user_id', $warga->id)->unread()->count());
+    }
+
+    /**
+     * Warga dapat membuka notifikasi, otomatis ditandai dibaca, dan diredirect ke URL tujuan.
+     */
+    public function test_citizen_can_open_notification_and_redirects(): void
+    {
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
+        $notif = Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Tagihan Iuran Baru',
+            'isi' => 'Tagihan iuran bulan berjalan tersedia.',
+            'url' => route('warga.iuran'),
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($warga)->get(route('warga.notifications.open', $notif));
+        $response->assertRedirect(route('warga.iuran'));
+        $this->assertTrue($notif->fresh()->is_read);
+    }
+
+    /**
+     * Warga dapat membersihkan riwayat notifikasi yang sudah dibaca.
+     */
+    public function test_citizen_can_clear_read_notifications(): void
+    {
+        $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
+        $readNotif = Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Notif Lama',
+            'isi' => 'Isi lama.',
+            'is_read' => true,
+        ]);
+        $unreadNotif = Notification::create([
+            'user_id' => $warga->id,
+            'judul' => 'Notif Baru',
+            'isi' => 'Isi baru.',
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($warga)->post(route('warga.notifications.clear-read'));
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('notifications', ['id' => $readNotif->id]);
+        $this->assertDatabaseHas('notifications', ['id' => $unreadNotif->id]);
+    }
+
+    /**
      * Warga tidak dapat membayar tagihan yang sudah lunas.
      */
     public function test_citizen_cannot_pay_invoice_if_already_paid(): void
     {
         $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
-        $feeType = \App\Models\FeeType::first();
+        $feeType = FeeType::first();
 
-        $invoice = \App\Models\Invoice::firstOrCreate(
+        $invoice = Invoice::firstOrCreate(
             ['household_id' => $household->id, 'fee_type_id' => $feeType->id, 'periode_bulan' => 11, 'periode_tahun' => 2026],
             ['jumlah' => 25000, 'status' => 'lunas']
         );
@@ -611,16 +708,16 @@ class CitizenPortalTest extends TestCase
     {
         $warga = User::where('email', 'warga.dedi@simlibas.com')->first();
         $household = $warga->resident?->household;
-        $feeType = \App\Models\FeeType::first();
+        $feeType = FeeType::first();
 
-        $invoice = \App\Models\Invoice::firstOrCreate(
+        $invoice = Invoice::firstOrCreate(
             ['household_id' => $household->id, 'fee_type_id' => $feeType->id, 'periode_bulan' => 12, 'periode_tahun' => 2026],
             ['jumlah' => 25000, 'status' => 'belum_bayar']
         );
         $invoice->update(['status' => 'belum_bayar']);
 
         // Buat pembayaran pending
-        \App\Models\Payment::create([
+        Payment::create([
             'invoice_id' => $invoice->id,
             'jumlah' => 25000,
             'metode' => 'transfer',
@@ -642,8 +739,8 @@ class CitizenPortalTest extends TestCase
     public function test_family_member_cannot_apply_letter_for_other_members(): void
     {
         // Ambil warga yang berstatus anak / bukan kepala keluarga
-        $childResident = \App\Models\Resident::where('hubungan_keluarga', 'anak')->first();
-        if (!$childResident) {
+        $childResident = Resident::where('hubungan_keluarga', 'anak')->first();
+        if (! $childResident) {
             $this->markTestSkipped('Tidak ada resident berstatus anak.');
         }
 
@@ -654,11 +751,11 @@ class CitizenPortalTest extends TestCase
         ]);
         $childResident->update(['user_id' => $childUser->id, 'is_kepala_keluarga' => false]);
 
-        $letterType = \App\Models\LetterType::first();
+        $letterType = LetterType::first();
         $household = $childResident->household;
         $otherResident = $household->residents->where('id', '!=', $childResident->id)->first();
 
-        if (!$otherResident) {
+        if (! $otherResident) {
             $this->markTestSkipped('Tidak ada anggota keluarga lain di KK yang sama.');
         }
 

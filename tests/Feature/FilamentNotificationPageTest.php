@@ -31,6 +31,14 @@ class FilamentNotificationPageTest extends TestCase
     }
 
     /**
+     * Test: Halaman notifikasi tidak boleh ditampilkan sebagai menu di navigasi sidebar.
+     */
+    public function test_notification_page_is_hidden_from_navigation(): void
+    {
+        $this->assertFalse(Notifications::shouldRegisterNavigation());
+    }
+
+    /**
      * Test: Pengurus berhak mengakses halaman /admin/notifikasi.
      */
     public function test_admin_can_access_notification_page(): void

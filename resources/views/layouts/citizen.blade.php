@@ -92,41 +92,17 @@
             <!-- Header Actions: Notifikasi & Profil Dropdown -->
             <div class="flex items-center gap-1.5 sm:gap-3">
                 <!-- 1. Tombol & Dropdown Notifikasi Sistem -->
-                <div class="relative" id="notif-menu-wrapper">
-                    <button type="button" 
-                            id="notif-menu-button" 
-                            aria-expanded="false" 
-                            aria-haspopup="true"
-                            class="relative p-2 text-slate-500 hover:text-primary-700 hover:bg-slate-100 rounded-xl transition cursor-pointer focus:outline-none"
-                            title="Notifikasi Saya"
-                            aria-label="Notifikasi Saya">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                        <span id="notif-indicator" class="{{ $unreadNotifCount > 0 ? '' : 'hidden' }} absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
-                    </button>
-
-                    <!-- Dropdown Notifikasi Panel -->
-                    <div id="notif-menu-dropdown" 
-                         class="hidden absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-100 p-3 z-50 transition-all duration-150 transform opacity-0 scale-95 origin-top-right">
-                        <div class="flex items-center justify-between pb-2.5 mb-2 border-b border-border-soft">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-primary-900 uppercase tracking-wider">Notifikasi</span>
-                                <span id="notif-badge-count" class="{{ $unreadNotifCount > 0 ? '' : 'hidden' }} px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700">
-                                    {{ $unreadNotifCount }} baru
-                                </span>
-                            </div>
-                            <button type="button" 
-                                    id="btn-mark-all-read"
-                                    class="text-[11px] font-semibold text-primary-700 hover:text-primary-900 hover:underline cursor-pointer">
-                                Tandai Semua Dibaca
-                            </button>
-                        </div>
-                        <div id="notif-items-list" class="max-h-72 overflow-y-auto space-y-2 no-scrollbar text-xs">
-                            <p class="text-center text-text-muted py-4">Memuat notifikasi...</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- 1. Tombol Lonceng: Langsung Membuka Halaman Notifikasi Warga (Tanpa Popup) -->
+                <a href="{{ route('warga.notifications') }}"
+                   id="notif-bell-link"
+                   class="relative p-2 text-slate-500 hover:text-primary-700 hover:bg-slate-100 rounded-xl transition cursor-pointer focus:outline-none group"
+                   title="Pusat Notifikasi Warga"
+                   aria-label="Pusat Notifikasi Warga">
+                    <svg class="w-5 h-5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span id="notif-indicator" class="{{ $unreadNotifCount > 0 ? '' : 'hidden' }} absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
+                </a>
 
                 <!-- 2. Profile Dropdown (Format seperti Dashboard Pengurus) -->
                 <div class="relative" id="user-menu-wrapper">
@@ -281,145 +257,32 @@
                 });
             }
 
-            // --- 2. Notification Menu & Live Fetching ---
-            const notifBtn = document.getElementById('notif-menu-button');
-            const notifDropdown = document.getElementById('notif-menu-dropdown');
-            const notifList = document.getElementById('notif-items-list');
+            // --- 2. Live Notification Indicator Polling ---
             const notifIndicator = document.getElementById('notif-indicator');
-            const notifBadgeCount = document.getElementById('notif-badge-count');
-            const markAllBtn = document.getElementById('btn-mark-all-read');
 
-            function toggleNotifMenu(show) {
-                if (!notifDropdown) return;
-                const isHidden = notifDropdown.classList.contains('hidden');
-                const shouldOpen = show !== undefined ? show : isHidden;
-
-                if (shouldOpen) {
-                    toggleUserMenu(false);
-                    notifDropdown.classList.remove('hidden');
-                    requestAnimationFrame(() => {
-                        notifDropdown.classList.remove('opacity-0', 'scale-95');
-                        notifDropdown.classList.add('opacity-100', 'scale-100');
-                    });
-                    notifBtn?.setAttribute('aria-expanded', 'true');
-                    loadNotifications();
-                } else {
-                    notifDropdown.classList.remove('opacity-100', 'scale-100');
-                    notifDropdown.classList.add('opacity-0', 'scale-95');
-                    notifBtn?.setAttribute('aria-expanded', 'false');
-                    setTimeout(() => {
-                        notifDropdown.classList.add('hidden');
-                    }, 150);
-                }
-            }
-
-            if (notifBtn && notifDropdown) {
-                notifBtn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    toggleNotifMenu();
-                });
-            }
-
-            function loadNotifications() {
-                if (!notifList) return;
+            function updateNotifIndicator() {
                 fetch("{{ route('warga.notifications') }}", {
                     headers: { 'Accept': 'application/json' }
                 })
                 .then(res => res.json())
                 .then(data => {
-                    updateNotifBadge(data.unread_count);
-                    if (!data.notifications || data.notifications.length === 0) {
-                        notifList.innerHTML = `
-                            <div class="py-6 text-center text-text-muted">
-                                <svg class="w-8 h-8 mx-auto text-slate-300 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                <p class="text-xs font-semibold text-slate-600">Tidak ada notifikasi</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Pemberitahuan status surat & iuran akan muncul di sini</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    notifList.innerHTML = data.notifications.map(n => `
-                        <div onclick="handleNotifClick(${n.id}, '${n.url}')" 
-                             class="p-2.5 rounded-xl cursor-pointer transition border ${n.is_read ? 'bg-white hover:bg-slate-50 border-slate-100 text-slate-600' : 'bg-blue-50/50 hover:bg-blue-50 border-blue-100 text-slate-800'}">
-                            <div class="flex items-start justify-between gap-2">
-                                <div class="font-bold text-xs ${n.is_read ? 'text-slate-800' : 'text-primary-900'} leading-tight">
-                                    ${n.judul}
-                                </div>
-                                ${!n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary-600 shrink-0 mt-0.5"></span>' : ''}
-                            </div>
-                            <div class="text-[11px] text-text-muted mt-1 leading-snug">
-                                ${n.isi}
-                            </div>
-                            <div class="text-[9.5px] text-slate-400 mt-1 font-medium">
-                                ${n.time_ago}
-                            </div>
-                        </div>
-                    `).join('');
-                })
-                .catch(() => {
-                    notifList.innerHTML = '<p class="text-xs text-rose-500 text-center py-4">Gagal memuat notifikasi.</p>';
-                });
-            }
-
-            function updateNotifBadge(count) {
-                if (notifIndicator) {
-                    if (count > 0) {
-                        notifIndicator.classList.remove('hidden');
-                    } else {
-                        notifIndicator.classList.add('hidden');
-                    }
-                }
-                if (notifBadgeCount) {
-                    if (count > 0) {
-                        notifBadgeCount.textContent = count + ' baru';
-                        notifBadgeCount.classList.remove('hidden');
-                    } else {
-                        notifBadgeCount.classList.add('hidden');
-                    }
-                }
-            }
-
-            window.handleNotifClick = function(id, url) {
-                fetch(`/warga/notifikasi/${id}/baca`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                    }
-                }).finally(() => {
-                    if (url && url !== '#') {
-                        window.location.href = url;
-                    } else {
-                        loadNotifications();
-                    }
-                });
-            };
-
-            if (markAllBtn) {
-                markAllBtn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    fetch("{{ route('warga.notifications.read-all') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json',
+                    if (notifIndicator) {
+                        if (data && data.unread_count > 0) {
+                            notifIndicator.classList.remove('hidden');
+                        } else {
+                            notifIndicator.classList.add('hidden');
                         }
-                    })
-                    .then(() => {
-                        updateNotifBadge(0);
-                        loadNotifications();
-                    });
-                });
+                    }
+                })
+                .catch(() => {});
             }
+
+            setInterval(updateNotifIndicator, 20000);
 
             // Close on outside click
             document.addEventListener('click', function (e) {
                 if (userBtn && userDropdown && !userBtn.contains(e.target) && !userDropdown.contains(e.target)) {
                     toggleUserMenu(false);
-                }
-                if (notifBtn && notifDropdown && !notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
-                    toggleNotifMenu(false);
                 }
             });
 
@@ -427,7 +290,6 @@
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     toggleUserMenu(false);
-                    toggleNotifMenu(false);
                 }
             });
         });

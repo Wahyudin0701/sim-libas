@@ -34,6 +34,15 @@ class Notifications extends Page
 
     protected Width|string|null $maxContentWidth = Width::Full;
 
+    /**
+     * Sembunyikan halaman notifikasi dari menu navigasi sidebar.
+     * Akses halaman notifikasi hanya melalui ikon lonceng di topbar.
+     */
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     #[Url]
     public string $tab = 'all';
 

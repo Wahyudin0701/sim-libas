@@ -12,17 +12,19 @@ use App\Models\LetterType;
 use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\Resident;
-use App\Models\WasteDeposit;
+use App\Models\RtSetting;
+use App\Models\User;
 use App\Models\WasteWallet;
 use App\Services\NotificationService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CitizenPortalController extends Controller
@@ -124,7 +126,7 @@ class CitizenPortalController extends Controller
      */
     public function profile(): View
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $resident = $user->resident;
         $household = $this->getHousehold();
@@ -137,7 +139,7 @@ class CitizenPortalController extends Controller
      */
     public function updateEmail(Request $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -169,7 +171,7 @@ class CitizenPortalController extends Controller
             $user->resident->update(['email' => $validated['email']]);
         }
 
-        return back()->with('success', 'Alamat email akun berhasil diperbarui menjadi ' . $validated['email'] . '.');
+        return back()->with('success', 'Alamat email akun berhasil diperbarui menjadi '.$validated['email'].'.');
     }
 
     /**
@@ -177,7 +179,7 @@ class CitizenPortalController extends Controller
      */
     public function updatePassword(Request $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -207,7 +209,7 @@ class CitizenPortalController extends Controller
      */
     public function updatePhone(Request $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -226,7 +228,7 @@ class CitizenPortalController extends Controller
             $user->resident->update(['telepon' => $cleanPhone]);
         }
 
-        return back()->with('success', 'Nomor telepon / WhatsApp berhasil diperbarui menjadi ' . $cleanPhone . '.');
+        return back()->with('success', 'Nomor telepon / WhatsApp berhasil diperbarui menjadi '.$cleanPhone.'.');
     }
 
     /**
@@ -285,13 +287,13 @@ class CitizenPortalController extends Controller
             $allowedResidentIds[] = $resident->id;
         }
 
-        if (!in_array((int) $validated['resident_id'], $allowedResidentIds)) {
+        if (! in_array((int) $validated['resident_id'], $allowedResidentIds)) {
             return back()->withErrors(['resident_id' => 'Warga yang dipilih tidak berada dalam Kartu Keluarga Anda.']);
         }
 
         $targetResident = Resident::find($validated['resident_id']);
-        if (!$targetResident || $targetResident->status_kependudukan !== 'aktif') {
-            return back()->withErrors(['resident_id' => 'Permohonan surat tidak dapat diajukan untuk warga berstatus kependudukan ' . ($targetResident ? $targetResident->status_kependudukan : 'tidak aktif') . '.']);
+        if (! $targetResident || $targetResident->status_kependudukan !== 'aktif') {
+            return back()->withErrors(['resident_id' => 'Permohonan surat tidak dapat diajukan untuk warga berstatus kependudukan '.($targetResident ? $targetResident->status_kependudukan : 'tidak aktif').'.']);
         }
 
         // Pembeda peran status keluarga:
@@ -303,7 +305,7 @@ class CitizenPortalController extends Controller
             $isFamilyHeadOrSpouse = true;
         }
 
-        if (!$isFamilyHeadOrSpouse && $resident && (int) $validated['resident_id'] !== $resident->id) {
+        if (! $isFamilyHeadOrSpouse && $resident && (int) $validated['resident_id'] !== $resident->id) {
             return back()->withErrors([
                 'resident_id' => 'Sebagai anggota keluarga, Anda hanya dapat mengajukan permohonan surat untuk diri Anda sendiri. Permohonan untuk anggota keluarga lain dilakukan oleh Kepala Keluarga atau Istri.',
             ]);
@@ -331,11 +333,11 @@ class CitizenPortalController extends Controller
         $user = Auth::user();
 
         // Otorisasi: hanya Admin atau warga bersangkutan yang berhak mencetak
-        $adminPanel = \Filament\Facades\Filament::getPanel('admin') ?? \Filament\Facades\Filament::getDefaultPanel();
+        $adminPanel = Filament::getPanel('admin') ?? Filament::getDefaultPanel();
         $isAdmin = $user->canAccessPanel($adminPanel);
         $isOwner = false;
 
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             $household = $this->getHousehold();
             $allowedResidentIds = $household ? $household->residents->pluck('id')->toArray() : [];
             if ($user->resident) {
@@ -344,12 +346,12 @@ class CitizenPortalController extends Controller
             $isOwner = in_array((int) $letter->resident_id, $allowedResidentIds);
         }
 
-        if (!$isAdmin && !$isOwner) {
+        if (! $isAdmin && ! $isOwner) {
             abort(403, 'Anda tidak memiliki hak untuk mencetak surat pengantar ini.');
         }
 
         $letter->load(['letterType', 'resident.household', 'approver']);
-        $setting = \App\Models\RtSetting::first();
+        $setting = RtSetting::first();
 
         // Generate QR Code SVG mengarah ke verifikasi publik
         $verifyUrl = route('public.verify-letter', $letter->qr_token ?? $letter->id);
@@ -357,7 +359,7 @@ class CitizenPortalController extends Controller
         $qrCodeBase64 = base64_encode($qrCodeSvg);
 
         $logoPath = public_path('images/logo-icon.png');
-        $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : null;
+        $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,'.base64_encode(file_get_contents($logoPath)) : null;
 
         if ($request->query('format') === 'html') {
             return view('letters.pdf', compact('letter', 'setting', 'qrCodeSvg', 'qrCodeBase64', 'verifyUrl', 'logoBase64'));
@@ -407,7 +409,7 @@ class CitizenPortalController extends Controller
         $household = $this->getHousehold();
 
         // Otorisasi: Invoice harus milik Kartu Keluarga warga yang sedang login
-        if (!$household || $invoice->household_id !== $household->id) {
+        if (! $household || $invoice->household_id !== $household->id) {
             abort(403, 'Anda tidak memiliki hak untuk membayar tagihan iuran keluarga lain.');
         }
 
@@ -505,39 +507,82 @@ class CitizenPortalController extends Controller
     }
 
     /**
-     * Dapatkan daftar notifikasi in-app untuk warga (JSON API untuk dropdown lonceng topbar)
+     * Dapatkan notifikasi untuk warga:
+     * - Jika request JSON (API polling/Fetch): Kembalikan response JSON
+     * - Jika request Web Biasa: Tampilkan Halaman Pusat Notifikasi Warga
      */
-    public function getNotifications(): \Illuminate\Http\JsonResponse
+    public function getNotifications(Request $request)
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
-        $notifications = Notification::where('user_id', $user->id)
-            ->latest()
-            ->take(10)
-            ->get()
-            ->map(function ($notif) {
-                return [
-                    'id' => $notif->id,
-                    'judul' => $notif->judul,
-                    'isi' => $notif->isi,
-                    'url' => $notif->url ?? '#',
-                    'is_read' => (bool) $notif->is_read,
-                    'time_ago' => $notif->created_at->diffForHumans(),
-                ];
+
+        // 1. Mode JSON API (untuk sinkronisasi indikator lonceng atau panggilan AJAX)
+        if ($request->expectsJson() || $request->ajax()) {
+            $notifications = Notification::where('user_id', $user->id)
+                ->latest()
+                ->take(10)
+                ->get()
+                ->map(function ($notif) {
+                    return [
+                        'id' => $notif->id,
+                        'judul' => $notif->judul,
+                        'isi' => $notif->isi,
+                        'url' => $notif->url ?? '#',
+                        'is_read' => (bool) $notif->is_read,
+                        'time_ago' => $notif->created_at->diffForHumans(),
+                    ];
+                });
+
+            $unreadCount = Notification::where('user_id', $user->id)->unread()->count();
+
+            return response()->json([
+                'unread_count' => $unreadCount,
+                'notifications' => $notifications,
+            ]);
+        }
+
+        // 2. Mode Halaman Web: Tampilan Penuh Pusat Notifikasi Warga
+        $tab = $request->query('tab', 'all');
+        $query = Notification::where('user_id', $user->id)->latest();
+
+        if ($tab === 'unread') {
+            $query->unread();
+        } elseif ($tab === 'letter') {
+            $query->where(function ($q) {
+                $q->where('url', 'like', '%surat%')
+                    ->orWhere('judul', 'like', '%Surat%');
             });
+        }
 
+        $notifications = $query->paginate(15)->withQueryString();
         $unreadCount = Notification::where('user_id', $user->id)->unread()->count();
+        $hasReadNotifications = Notification::where('user_id', $user->id)->where('is_read', true)->exists();
 
-        return response()->json([
-            'unread_count' => $unreadCount,
-            'notifications' => $notifications,
-        ]);
+        return view('warga.notifications', compact('notifications', 'unreadCount', 'tab', 'hasReadNotifications'));
+    }
+
+    /**
+     * Buka notifikasi warga, tandai telah dibaca, dan redirect ke halaman tujuan
+     */
+    public function openNotification(Notification $notification): RedirectResponse
+    {
+        if ($notification->user_id !== Auth::id()) {
+            abort(403, 'Akses notifikasi ditolak.');
+        }
+
+        if (! $notification->is_read) {
+            $notification->markAsRead();
+        }
+
+        $targetUrl = $notification->url ?: route('warga.dashboard');
+
+        return redirect()->to($targetUrl);
     }
 
     /**
      * Tandai satu notifikasi sebagai sudah dibaca
      */
-    public function markNotificationAsRead(Notification $notification): \Illuminate\Http\JsonResponse
+    public function markNotificationAsRead(Request $request, Notification $notification)
     {
         if ($notification->user_id !== Auth::id()) {
             abort(403, 'Akses notifikasi ditolak.');
@@ -545,13 +590,17 @@ class CitizenPortalController extends Controller
 
         $notification->markAsRead();
 
-        return response()->json(['success' => true]);
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Notifikasi berhasil ditandai telah dibaca.');
     }
 
     /**
      * Tandai seluruh notifikasi warga sebagai sudah dibaca
      */
-    public function markAllNotificationsAsRead(): \Illuminate\Http\JsonResponse
+    public function markAllNotificationsAsRead(Request $request)
     {
         Notification::where('user_id', Auth::id())
             ->unread()
@@ -560,6 +609,26 @@ class CitizenPortalController extends Controller
                 'read_at' => now(),
             ]);
 
-        return response()->json(['success' => true]);
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Seluruh notifikasi berhasil ditandai telah dibaca.');
+    }
+
+    /**
+     * Hapus seluruh notifikasi warga yang sudah dibaca (pembersihan riwayat)
+     */
+    public function deleteAllReadNotifications(Request $request)
+    {
+        Notification::where('user_id', Auth::id())
+            ->where('is_read', true)
+            ->delete();
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Riwayat notifikasi yang telah dibaca berhasil dibersihkan.');
     }
 }
