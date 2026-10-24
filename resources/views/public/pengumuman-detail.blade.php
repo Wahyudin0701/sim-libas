@@ -139,7 +139,7 @@
                     <div class="space-y-2.5 text-xs text-slate-700">
                         <div class="flex items-start gap-2">
                             <span class="font-semibold text-primary-900 shrink-0 w-20">Alamat:</span>
-                            <span>Jl. Pinang Masak No. 15, RT 15 Pematang Sulur, Kota Jambi</span>
+                            <span>{{ $setting->alamat ?? 'Jl. Yulius Usman, RT 15' }}, Kel. Pematang Sulur, Kota Jambi</span>
                         </div>
                         @if($setting?->telepon_ketua_rt)
                             <div class="flex items-start gap-2">

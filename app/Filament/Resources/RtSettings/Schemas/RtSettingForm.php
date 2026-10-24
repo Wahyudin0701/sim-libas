@@ -65,7 +65,7 @@ class RtSettingForm
                         TextInput::make('email')
                             ->label('Alamat Email Resmi')
                             ->email()
-                            ->placeholder('rt15pematangsulur@gmail.com'),
+                            ->placeholder('RT15.pematangsulur@gmail.com'),
                     ]),
 
                 Section::make('Format Surat & Administrasi Digital')

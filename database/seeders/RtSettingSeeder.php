@@ -17,14 +17,14 @@ class RtSettingSeeder extends Seeder
             ['id' => 1],
             [
                 'nama_rt' => 'Rukun Tetangga 15',
-                'alamat' => 'Kampung Digital Pinang Masak Lestari, RT 15',
+                'alamat' => 'Jl. Yulius Usman, RT 15',
                 'kelurahan' => 'Pematang Sulur',
                 'kecamatan' => 'Telanaipura',
                 'kota' => 'Kota Jambi',
                 'provinsi' => 'Jambi',
                 'kode_pos' => '36129',
                 'telepon' => '0812-7400-1515',
-                'email' => 'rt15pematangsulur@gmail.com',
+                'email' => 'RT15.pematangsulur@gmail.com',
                 'nama_ketua_rt' => 'Bpk. H. Ahmad Sudirman, S.E.',
                 'format_nomor_surat' => '{NO}/RT.15/PMS/{BULAN_ROMAWI}/{TAHUN}',
             ]

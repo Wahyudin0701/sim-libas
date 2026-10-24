@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-border-soft/70">
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center bg-primary-700 hover:bg-primary-800 active:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-xs">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Yulius Usman, RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center bg-primary-700 hover:bg-primary-800 active:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-xs">
                             <span>Petunjuk Arah Google Maps</span>
                         </a>
                     </div>
@@ -154,14 +154,14 @@
                         </div>
                         <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Alamat Balai & Sekretariat</div>
                         <div class="text-base font-extrabold text-primary-900 mb-1 leading-snug">
-                            {{ $setting->alamat ?? 'Jl. Pinang Masak, RT 15' }}
+                            {{ $setting->alamat ?? 'Jl. Yulius Usman, RT 15' }}
                         </div>
                         <p class="text-xs text-text-muted leading-relaxed">
                             Kel. {{ $setting->kelurahan ?? 'Pematang Sulur' }}, Kec. {{ $setting->kecamatan ?? 'Telanaipura' }}, {{ $setting->kota ?? 'Kota Jambi' }} {{ $setting->kode_pos ?? '36129' }}.
                         </p>
                     </div>
                     <div class="mt-5 pt-4 border-t border-border-soft">
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Yulius Usman, RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-900 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-sm hover:shadow">
                             <span>Petunjuk Arah Google Maps</span>
                         </a>
                     </div>
@@ -189,7 +189,7 @@
                                 Layanan Mandiri Warga
                             </div>
                             <div class="text-[11px] text-text-muted truncate">
-                                {{ $setting->email ?? 'rt15pematangsulur@gmail.com' }}
+                                {{ $setting->email ?? 'RT15.pematangsulur@gmail.com' }}
                             </div>
                         </div>
                     </div>
@@ -215,7 +215,7 @@
                         </div>
                         <div class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Email & Portal Digital</div>
                         <div class="text-base font-extrabold text-primary-900 mb-1 truncate">
-                            {{ $setting->email ?? 'rt15pematangsulur@gmail.com' }}
+                            {{ $setting->email ?? 'RT15.pematangsulur@gmail.com' }}
                         </div>
                         <p class="text-xs text-text-muted leading-relaxed">
                             Ajukan surat pengantar resmi, cek iuran, dan sampaikan pengaduan secara mandiri melalui Portal Warga.
@@ -443,7 +443,7 @@
 
                     <div class="mt-3 flex items-center justify-between text-xs">
                         <span class="text-text-muted text-[11px]">Pinang Masak Lestari, RT 15</span>
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Pinang Masak RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="font-bold text-primary-700 hover:underline">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode(($setting->alamat ?? 'Jl. Yulius Usman, RT 15') . ' Pematang Sulur Telanaipura Kota Jambi') }}" target="_blank" rel="noopener noreferrer" class="font-bold text-primary-700 hover:underline">
                             Buka Google Maps
                         </a>
                     </div>

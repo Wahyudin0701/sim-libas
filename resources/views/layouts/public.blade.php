@@ -311,12 +311,18 @@
                 <div>
                     <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Sekretariat RT</h4>
                     <p class="text-sm text-gray-300 mb-2">
-                        Jl. Pinang Masak, RT 15<br>
+                        Jl. Yulius Usman, RT 15<br>
                         Kel. Pematang Sulur, Kec. Telanaipura<br>
                         Kota Jambi, Provinsi Jambi 36129
                     </p>
-                    <p class="text-sm text-gold-500 font-semibold mt-4">
+                    <p class="text-sm text-gold-500 font-semibold mt-3">
                         📞 Telepon: 0812-7400-1515
+                    </p>
+                    <p class="text-sm text-gray-300 mt-1 flex items-center gap-1.5">
+                        <span class="text-gold-500">✉️</span>
+                        <a href="mailto:RT15.pematangsulur@gmail.com" class="text-blue-200 hover:text-white hover:underline transition">
+                            RT15.pematangsulur@gmail.com
+                        </a>
                     </p>
                     <div class="mt-3">
                         <a href="{{ route('public.contact') }}" class="inline-flex items-center gap-1.5 text-xs text-blue-200 hover:text-white font-medium transition">

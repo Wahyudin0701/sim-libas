@@ -765,7 +765,7 @@
                                     <input 
                                         type="email" 
                                         wire:model="email" 
-                                        placeholder="Contoh: rt15pematangsulur@gmail.com" 
+                                        placeholder="Contoh: RT15.pematangsulur@gmail.com" 
                                         class="w-full px-3 py-2 bg-white border border-[#DDE5F0] rounded-xl text-xs text-[#0F1F3D] focus:outline-none focus:border-[#0B3A85]"
                                     >
                                     @error('email') <p class="text-rose-600 text-[10.5px] mt-1">{{ $message }}</p> @enderror
