@@ -1,6 +1,7 @@
 # =============================================================================
 # Dockerfile SIM-LiBas RT 15 Pematang Sulur
-# Menggunakan base image resmi PHP 8.2-FPM Alpine yang ringan dan tangguh
+# Base image PHP 8.2-FPM Alpine — versi >= 8.2.35 (patch PHP2Shell)
+# CVE-2026-109618 & CVE-2026-109619: https://nvd.nist.gov/vuln/detail/CVE-2026-109618
 # =============================================================================
 FROM php:8.2-fpm-alpine AS app
 
